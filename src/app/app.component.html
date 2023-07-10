@@ -1,0 +1,555 @@
+<div class="content" role="main">
+  <div class="row">
+
+    <ng-container *ngIf="homeDisplay === true; else elseBlock">
+    <div class="col-lg-8">
+      <div class="card highlight-card card-small" style="width: 478px !important;">
+        <img class="logo" src="./assets/img/logo-spigadiari.png"  viewBox="0 0 101.678 101.678" alt="logo">
+        <title>Logo</title>
+    <span class="appName">عـــبّر</span>
+  </div>
+    </div>
+    </ng-container>
+    <ng-template #elseBlock>
+
+      <div class="card highlight-card card-small">
+        <img class="logo" src="./assets/img/logo-spigadiari.png"   alt="logo">
+
+        <title>Logo</title>
+        <span class="appName">عـــبّر</span>
+      </div>
+    </ng-template>
+
+    <div id="home" class="col-lg-4" style="display: none">
+      <div  class="littleCard-container" >
+        <img class="home"  class="littleCard" (click)="finish()" src="./assets/img/home.png"   alt="logo">
+
+        <img class="return"  class="littleCard" (click)="goBack()" src="./assets/img/back.png"   alt="logo">
+      </div>
+    </div>
+  </div>
+
+
+  <!-- language -->
+  <div id="languageQuestion">
+    <h2>Selectionnez la langue/إخـــتر اللـغة</h2>
+  </div>
+
+  <div id="language" class="card-container">
+    <button (click)="selectLanguage('Arabic')" id="arab" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+<!--      <img class="flags" src="./assets/img/tunisian-flag.png"   alt="flag">-->
+      <h2> عربية</h2>
+    </button>
+
+    <button (click)="selectLanguage('Français')"  id="french" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+<!--      <img class="flags" src="./assets/img/french-flag.png"   alt="flag">-->
+      <h2> Francais</h2>
+    </button>
+  </div>
+
+
+
+
+  <!-- login-->
+
+
+<!--  <div class="row loginDiv"  id="loginTitle" style="display: none;">-->
+<!--    <h2>{{'home.matricule' | translate}}</h2>-->
+<!--  </div>-->
+
+
+  <div id="login" class="card-container" style="display: none">
+    <button (click)="login()" id="withMatricule" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+      <h2>{{'home.withMatricule' | translate}}</h2>
+      <img class="flags1" src="./assets/img/user.png"   alt="flag">
+    </button>
+
+    <button (click)="signIn('anonymous')" id="WithoutMatricule" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+      <h2 >{{'home.withoutMatricule' | translate}}</h2>
+      <img class="flags3" src="./assets/img/Incognito.webp"   alt="flag">
+    </button>
+
+  </div>
+
+
+  <div id="login2" class="card-container" style="display: none">
+
+    <button id="withMatricule2" class="card1 button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+      <h2>{{'home.withMatricule' | translate}}</h2>
+      <img class="flags1" src="./assets/img/user.png"   alt="flag">
+    </button>
+
+    <div class="card1 card1-container">
+      <div class="row ">
+        <div class="col-md-12 d-flex justify-content-center">
+          <input type="text" id="matricule" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                 placeholder="{{'home.matricule' | translate}}" required style="width: 80%;">
+        </div><br>
+
+        <div class="col-md-12 d-flex justify-content-center" style="padding-top: 2%">
+          <input type="password" id="password"  placeholder="{{'home.password' | translate}}" required style="width: 80%;">
+        </div>
+
+
+
+        <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">
+          <button (click)="signIn('Authentified')"  id="WithoutMatricule" class="custom-btn btn-login" >
+            <span>{{'home.withMatricule' | translate}}</span>
+          </button>
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-center" >
+          <u class="change-password" style="color: #1976d2" (click)="changePassword()">{{'home.changePassword' | translate}}</u>
+        </div>
+
+        <div class="col-md-12 justify-content-center" >
+          <div *ngIf="error" class="alert alert-danger mt-1 mb-0">{{error}}</div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <div id="changePw" class="card-container" style="display: none">
+
+    <button id="changingPassword" class="card1 button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+      <h2>{{'home.changingPassword' | translate}}</h2>
+      <img class="flags4" src="./assets/img/password.png"   alt="flag">
+    </button>
+
+    <div class="card1 card1-container">
+      <div class="row ">
+        <div class="col-md-12 d-flex justify-content-center">
+          <input type="text" id="matricule1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                 placeholder="{{'home.matricule' | translate}}" required style="width: 80%;">
+        </div><br>
+
+        <div class="col-md-12 d-flex justify-content-center" style="padding-top: 2%">
+          <input type="password" id="password1"  placeholder="{{'home.password' | translate}}" required style="width: 80%;">
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-center" style="padding-top: 2%">
+          <input type="password" id="newPassword"  placeholder="{{'home.newPassword' | translate}}" required style="width: 80%;">
+        </div>
+
+
+
+        <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">
+          <button (click)="changingPassword()"  id="newPassword" class="custom-btn btn-login" >
+            <span>{{'home.changingPassword' | translate}}</span>
+          </button>
+        </div>
+
+        <div class="col-md-12 justify-content-center" >
+          <div *ngIf="error" class="alert alert-danger mt-1 mb-0">{{error}}</div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+  <div id="answer" class="card-container" style="display: none ; margin-top: 0 !important;">
+<!--    <div  class="card-container">-->
+      <ng-container *ngFor="let checklist of checklists">
+        <button (click)="getQuestions(checklist.id, 1)" id="Anomaly" class="card" target="_blank" rel="noopener" >
+          <h2>{{checklist.translator| translate}}</h2>
+        </button>
+      </ng-container>
+<!--    </div>-->
+  </div>
+
+
+  <div id="buttons" class="card-container" style="display: none" >
+    <div class="card-container">
+      <div class="row justify-content-center">
+
+        <ng-container *ngFor="let checklistQuestion of checklist?.checklistQuestions; let i =index">
+          <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">
+
+            <ng-container *ngIf="checklistQuestion.answerType === 'BUTTONS'">
+              <div class="col-md-4">
+
+                <button (click)="getAfter(checklist.id, order +1 , checklistQuestion.translator , checklistQuestion.answerType, false, checklistQuestion.translator)" id="Anomaly" class="card" target="_blank" rel="noopener" >
+                  <h2>{{checklistQuestion.translator| translate}}</h2>
+                </button>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div id="buttons1" class="card-container"  style="display: none">
+    <div class="card-container">
+      <div class="row justify-content-center">
+
+        <ng-container *ngFor="let checklistQuestion of checklistQuestions; let i =index">
+
+          <ng-container *ngIf="checklistQuestion.answerType === 'BUTTONS'">
+            <div class="col-md-4">
+
+              <button (click)="getAfter(checklist.id, order +1 , checklistQuestion.translator, checklistQuestion.answerType, false, checklistQuestion.translator)" id="Anomaly" class="card" target="_blank" rel="noopener" >
+                <h2>{{checklistQuestion.translator| translate}}</h2>
+              </button>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div id="text" class="card-container " style="display: none">
+    <div class="card-container">
+
+      <ng-container *ngFor="let checklistQuestion of checklist?.checklistQuestions; let i =index">
+        <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">
+
+          <ng-container *ngIf="checklistQuestion.answerType === 'TEXT'">
+            <h2>{{checklistQuestion.translator | translate}}</h2>
+            <div  class="card-container">
+
+              <div class="descriptionCard card1-container">
+                <div class="col-md-12 d-flex justify-content-center">
+                <textarea id="textArea" placeholder="{{checklistQuestion.translator | translate}}" required></textarea>
+                </div>
+
+
+                <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">
+                  <button (click)="getAfter(checklist.id, order +1 , checklistQuestion.translator , checklistQuestion.answerType, false, checklistQuestion.translator)" id="WithoutMatricule" class="custom-btn btn-login" >
+                    <span>{{'home.submit' | translate}}</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+
+  <div id="text1" class="card-container" style="display: none ; margin-top : 0px">
+
+    <ng-container *ngFor="let checklistQuestion of checklistQuestions; let i =index">
+
+      <ng-container *ngIf="checklistQuestion.answerType === 'TEXT'">
+        <div class="col-md-12 d-flex justify-content-center">
+
+          <h2>{{checklistQuestion.translator | translate}}</h2>
+        </div>
+        <div class="descriptionCard card1-container">
+          <div class="col-md-12 d-flex justify-content-center">
+                <textarea id="textArea1" placeholder="{{checklistQuestion.translator | translate}}" required></textarea>
+          </div>
+
+
+          <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">
+            <button (click)="getAfter(checklist.id, order +1 , checklistQuestion.translator, checklistQuestion.answerType, false, checklistQuestion.translator)"  id="WithoutMatricule" class="custom-btn btn-login" >
+              <span>{{'home.submit' | translate}}</span>
+            </button>
+          </div>
+
+        </div>
+
+
+      </ng-container>
+    </ng-container>
+  </div>
+
+
+
+  <div id="emoji" class="card-container" style="display: none">
+    <ng-container *ngFor="let checklistQuestion of checklist?.checklistQuestions; let i =index">
+      <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">
+
+        <ng-container *ngIf="checklistQuestion.answerType === 'EMOJI'">
+          <h2>{{checklistQuestion.translator | translate}}</h2>
+
+          <div id="emotionAnswers" class="card-container">
+            <div class="row">
+              <div class="col-md-3">
+                <button (click)="getAfter(checklist.id, order +1 , 'home.emotion', checklistQuestion.answerType, false, 'fear')" name="anomalyAnswers" class="cardEmoji button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.fear' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/fear.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button (click)="getAfter(checklist.id, order +1 , 'home.emotion', checklistQuestion.answerType, false, 'joy')" name="anomalyAnswers" class="cardEmoji button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.joy' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/joy.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button (click)="getAfter(checklist.id, order +1 , 'home.emotion', checklistQuestion.answerType, false, 'angry')"  name="anomalyAnswers" class="cardEmoji button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.angry' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/angry.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button (click)="getAfter(checklist.id, order +1 , 'home.emotion', checklistQuestion.answerType, false, 'sad')" name="anomalyAnswers" class="cardEmoji button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.sad' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">
+                </button>
+              </div>
+            </div>
+<!--            <div class="row">-->
+<!--              <div class="col-md-3">-->
+<!--                <button (click)="getAfter(checklist.id, order +1 , 'sad', checklistQuestion.answerType, false)" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--                  <h2>{{'home.sad' | translate}}</h2>-->
+<!--                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
+<!--                </button>-->
+<!--              </div>-->
+<!--              <div class="col-md-4">-->
+<!--                <button (click)="getAfter(checklist.id, order +1 , 'sad', checklistQuestion.answerType, false)" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--                  <h2>{{'home.sad' | translate}}</h2>-->
+<!--                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
+<!--                </button>-->
+<!--              </div>-->
+<!--              <div class="col-md-4">-->
+<!--                <button (click)="getAfter(checklist.id, order +1 , 'disgusted', checklistQuestion.answerType, false)"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--                  <h2>{{'home.disgusted' | translate}}</h2>-->
+<!--                  <img class="flags2" src="./assets/img/disgusted.png"   alt="flag">-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+          </div>
+
+        </ng-container>
+
+      </ng-container>
+    </ng-container>
+  </div>
+
+<!--  <div id="emoji1" class="card-container" style="display: none">-->
+<!--    <div class="card-container">-->
+
+<!--      <ng-container *ngFor="let checklistQuestion of checklist?.checklistQuestions; let i =index">-->
+<!--        <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">-->
+
+<!--          <ng-container *ngIf="checklistQuestion.answerType === 'TEXT'">-->
+<!--            <h2>{{checklistQuestion.translator | translate}}</h2>-->
+<!--            <div  class="card-container">-->
+
+<!--              <div class="descriptionCard card1-container">-->
+<!--                <div class="col-md-12 d-flex justify-content-center">-->
+<!--                <textarea  placeholder="{{checklistQuestion.translator | translate}}" required>-->
+<!--                </textarea>-->
+<!--                </div>-->
+
+
+<!--                <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">-->
+<!--                  <button (click)="thankYou()"  id="WithoutMatricule" class="custom-btn btn-login" >-->
+<!--                    <span>{{'home.submit' | translate}}</span>-->
+<!--                  </button>-->
+<!--                </div>-->
+
+<!--              </div>-->
+
+<!--            </div>-->
+
+<!--          </ng-container>-->
+<!--        </ng-container>-->
+<!--      </ng-container>-->
+<!--    </div>-->
+<!--  </div>-->
+
+
+  <div class="card-container questions" style="display: none">
+    <ng-container *ngFor="let checklistQuestion of checklistQuestions; let i =index">
+      <ng-container *ngIf="order === checklistQuestion.questionOrder && order !==1">
+
+        <ng-container *ngIf="checklistQuestion.answerType === 'EMOJI'">
+          <h2>{{checklistQuestion.translator | translate}}</h2>
+
+          <div id="emotionAnswers" class="card-container">
+            <div class="row">
+              <div class="col-md-4">
+                <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.surprised' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/surprised.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.fear' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/fear.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.joy' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/joy.png"   alt="flag">
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.angry' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/angry.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.sad' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">
+                  <h2>{{'home.disgusted' | translate}}</h2>
+                  <img class="flags2" src="./assets/img/disgusted.png"   alt="flag">
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+
+      </ng-container>
+    </ng-container>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  <div id="anomalyAnswers" class="card-container" style="display: none">-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="description('home.personalSecurity', 'personalSecurity')" id="personalSecurity" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.personalSecurity' | translate}}</h2>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="description('home.productQuality', 'productQuality')" id="productQuality" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.productQuality' | translate}}</h2>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="description('home.productHealthiness', 'productHealthiness')" id="productHealthiness" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.productHealthiness' | translate}}</h2>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <button (click)="description('home.equipment', 'equipment')"  id="equipment" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--      <h2>{{'home.equipment' | translate}}</h2>-->
+<!--    </button>-->
+<!--    <button (click)="description('home.environment', 'environment')" id="environment" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--      <h2>{{'home.environment' | translate}}</h2>-->
+<!--    </button>-->
+<!--  </div>-->
+
+<!--  <div id="descriptionName">-->
+<!--    <h2>{{divName | translate}}</h2>-->
+<!--  </div>-->
+
+<!--  <div id="description" class="card-container" style="display: none">-->
+
+<!--    <div class="descriptionCard card1-container">-->
+<!--      <div class="col-md-12 d-flex justify-content-center">-->
+<!--          <textarea  placeholder="{{'home.matricule' | translate}}" required>-->
+<!--          </textarea>-->
+<!--      </div>-->
+
+
+<!--      <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">-->
+<!--        <button (click)="thankYou()"  id="WithoutMatricule" class="custom-btn btn-login" >-->
+<!--          <span>{{'home.submit' | translate}}</span>-->
+<!--        </button>-->
+<!--      </div>-->
+
+<!--    </div>-->
+
+<!--  </div>-->
+
+
+<!--  <div id="emotionAnswers" class="card-container" style="display: none">-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.surprised' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/surprised.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.fear' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/fear.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.joy' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/joy.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.angry' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/angry.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.sad' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
+<!--          <h2>{{'home.disgusted' | translate}}</h2>-->
+<!--          <img class="flags2" src="./assets/img/disgusted.png"   alt="flag">-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <div id="thankYou" class="card-container" style="display: none">
+    <div class="descriptionCard1 card1-container">
+      <h4 style="color: #ED1C24;">{{'home.thankingMessage' | translate}}</h4>
+      <h4 style="color: #ED1C24;">{{'home.thankingMessage1' | translate}}</h4>
+      <h5 style="color: #ED1C24;">{{'home.thankingMessage2' | translate}}</h5>
+    </div>
+  </div>
+
+  <div id="finish" class="col-md-12 d-flex justify-content-center" style="display: none !important; ;padding-top: -5% ">
+    <button (click)="finish()"  id="WithoutMatricule" class="custom-btn1 btn-login" >
+      <span>{{'home.finish' | translate}}</span>
+    </button>
+  </div>
+
+
+
+
+
+  <svg id="clouds" xmlns="http://www.w3.org/2000/svg" width="2611.084" height="485.677" viewBox="0 0 2611.084 385.677">
+    <title style="display: none">Gray Clouds Background</title>
+    <path id="Path_39" data-name="Path 39" d="M2379.709,863.793c10-93-77-171-168-149-52-114-225-105-264,15-75,3-140,59-152,133-30,2.83-66.725,9.829-93.5,26.25-26.771-16.421-63.5-23.42-93.5-26.25-12-74-77-130-152-133-39-120-212-129-264-15-54.084-13.075-106.753,9.173-138.488,48.9-31.734-39.726-84.4-61.974-138.487-48.9-52-114-225-105-264,15a162.027,162.027,0,0,0-103.147,43.044c-30.633-45.365-87.1-72.091-145.206-58.044-52-114-225-105-264,15-75,3-140,59-152,133-53,5-127,23-130,83-2,42,35,72,70,86,49,20,106,18,157,5a165.625,165.625,0,0,0,120,0c47,94,178,113,251,33,61.112,8.015,113.854-5.72,150.492-29.764a165.62,165.62,0,0,0,110.861-3.236c47,94,178,113,251,33,31.385,4.116,60.563,2.495,86.487-3.311,25.924,5.806,55.1,7.427,86.488,3.311,73,80,204,61,251-33a165.625,165.625,0,0,0,120,0c51,13,108,15,157-5a147.188,147.188,0,0,0,33.5-18.694,147.217,147.217,0,0,0,33.5,18.694c49,20,106,18,157,5a165.625,165.625,0,0,0,120,0c47,94,178,113,251,33C2446.709,1093.793,2554.709,922.793,2379.709,863.793Z" transform="translate(142.69 -634.312)" fill="#eee"/>
+  </svg>
+
+
+</div>

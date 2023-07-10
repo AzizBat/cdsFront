@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'CoconNextArabic';
+  src: url('../fonts/cocon-next-arabic.ttf') format('truetype');
+  /* Add more src lines if your font has different variations */
+  /* src: url('../fonts/YourFontName-Bold.ttf') format('truetype'); */
+  /* src: url('../fonts/YourFontName-Italic.ttf') format('truetype'); */
+}
+
+/* Example usage */
+body {
+  font-family: 'CoconNextArabic', Arial, sans-serif;
+}

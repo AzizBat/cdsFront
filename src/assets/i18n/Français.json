@@ -1,0 +1,32 @@
+{
+  "home": {
+    "matricule": "Matricule",
+    "withMatricule": "S'identifier",
+    "withoutMatricule": "Rester anonyme",
+    "password": "mot de passe",
+    "newPassword": "nouveau mot de passe",
+    "changePassword" : "Changer mot de passe?",
+    "changingPassword" : "Changer mot de passe",
+    "anomaly": "Je signale une anomalie",
+    "innovativeIdea": "J’exprime mon idée innovante",
+    "congratulation": "J’exprime mon remerciement",
+    "emotion": "J’exprime mon émotion",
+    "personalSecurity": "Securite personne",
+    "productQuality": "Qualite produit",
+    "productHealthiness": "Salubrite produit",
+    "equipment": "Equipement",
+    "environment": "Environnement",
+    "workingCondition" : "Conditions de travail",
+    "surprised": "Surpris",
+    "fear": "Peur",
+    "joy": "Joyeux",
+    "angry": "En colere",
+    "sad": "Triste",
+    "disgusted": "Degoute",
+    "submit": "Envoyer",
+    "thankingMessage": "Merci d'utiliser l'application et de partager vos pensees.",
+    "thankingMessage1": "Vos commentaires sont inestimables et nous aident à nous améliorer continuellement",
+    "thankingMessage2": "Votre bien-etre psychologique est notre priorite",
+    "finish": "Retourner à la page d'acceuil"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "home": {
+    "matricule": "الرقم الوظيفي",
+    "withMatricule": "أعرّف عن نفسي",
+    "withoutMatricule": "أبقى مجهول",
+    "password": "كلمة السّر",
+    "newPassword": "كلمة السّر الجديدة",
+    "changePassword" : "تغيير كلمة السر؟",
+    "changingPassword" : "تغيير كلمة السر",
+    "anomaly": "أبلغ عن خلل أو عدم مطابقة",
+    "innovativeIdea": "أقترح فكرة جديدة",
+    "congratulation": "أعبر عن شكري",
+    "emotion": "أعبر عن مشاعري",
+    "personalSecurity": "سلامة الأشخاص",
+    "productQuality": "جودة المنتج",
+    "productHealthiness": "سلامة المنتج",
+    "equipment": "المعدات و الآلات",
+    "environment": "البيئة والمحيط",
+    "workingCondition" : "ظروف العمل",
+    "surprised": "مندهش",
+    "fear": "خائف",
+    "joy": "مبتهج",
+    "angry": "غاضب",
+    "sad": "حزين",
+    "disgusted": "مشمئز",
+    "submit": "إبعث",
+    "thankingMessage": "شكرا على إستخدام التطبيقة و مشاركتنا افكارك.",
+    "thankingMessage1": "ملاحظتك لا تقدر بثمن و تساعدنا على التحسين المستمر",
+    "thankingMessage2": "لا يمكن تحقيق الإمتياز إلا من خلال أفراد شغوفين متواضعين يعززون ثقافة التغيير الإبداعي",
+    "finish": "الرجوع للصفحة الرئيسية"
+  }
+}

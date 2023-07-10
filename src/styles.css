@@ -1,0 +1,108 @@
+/*!* You can add global styles to this file, and also import other style files *!*/
+/*@import '~@ng-select/ng-select/themes/default.theme.css';*/
+@import 'assets/css/font.css';
+.preloaderBg {
+  position: fixed;
+  z-index: 9999;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.preloader {
+  margin: auto;
+  /*background: url("src/assets/logo-preloader.png") no-repeat center;*/
+  background-size: 105px;
+  width: 100px;
+  height: 550px;
+}
+
+
+.preloader2 {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #145024;
+  border-radius: 50%;
+  width: 170px;
+  height: 170px;
+  animation: spin 1s ease-in-out infinite ;
+  position: relative;
+  margin: auto;
+  top: -355px;
+}
+
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+/*.preloader {*/
+/*  position: absolute;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  border-radius: 50%;*/
+/*  height: 200px;*/
+/*  width: 200px;*/
+/*  animation: rotate_3922 1.2s linear infinite;*/
+/*  background-color: #9b59b6;*/
+/*  background-image: linear-gradient(#9b59b6, #84cdfa, #5ad1cd);*/
+
+/*}*/
+
+/*.preloader span {*/
+/*  position: absolute;*/
+/*  border-radius: 50%;*/
+/*  height: 100%;*/
+/*  width: 100%;*/
+/*  background-color: #9b59b6;*/
+/*  background-image: linear-gradient(#9b59b6, #84cdfa, #5ad1cd);*/
+/*}*/
+
+/*.preloader span:nth-of-type(1) {*/
+/*  filter: blur(5px);*/
+/*}*/
+
+/*.preloader span:nth-of-type(2) {*/
+/*  filter: blur(10px);*/
+/*}*/
+
+/*.preloader span:nth-of-type(3) {*/
+/*  filter: blur(25px);*/
+/*}*/
+
+/*.preloader span:nth-of-type(4) {*/
+/*  filter: blur(50px);*/
+/*}*/
+
+/*.preloader::after {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  top: 10px;*/
+/*  left: 10px;*/
+/*  right: 10px;*/
+/*  bottom: 10px;*/
+/*  background-color: #fff;*/
+/*  border: solid 5px #ffffff;*/
+/*  border-radius: 50%;*/
+/*  background: url("src/assets/logo-preloader.png") no-repeat center;*/
+/*  animation : none;*/
+
+/*}*/
+
+/*@keyframes rotate_3922 {*/
+/*  from {*/
+/*    transform: translate(-50%, -50%) rotate(0deg);*/
+/*  }*/
+
+/*  to {*/
+/*    transform: translate(-50%, -50%) rotate(360deg);*/
+/*  }*/
+/*}*/
