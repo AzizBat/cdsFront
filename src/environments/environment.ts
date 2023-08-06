@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   // apiUrl: 'http://localhost:5000'
-  apiUrl: 'https://backendcds.cipa-web.com'
+  apiUrl: 'https://cds-server.azurewebsites.net'
 
 };
 
