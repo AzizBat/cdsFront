@@ -9,8 +9,8 @@
     "changingPassword" : "Changer mot de passe",
     "anomaly": "Je signale une anomalie",
     "innovativeIdea": "J’exprime mon idée innovante",
-    "congratulation": "J’exprime mon remerciement",
-    "emotion": "J’exprime mon émotion",
+    "congratulation": "J’exprime mes remerciements",
+    "emotion": "J’exprime mes émotions",
     "personalSecurity": "Securite personne",
     "productQuality": "Qualite produit",
     "productHealthiness": "Salubrite produit",
@@ -25,8 +25,9 @@
     "disgusted": "Degoute",
     "submit": "Envoyer",
     "thankingMessage": "Merci d'utiliser l'application et de partager vos pensees.",
-    "thankingMessage1": "Vos commentaires sont inestimables et nous aident à nous améliorer continuellement",
-    "thankingMessage2": "Votre bien-etre psychologique est notre priorite",
+    "thankingMessage1": "Vos commentaires sont inestimables et nous aident à nous améliorer continuellement.",
+    "thankingMessage2": "L'excellence ne peut être atteinte qu’à travers des individus passionnés qui font",
+    "thankingMessage3": "preuve d’humilité et qui promeuvent une culture de changement créative.",
     "finish": "Retourner à la page d'acceuil"
   }
 }

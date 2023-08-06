@@ -35,7 +35,8 @@ export class AppComponent implements OnInit, OnDestroy  {
   oldAnswerType = ''
   answerType = ''
   homeDisplay = false
-
+  message = false
+  answer: string | undefined;
 
   private onDestroy$ = new Subject<void>();
 
@@ -129,7 +130,7 @@ export class AppComponent implements OnInit, OnDestroy  {
       this.matricule = matricule.value
       this.password =password.value
 
-      this.service.login(this.createFromForm())
+      this.service.loginMatricule(this.createFromForm())
         .subscribe(
           (res: any) => {
             localStorage.setItem('token', res.accessToken);
@@ -227,71 +228,86 @@ export class AppComponent implements OnInit, OnDestroy  {
 
     // get response
     let answer = ""
-    if(back === false){
-    if(answerType === "BUTTONS" || answerType === "EMOJI"){
-      answer = response
-    }
-    else{
+    if(back === false) {
+      if (answerType === "BUTTONS" || answerType === "EMOJI") {
+        answer = response
+      } else {
 
-      if(this.order===1){
-        let input = document.getElementById('textArea') as HTMLInputElement;
-        answer = input.value
+        if (this.order === 1) {
+          let input = document.getElementById('textArea') as HTMLTextAreaElement;
+          console.log(input.value)
+          if (!this.answer || this.answer.trim() === "") {
+            this.message = true
+          } else {
+            answer = input.value
+            this.message = false
+          }
+        } else {
+          let input = document.getElementById('textArea1') as HTMLTextAreaElement;
+          console.log(input.value)
+
+          if (input.value === null || input.value === undefined || input.value === "") {
+            this.message = true
+          } else {
+            answer = input.value
+            this.message = false
+          }
+        }
       }
-      else{
-        let input = document.getElementById('textArea1') as HTMLInputElement;
-        answer = input.value
-      }
-    }
-    this.response.push({answer:answer , answerType : answerType})
-    console.log(this.response)
-    }
-    //go to next question
-    this.checklistQuestions = []
-    this.order = this.order +1
-    for(let i =0; i<this.checklist.checklistQuestions.length ; i++){
-      if(this.order>1){
-      if(this.checklist.checklistQuestions[i].translator === checklistQuestion && this.checklist.checklistQuestions[i].questionOrder === this.order ){
-        this.checklistQuestions.push(this.checklist.checklistQuestions[i])
-      }
-      }
-      else{
-        if(this.checklist.checklistQuestions[i].questionOrder === this.order ){
-          this.checklistQuestions.push(this.checklist.checklistQuestions[i])
+      console.log(this.message)
+
+
+      if (this.message === false) {
+        this.response.push({answer: answer, answerType: answerType})
+        console.log(this.response)
+
+
+        //go to next question
+        this.checklistQuestions = []
+        this.order = this.order + 1
+        for (let i = 0; i < this.checklist.checklistQuestions.length; i++) {
+          if (this.order > 1) {
+            if (this.checklist.checklistQuestions[i].translator === checklistQuestion && this.checklist.checklistQuestions[i].questionOrder === this.order) {
+              this.checklistQuestions.push(this.checklist.checklistQuestions[i])
+            }
+          } else {
+            if (this.checklist.checklistQuestions[i].questionOrder === this.order) {
+              this.checklistQuestions.push(this.checklist.checklistQuestions[i])
+            }
+          }
+        }
+        this.checklistQuestions.sort((a: any, b: any) => a.id - b.id);
+
+
+        // save & go to message
+        if (this.checklistQuestions.length === 0) {
+
+
+          // this.service.saveRequest(this.saveRequestForm())
+          //   .subscribe(
+          //     (res: any) => {
+          //       this.success = res
+          //     },
+          //     _error => {
+          //       this.error = 'Matricule ou mot de passe incorrect';
+          //       // this.loading = false;
+          //     })
+
+          let thankYou = document.getElementById('thankYou') as HTMLElement;
+          let finish = document.getElementById('finish') as HTMLElement;
+          let home = document.getElementById('home') as HTMLElement;
+
+
+          buttons1.style.display = "none"
+          text1.style.display = "none"
+          emoji.style.display = "none"
+          home.style.display = "none"
+          thankYou.style.removeProperty('display');
+          finish.style.removeProperty('display');
+          this.homeDisplay = false
         }
       }
     }
-    this.checklistQuestions.sort((a:any, b:any) => a.id - b.id);
-
-
-    // save & go to message
-    if(this.checklistQuestions.length === 0){
-
-
-      this.service.saveRequest(this.saveRequestForm())
-        .subscribe(
-          (res: any) => {
-            this.success = res
-          },
-          _error => {
-            this.error = 'Matricule ou mot de passe incorrect';
-            // this.loading = false;
-          })
-
-      let thankYou = document.getElementById('thankYou') as HTMLElement;
-      let finish = document.getElementById('finish') as HTMLElement;
-      let home = document.getElementById('home') as HTMLElement;
-
-
-      buttons1.style.display = "none"
-      text1.style.display = "none"
-      emoji.style.display = "none"
-      home.style.display = "none"
-      thankYou.style.removeProperty( 'display' );
-      finish.style.removeProperty( 'display' );
-      this.homeDisplay = false
-    }
-
-
   }
 
 
@@ -346,7 +362,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 
   protected createFromForm() {
      return {
-      email: this.matricule,
+      matricule: Number(this.matricule),
       password: this.password
     };
   }

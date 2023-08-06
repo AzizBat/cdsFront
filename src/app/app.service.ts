@@ -21,6 +21,10 @@ export class AppService {
     return this.http.post(this.BaseURI + '/auth/sign-in', formData);
   }
 
+  loginMatricule(formData : any) {
+    return this.http.post(this.BaseURI + '/auth/sign-in-with-matricule', formData);
+  }
+
   changePassword(formData : any) {
     return this.http.put(this.BaseURI + '/api/users/change-password', formData);
   }

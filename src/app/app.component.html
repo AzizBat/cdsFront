@@ -218,7 +218,7 @@
 
               <div class="descriptionCard card1-container">
                 <div class="col-md-12 d-flex justify-content-center">
-                <textarea id="textArea" placeholder="{{checklistQuestion.translator | translate}}" required></textarea>
+                <textarea id="textArea" placeholder="{{checklistQuestion.translator | translate}}" [(ngModel)]="answer"></textarea>
                 </div>
 
 
@@ -250,7 +250,7 @@
         </div>
         <div class="descriptionCard card1-container">
           <div class="col-md-12 d-flex justify-content-center">
-                <textarea id="textArea1" placeholder="{{checklistQuestion.translator | translate}}" required></textarea>
+                <textarea id="textArea1" placeholder="{{checklistQuestion.translator | translate}}" [(ngModel)]="answer"></textarea>
           </div>
 
 
@@ -531,8 +531,9 @@
   <div id="thankYou" class="card-container" style="display: none">
     <div class="descriptionCard1 card1-container">
       <h4 style="color: #ED1C24;">{{'home.thankingMessage' | translate}}</h4>
-      <h4 style="color: #ED1C24;">{{'home.thankingMessage1' | translate}}</h4>
+      <h5 style="color: #ED1C24;">{{'home.thankingMessage1' | translate}}</h5>
       <h5 style="color: #ED1C24;">{{'home.thankingMessage2' | translate}}</h5>
+      <h5 style="color: #ED1C24;">{{'home.thankingMessage3' | translate}}</h5>
     </div>
   </div>
 
