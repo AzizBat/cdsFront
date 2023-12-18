@@ -283,15 +283,15 @@ export class AppComponent implements OnInit, OnDestroy  {
         if (this.checklistQuestions.length === 0) {
 
 
-          // this.service.saveRequest(this.saveRequestForm())
-          //   .subscribe(
-          //     (res: any) => {
-          //       this.success = res
-          //     },
-          //     _error => {
-          //       this.error = 'Matricule ou mot de passe incorrect';
-          //       // this.loading = false;
-          //     })
+          this.service.saveRequest(this.saveRequestForm())
+            .subscribe(
+              (res: any) => {
+                this.success = res
+              },
+              _error => {
+                this.error = 'Error';
+                // this.loading = false;
+              })
 
           let thankYou = document.getElementById('thankYou') as HTMLElement;
           let finish = document.getElementById('finish') as HTMLElement;

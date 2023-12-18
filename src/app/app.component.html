@@ -1,38 +1,54 @@
-<div class="content" role="main">
+<div id="home" class="col-lg-4" class="homeButton" style="display: none">
+  <div  class="littleCard-container" >
+    <img class="home"  class="littleCard" (click)="finish()" src="./assets/img/home.png"   alt="logo">
+
+    <img class="return"  class="littleCard" (click)="goBack()" src="./assets/img/back.png"   alt="logo">
+  </div>
+</div>
+
+<div class="content" role="main" style="margin-top: 1%">
   <div class="row">
 
     <ng-container *ngIf="homeDisplay === true; else elseBlock">
-    <div class="col-lg-8">
-      <div class="card highlight-card card-small" style="width: 478px !important;">
-        <img class="logo" src="./assets/img/logo-spigadiari.png"  viewBox="0 0 101.678 101.678" alt="logo">
-        <title>Logo</title>
-    <span class="appName">عـــبّر</span>
-  </div>
-    </div>
+      <div class="row" style="width: 478px !important;">
+        <div class="col-md-3">
+          <img class="logo1" src="./assets/img/logo-diari.png"   alt="logo">
+        </div>
+        <div class="col-md-3">
+          <div class="card highlight-card card-small">
+            <span class="appName">عـــبّر</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <img class="logo2" src="./assets/img/logo-spiga.png"   alt="logo">
+        </div>
+      </div>
     </ng-container>
     <ng-template #elseBlock>
 
-      <div class="card highlight-card card-small">
-        <img class="logo" src="./assets/img/logo-spigadiari.png"   alt="logo">
-
-        <title>Logo</title>
-        <span class="appName">عـــبّر</span>
+      <div class="row">
+        <div class="col-md-3">
+        <img class="logo1" src="./assets/img/logo-diari.png"   alt="logo">
+        </div>
+        <div class="col-md-3">
+          <div class="card highlight-card card-small">
+            <span class="appName">عـــبّر</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+        <img class="logo2" src="./assets/img/logo-spiga.png"   alt="logo">
+        </div>
       </div>
+<!--      </div>-->
     </ng-template>
 
-    <div id="home" class="col-lg-4" style="display: none">
-      <div  class="littleCard-container" >
-        <img class="home"  class="littleCard" (click)="finish()" src="./assets/img/home.png"   alt="logo">
 
-        <img class="return"  class="littleCard" (click)="goBack()" src="./assets/img/back.png"   alt="logo">
-      </div>
-    </div>
   </div>
 
 
   <!-- language -->
   <div id="languageQuestion">
-    <h2>Selectionnez la langue/إخـــتر اللـغة</h2>
+    <h2>Sélectionnez la langue/إخـــتر اللـغة</h2>
   </div>
 
   <div id="language" class="card-container">
@@ -43,7 +59,7 @@
 
     <button (click)="selectLanguage('Français')"  id="french" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">
 <!--      <img class="flags" src="./assets/img/french-flag.png"   alt="flag">-->
-      <h2> Francais</h2>
+      <h2> Français</h2>
     </button>
   </div>
 
@@ -213,7 +229,10 @@
         <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">
 
           <ng-container *ngIf="checklistQuestion.answerType === 'TEXT'">
-            <h2>{{checklistQuestion.translator | translate}}</h2>
+            <div class="col-md-12 d-flex justify-content-center">
+
+              <h2>{{checklistQuestion.translator | translate}}</h2>
+            </div>
             <div  class="card-container">
 
               <div class="descriptionCard card1-container">
@@ -530,10 +549,11 @@
 
   <div id="thankYou" class="card-container" style="display: none">
     <div class="descriptionCard1 card1-container">
+       <h4 style="color: #35992f;"><i class="fa fa-check"></i> {{'home.successMessage' | translate}}</h4>
       <h4 style="color: #ED1C24;">{{'home.thankingMessage' | translate}}</h4>
-      <h5 style="color: #ED1C24;">{{'home.thankingMessage1' | translate}}</h5>
-      <h5 style="color: #ED1C24;">{{'home.thankingMessage2' | translate}}</h5>
-      <h5 style="color: #ED1C24;">{{'home.thankingMessage3' | translate}}</h5>
+      <h4 style="color: #ED1C24;">{{'home.thankingMessage1' | translate}}</h4>
+      <h4 style="color: #ED1C24;">{{'home.thankingMessage2' | translate}}</h4>
+      <h4 style="color: #ED1C24;">{{'home.thankingMessage3' | translate}}</h4>
     </div>
   </div>
 
