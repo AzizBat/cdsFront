@@ -94,7 +94,8 @@ export class AppComponent implements OnInit, OnDestroy  {
 
 
   selectLanguage(selectedLanguage : string){
-    this.homeDisplay = true
+    setTimeout(() => {
+      this.homeDisplay = true
     this.startInactivityTimer();
     let language = document.getElementById('language') as HTMLButtonElement;
     let languageQuestion = document.getElementById('languageQuestion') as HTMLElement;
@@ -108,6 +109,8 @@ export class AppComponent implements OnInit, OnDestroy  {
     this.selectedLanguage =selectedLanguage
     console.log(this.translate)
     this.page = 'selectLogin'
+    }, 1000);
+
   }
 
   login(){
