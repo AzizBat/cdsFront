@@ -15,7 +15,7 @@ phases:
   pre_build:
     commands:
       - echo installing dependencies...
-      - npm i -g @angular/cli@latest
+      - npm i -g @angular/cli@10.2.4
       - rm -rf node_modules package-lock.json
       - npm install --legacy-peer-deps
   build:
