@@ -169,6 +169,7 @@ svg.material-icons:not(:last-child) {
   margin-top: 16px;
 }
 
+
 .card1 {
   border-radius: 4px;
   border: 1px solid #eee;
@@ -282,8 +283,8 @@ svg.material-icons:not(:last-child) {
   margin: 0 8px 16px;
   padding: 16px;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  /*justify-content: center;*/
   align-items: center;
   transition: all 0.2s ease-in-out;
   line-height: 24px;
@@ -296,6 +297,10 @@ svg.material-icons:not(:last-child) {
 .descriptionCard1 .descriptionCard1-small {
   height: 16px;
   width: 168px;
+}
+
+.descriptionCard1 h4 {
+  white-space: nowrap;
 }
 
 
