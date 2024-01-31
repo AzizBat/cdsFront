@@ -225,7 +225,9 @@ export class AppComponent implements OnInit, OnDestroy  {
     text.style.display = "none"
     emoji.style.display = "none"
     buttons1.style.removeProperty( 'display' );
-    text1.style.removeProperty( 'display' );
+    if( !back){
+      text1.style.removeProperty( 'display' );
+    }
     // emoji1.style.removeProperty( 'display' );
 
 
@@ -389,6 +391,7 @@ export class AppComponent implements OnInit, OnDestroy  {
   }
 
   goBack(){
+    console.log(this.page)
     if(this.page ==='selectLogin'){
       this.finish()
     }
@@ -397,6 +400,15 @@ export class AppComponent implements OnInit, OnDestroy  {
       login2.style.display ='none'
       this.selectLanguage(this.selectedLanguage)
     }
+
+    if(this.page === 'changePasswordPage'){
+      let changepw = document.getElementById('changePw') as HTMLButtonElement;
+      changepw.style.display ='none'
+      let login2 = document.getElementById('login2') as HTMLButtonElement;
+      login2.style.removeProperty('display')
+      this.page = 'loginPage'
+    }
+
     if(this.page=== 'checklistPage'){
       let answer = document.getElementById('answer') as HTMLElement;
       answer.style.display ='none'
@@ -415,15 +427,27 @@ export class AppComponent implements OnInit, OnDestroy  {
         let answer = document.getElementById('answer') as HTMLElement;
         let buttons = document.getElementById('buttons') as HTMLButtonElement;
         let text = document.getElementById('text') as HTMLButtonElement;
+        let text1 = document.getElementById('text1') as HTMLButtonElement;
         let emoji = document.getElementById('emoji') as HTMLButtonElement;
         buttons.style.display = "none"
         text.style.display = "none"
+        text1.style.display = "none"
         emoji.style.display = "none"
         answer.style.removeProperty( 'display' );
       }
       else{
         this.order = this.order -2
         this.response.pop()
+        let answer = document.getElementById('answer') as HTMLElement;
+        let buttons = document.getElementById('buttons') as HTMLButtonElement;
+        let text = document.getElementById('text') as HTMLButtonElement;
+        let text1 = document.getElementById('text1') as HTMLButtonElement;
+        let emoji = document.getElementById('emoji') as HTMLButtonElement;
+        buttons.style.display = "none"
+        text.style.display = "none"
+        text1.style.display = "none"
+        emoji.style.display = "none"
+        answer.style.removeProperty( 'display' );
         console.log(this.oldChecklistQuestion)
         this.getAfter(this.checklist.id , this.order, this.oldChecklistQuestion,this.oldAnswerType, true, 'nothing' )
       }

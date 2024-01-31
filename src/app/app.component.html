@@ -322,26 +322,7 @@
                 </button>
               </div>
             </div>
-<!--            <div class="row">-->
-<!--              <div class="col-md-3">-->
-<!--                <button (click)="getAfter(checklist.id, order +1 , 'sad', checklistQuestion.answerType, false)" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--                  <h2>{{'home.sad' | translate}}</h2>-->
-<!--                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
-<!--                </button>-->
-<!--              </div>-->
-<!--              <div class="col-md-4">-->
-<!--                <button (click)="getAfter(checklist.id, order +1 , 'sad', checklistQuestion.answerType, false)" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--                  <h2>{{'home.sad' | translate}}</h2>-->
-<!--                  <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
-<!--                </button>-->
-<!--              </div>-->
-<!--              <div class="col-md-4">-->
-<!--                <button (click)="getAfter(checklist.id, order +1 , 'disgusted', checklistQuestion.answerType, false)"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--                  <h2>{{'home.disgusted' | translate}}</h2>-->
-<!--                  <img class="flags2" src="./assets/img/disgusted.png"   alt="flag">-->
-<!--                </button>-->
-<!--              </div>-->
-<!--            </div>-->
+
           </div>
 
         </ng-container>
@@ -349,39 +330,6 @@
       </ng-container>
     </ng-container>
   </div>
-
-<!--  <div id="emoji1" class="card-container" style="display: none">-->
-<!--    <div class="card-container">-->
-
-<!--      <ng-container *ngFor="let checklistQuestion of checklist?.checklistQuestions; let i =index">-->
-<!--        <ng-container *ngIf="order === checklistQuestion.questionOrder && order ===1">-->
-
-<!--          <ng-container *ngIf="checklistQuestion.answerType === 'TEXT'">-->
-<!--            <h2>{{checklistQuestion.translator | translate}}</h2>-->
-<!--            <div  class="card-container">-->
-
-<!--              <div class="descriptionCard card1-container">-->
-<!--                <div class="col-md-12 d-flex justify-content-center">-->
-<!--                <textarea  placeholder="{{checklistQuestion.translator | translate}}" required>-->
-<!--                </textarea>-->
-<!--                </div>-->
-
-
-<!--                <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">-->
-<!--                  <button (click)="thankYou()"  id="WithoutMatricule" class="custom-btn btn-login" >-->
-<!--                    <span>{{'home.submit' | translate}}</span>-->
-<!--                  </button>-->
-<!--                </div>-->
-
-<!--              </div>-->
-
-<!--            </div>-->
-
-<!--          </ng-container>-->
-<!--        </ng-container>-->
-<!--      </ng-container>-->
-<!--    </div>-->
-<!--  </div>-->
 
 
   <div class="card-container questions" style="display: none">
@@ -439,115 +387,6 @@
       </ng-container>
     </ng-container>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--  <div id="anomalyAnswers" class="card-container" style="display: none">-->
-<!--    <div class="row">-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="description('home.personalSecurity', 'personalSecurity')" id="personalSecurity" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.personalSecurity' | translate}}</h2>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="description('home.productQuality', 'productQuality')" id="productQuality" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.productQuality' | translate}}</h2>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="description('home.productHealthiness', 'productHealthiness')" id="productHealthiness" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.productHealthiness' | translate}}</h2>-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <button (click)="description('home.equipment', 'equipment')"  id="equipment" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--      <h2>{{'home.equipment' | translate}}</h2>-->
-<!--    </button>-->
-<!--    <button (click)="description('home.environment', 'environment')" id="environment" name="anomalyAnswers" class="card" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--      <h2>{{'home.environment' | translate}}</h2>-->
-<!--    </button>-->
-<!--  </div>-->
-
-<!--  <div id="descriptionName">-->
-<!--    <h2>{{divName | translate}}</h2>-->
-<!--  </div>-->
-
-<!--  <div id="description" class="card-container" style="display: none">-->
-
-<!--    <div class="descriptionCard card1-container">-->
-<!--      <div class="col-md-12 d-flex justify-content-center">-->
-<!--          <textarea  placeholder="{{'home.matricule' | translate}}" required>-->
-<!--          </textarea>-->
-<!--      </div>-->
-
-
-<!--      <div class="col-md-12 d-flex justify-content-center" style="padding-top: 5%">-->
-<!--        <button (click)="thankYou()"  id="WithoutMatricule" class="custom-btn btn-login" >-->
-<!--          <span>{{'home.submit' | translate}}</span>-->
-<!--        </button>-->
-<!--      </div>-->
-
-<!--    </div>-->
-
-<!--  </div>-->
-
-
-<!--  <div id="emotionAnswers" class="card-container" style="display: none">-->
-<!--    <div class="row">-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.surprised' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/surprised.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.fear' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/fear.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.joy' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/joy.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="row">-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.angry' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/angry.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()" name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.sad' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/sad.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <button (click)="thankYou()"  name="anomalyAnswers" class="card button-container" target="_blank" rel="noopener" href="https://angular.io/tutorial">-->
-<!--          <h2>{{'home.disgusted' | translate}}</h2>-->
-<!--          <img class="flags2" src="./assets/img/disgusted.png"   alt="flag">-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
 
 
   <div id="thankYou" class="card-container" style="display: none">
