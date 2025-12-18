@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://cds-server.azurewebsites.net'
+  apiUrl: 'https://cds-serverfr.azurewebsites.net'
 };
