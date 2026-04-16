@@ -37,6 +37,13 @@ export class AppComponent implements OnInit, OnDestroy  {
   homeDisplay = false
   message = false
   answer: string | undefined;
+  personalSpaceCards = [
+    'home.advanceSalary',
+    'home.leaveRequest',
+    'home.absenceRequest',
+    'home.attestationsCertificates'
+  ]
+  selectedPersonalSpaceCard = ''
 
   private onDestroy$ = new Subject<void>();
 
@@ -122,7 +129,7 @@ export class AppComponent implements OnInit, OnDestroy  {
   }
 
   signIn(type: string){
-    this.page = 'checklistPage'
+    this.page = 'spaceSelectionPage'
     this.type =type
     if(type === "Authentified"){
       this.anonymous =false
@@ -147,10 +154,10 @@ export class AppComponent implements OnInit, OnDestroy  {
 
 
             let login2 = document.getElementById('login2') as HTMLButtonElement;
-            let answer = document.getElementById('answer') as HTMLElement;
+            let spaces = document.getElementById('spaces') as HTMLElement;
 
             login2.style.display = "none"
-            answer.style.removeProperty( 'display' );
+            spaces.style.removeProperty( 'display' );
 
             },
       _error => {
@@ -168,12 +175,49 @@ export class AppComponent implements OnInit, OnDestroy  {
       login.style.display = "none"
 
       let login2 = document.getElementById('login2') as HTMLButtonElement;
-      let answer = document.getElementById('answer') as HTMLElement;
+      let spaces = document.getElementById('spaces') as HTMLElement;
 
       login2.style.display = "none"
-      answer.style.removeProperty( 'display' );
+      spaces.style.removeProperty( 'display' );
     }
 
+  }
+
+  openExpressionSpace() {
+    let spaces = document.getElementById('spaces') as HTMLElement;
+    let answer = document.getElementById('answer') as HTMLElement;
+
+    spaces.style.display = 'none'
+    answer.style.removeProperty('display');
+    this.page = 'expressionPage'
+  }
+
+  openPersonalSpace() {
+    let spaces = document.getElementById('spaces') as HTMLElement;
+    let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+
+    spaces.style.display = 'none'
+    personalSpace.style.removeProperty('display');
+    this.page = 'personalSpacePage'
+  }
+
+  openPersonalForm(card: string) {
+    let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+    let personalForm = document.getElementById('personalForm') as HTMLElement;
+
+    this.selectedPersonalSpaceCard = card
+    personalSpace.style.display = 'none'
+    personalForm.style.removeProperty('display');
+    this.page = 'personalFormPage'
+  }
+
+  goToPersonalSpaceCards() {
+    let personalForm = document.getElementById('personalForm') as HTMLElement;
+    let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+
+    personalForm.style.display = 'none'
+    personalSpace.style.removeProperty('display')
+    this.page = 'personalSpacePage'
   }
 
   getQuestions(id : number, order : number){
@@ -421,6 +465,46 @@ export class AppComponent implements OnInit, OnDestroy  {
       }
     }
 
+    if(this.page=== 'spaceSelectionPage'){
+      let spaces = document.getElementById('spaces') as HTMLElement;
+      spaces.style.display ='none'
+      if(this.anonymous === true){
+        this.selectLanguage(this.selectedLanguage)
+      }
+      else{
+        let login2 = document.getElementById('login2') as HTMLButtonElement;
+        login2.style.removeProperty('display')
+        this.page = 'loginPage'
+      }
+    }
+
+    if(this.page === 'expressionPage'){
+      let answer = document.getElementById('answer') as HTMLElement;
+      let spaces = document.getElementById('spaces') as HTMLElement;
+
+      answer.style.display = 'none'
+      spaces.style.removeProperty('display')
+      this.page = 'spaceSelectionPage'
+    }
+
+    if(this.page === 'personalSpacePage'){
+      let spaces = document.getElementById('spaces') as HTMLElement;
+      let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+
+      personalSpace.style.display = 'none'
+      spaces.style.removeProperty('display')
+      this.page = 'spaceSelectionPage'
+    }
+
+    if(this.page === 'personalFormPage'){
+      let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+      let personalForm = document.getElementById('personalForm') as HTMLElement;
+
+      personalForm.style.display = 'none'
+      personalSpace.style.removeProperty('display')
+      this.page = 'personalSpacePage'
+    }
+
     if(this.page === 'questionsPage'){
       if(this.order ===1){
         this.order =0
@@ -434,6 +518,7 @@ export class AppComponent implements OnInit, OnDestroy  {
         text1.style.display = "none"
         emoji.style.display = "none"
         answer.style.removeProperty( 'display' );
+        this.page = 'expressionPage'
       }
       else{
         this.order = this.order -2

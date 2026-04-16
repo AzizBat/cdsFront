@@ -1,0 +1,32 @@
+<div class="summary-wrapper">
+    <div class="paper-sheet">
+        <div class="paper-header">
+            <h2>{{ title }}</h2>
+            <div class="paper-subtitle">Resume de la demande</div>
+            <div class="meta-row" *ngIf="referenceCode">
+                <span class="meta-chip" *ngIf="referenceCode">Ref: {{ referenceCode }}</span>
+            </div>
+        </div>
+
+        <div class="paper-body">
+            <div class="row-line" [class.row-line-motif]="row.label === 'Motif'" *ngFor="let row of rows">
+                <div class="row-label">{{ row.label }}</div>
+                <div class="row-value" [class.row-value-motif]="row.label === 'Motif'" *ngIf="row.type !== 'image'">{{
+                    row.value || '-' }}</div>
+                <div class="row-value row-image" *ngIf="row.type === 'image'">
+                    <img *ngIf="row.value; else noImage" [src]="row.value" [alt]="row.alt || row.label">
+                    <ng-template #noImage>-</ng-template>
+                </div>
+            </div>
+        </div>
+
+        <div class="paper-footer">
+            <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
+                <span>{{ cancelLabel }}</span>
+            </button>
+            <button type="button" class="custom-btn btn-login" (click)="onConfirm()">
+                <span>{{ confirmLabel }}</span>
+            </button>
+        </div>
+    </div>
+</div>

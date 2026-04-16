@@ -1,0 +1,257 @@
+<div class="leave-shell">
+    <ng-container *ngIf="!showSummary; else summaryView">
+        <div class="leave-header">
+            <h2>{{requestTitleKey | translate}}</h2>
+            <p>Renseignez votre demande puis cliquez sur Continuer.</p>
+        </div>
+
+        <form [formGroup]="leaveForm" class="leave-form-card" novalidate>
+            <div class="form-grid">
+                <div class="field">
+                    <label>Matricule</label>
+                    <input type="text" formControlName="matricule" readonly>
+                </div>
+
+                <div class="field">
+                    <label>Nom et prenom</label>
+                    <input type="text" formControlName="fullName" readonly>
+                </div>
+
+                <div class="field field-full">
+                    <div class="duration-date-row" [class.duration-date-row-absence]="isAbsenceRequest"
+                        [class.duration-date-row-advance]="isAdvanceSalaryRequest"
+                        [class.duration-date-row-attestation]="isAttestationRequest">
+                        <ng-container *ngIf="isAttestationRequest; else nonAttestationFields">
+                            <div class="attestation-card">
+                                <div class="field compact-field">
+                                    <label>Type de document</label>
+                                    <select class="touch-input attestation-select"
+                                        formControlName="attestationDocumentType"
+                                        (change)="onAttestationDocumentTypeChange()">
+                                        <option value="" disabled>Choisir un type de document</option>
+                                        <option *ngFor="let option of attestationDocumentTypeOptions"
+                                            [value]="option.value">
+                                            {{option.label}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="attestation-extra-block" *ngIf="isWorkAttestationSelected">
+                                    <label class="attestation-subtitle">Motif de l'attestation de travail</label>
+                                    <p class="attestation-choice-hint">Selectionnez une option ci-dessous :</p>
+                                    <div class="attestation-choice-row">
+                                        <button type="button" class="attestation-choice-btn"
+                                            [class.active]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
+                                            [attr.aria-pressed]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
+                                            (click)="onWorkAttestationReasonSelect('cin')">
+                                            <span class="choice-radio"
+                                                [class.choice-radio-active]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
+                                                aria-hidden="true"></span>
+                                            <span>Pour renouvellement de CIN</span>
+                                        </button>
+                                        <button type="button" class="attestation-choice-btn"
+                                            [class.active]="leaveForm.get('attestationWorkReason')?.value === 'other'"
+                                            [attr.aria-pressed]="leaveForm.get('attestationWorkReason')?.value === 'other'"
+                                            (click)="onWorkAttestationReasonSelect('other')">
+                                            <span class="choice-radio"
+                                                [class.choice-radio-active]="leaveForm.get('attestationWorkReason')?.value === 'other'"
+                                                aria-hidden="true"></span>
+                                            <span>Autre</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="field compact-field" *ngIf="isWorkAttestationOtherSelected">
+                                        <label>Preciser</label>
+                                        <textarea rows="3" formControlName="attestationWorkOtherText"
+                                            placeholder="Saisir votre motif"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="attestation-extra-block" *ngIf="isRetenueSelected">
+                                    <div class="field compact-field">
+                                        <label>Annee</label>
+                                        <select class="touch-input attestation-select"
+                                            formControlName="attestationYear">
+                                            <option value="" disabled>Choisir une annee</option>
+                                            <option *ngFor="let year of yearOptions" [value]="year">{{year}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="attestation-extra-block" *ngIf="isPayslipCopySelected">
+                                    <div class="attestation-month-year-row">
+                                        <div class="field compact-field">
+                                            <label>Mois</label>
+                                            <select class="touch-input attestation-select"
+                                                formControlName="attestationMonth">
+                                                <option value="" disabled>Choisir un mois</option>
+                                                <option *ngFor="let month of monthOptions" [value]="month.value">
+                                                    {{month.label}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="field compact-field">
+                                            <label>Annee</label>
+                                            <select class="touch-input attestation-select"
+                                                formControlName="attestationYear">
+                                                <option value="" disabled>Choisir une annee</option>
+                                                <option *ngFor="let year of yearOptions" [value]="year">{{year}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-template #nonAttestationFields>
+                            <ng-container *ngIf="isAdvanceSalaryRequest; else leaveOrAbsenceFields">
+                                <div class="advance-salary-card">
+                                    <div class="field compact-field">
+                                        <label>Montant</label>
+                                        <div class="advance-amount-row">
+                                            <input class="touch-input advance-amount-input" type="text"
+                                                [value]="advanceAmountDisplay" placeholder="0" readonly inputmode="none"
+                                                autocomplete="off" aria-label="Montant en TND">
+
+                                            <button type="button" class="amount-key-delete-inline"
+                                                [disabled]="!hasAdvanceAmountValue" (click)="onAdvanceAmountDelete()"
+                                                aria-label="Supprimer un chiffre">
+                                                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                                    <path
+                                                        d="M22 6a2 2 0 0 0-2-2h-9a2 2 0 0 0-1.41.59L3.17 11a2 2 0 0 0 0 2.83l6.42 6.41A2 2 0 0 0 11 21h9a2 2 0 0 0 2-2V6zM15.41 16 13 13.59 10.59 16 9.17 14.59 11.59 12 9.17 9.41 10.59 8 13 10.41 15.41 8l1.42 1.41L14.41 12l2.42 2.59L15.41 16z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="amount-keypad" role="group" aria-label="Clavier numerique montant">
+                                        <button type="button" class="amount-key" [class.amount-key-zero]="digit === 0"
+                                            *ngFor="let digit of amountKeypadDigits"
+                                            (click)="onAdvanceAmountDigit(digit)">
+                                            {{digit}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <ng-template #leaveOrAbsenceFields>
+                                <ng-container *ngIf="isAbsenceRequest; else leaveDateRange">
+                                    <div class="absence-time-card">
+                                        <div class="absence-date-time-row">
+                                            <div class="field compact-field">
+                                                <label>Date</label>
+                                                <input class="touch-input absence-touch-input" type="date"
+                                                    formControlName="absenceDate" (change)="onAbsenceDateChange()">
+                                            </div>
+
+                                            <div class="field compact-field">
+                                                <label>De</label>
+                                                <input class="touch-input absence-touch-input absence-time-input"
+                                                    type="text" formControlName="absenceStartTime"
+                                                    [ngxTimepicker]="absenceStartPicker" [format]="12"
+                                                    [min]="absenceStartClockMin12" [max]="'11:00 PM'"
+                                                    [disabled]="isAbsenceStartSelectionDisabled" readonly
+                                                    placeholder="--:--" (change)="onAbsenceStartTimeChange()">
+                                                <ngx-material-timepicker #absenceStartPicker [format]="12"
+                                                    [hoursOnly]="true" [minutesGap]="60" [appendToInput]="true"
+                                                    [disableAnimation]="true" (timeSet)="onAbsenceStartTimeSet($event)">
+                                                </ngx-material-timepicker>
+                                            </div>
+
+                                            <div class="field compact-field">
+                                                <label>A</label>
+                                                <input class="touch-input absence-touch-input absence-time-input"
+                                                    type="text" formControlName="absenceEndTime"
+                                                    [ngxTimepicker]="absenceEndPicker" [format]="12"
+                                                    [min]="absenceEndClockMin12" [max]="'11:00 PM'"
+                                                    [disabled]="isAbsenceEndSelectionDisabled" readonly
+                                                    placeholder="--:--" (change)="onAbsenceEndTimeChange()">
+                                                <ngx-material-timepicker #absenceEndPicker [format]="12"
+                                                    [hoursOnly]="true" [minutesGap]="60" [appendToInput]="true"
+                                                    [disableAnimation]="true" (timeSet)="onAbsenceEndTimeSet($event)">
+                                                </ngx-material-timepicker>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
+                        </ng-template>
+
+                        <ng-template #leaveDateRange>
+                            <div class="field compact-field">
+                                <label>Duree (jours)</label>
+                                <input type="number" min="1" formControlName="duration" (change)="onDurationChange()">
+                            </div>
+
+                            <div class="field compact-field">
+                                <label>De</label>
+                                <input type="date" formControlName="startDate" (change)="onStartDateChange()">
+                            </div>
+
+                            <div class="field compact-field">
+                                <label>A</label>
+                                <input type="date" formControlName="endDate" (change)="onEndDateChange()">
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="field field-full absence-motif-field" *ngIf="isAbsenceRequest || isAdvanceSalaryRequest">
+                    <label>Motif</label>
+                    <textarea rows="4" formControlName="motif"></textarea>
+                </div>
+
+                <div class="field field-span-2" *ngIf="isLeaveRequest">
+                    <label>Motif</label>
+                    <textarea rows="4" formControlName="motif"></textarea>
+                </div>
+
+                <div class="field" *ngIf="isLeaveRequest || isAbsenceRequest"
+                    [class.absence-signature-center]="isAbsenceRequest">
+                    <label>Signature</label>
+                    <canvas #signaturePad class="signature-pad" (pointerdown)="startSignature($event)"
+                        (pointermove)="drawSignature($event)" (pointerup)="endSignature()"
+                        (pointerleave)="endSignature()" (pointercancel)="endSignature()"></canvas>
+                    <button type="button" class="btn-clear-signature" (click)="clearSignature()">
+                        Effacer la signature
+                    </button>
+                    <div class="signature-error"
+                        *ngIf="leaveForm.get('signature')?.invalid && leaveForm.get('signature')?.touched">
+                        La signature est obligatoire.
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="isLeaveRequest && invalidRange" class="error-msg">
+                La date de fin doit etre egale ou posterieure a la date de debut.
+            </div>
+
+            <div *ngIf="isAbsenceRequest && invalidAbsenceTimeRange" class="error-msg">
+                L'heure A doit etre posterieure a l'heure De.
+            </div>
+
+            <div class="action-row">
+                <button type="button" class="custom-btn btn-login" (click)="onContinue()">
+                    <span>Continuer</span>
+                </button>
+
+                <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
+                    <span>Annuler</span>
+                </button>
+            </div>
+        </form>
+    </ng-container>
+
+    <ng-template #summaryView>
+        <app-request-summary [title]="requestTitleKey | translate" [rows]="summaryRows" [confirmLabel]="'Confirmer'"
+            [cancelLabel]="'Annuler'" (confirm)="onConfirmSummary()" (cancel)="onEditSummary()">
+        </app-request-summary>
+    </ng-template>
+
+    <app-action-popup [visible]="showPopup" [message]="'Voulez vous soumettre une nouvelle demande'"
+        [primaryLabel]="'Oui'" [secondaryLabel]="'Deconnecter'" [countdownStart]="30" (primary)="onPopupYes()"
+        (secondary)="onPopupDisconnect()">
+    </app-action-popup>
+</div>

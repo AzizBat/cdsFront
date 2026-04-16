@@ -1,0 +1,577 @@
+.leave-shell {
+    width: min(100%, 1320px);
+    margin: 0 auto;
+}
+
+app-request-summary {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.leave-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.leave-header h2 {
+    color: #b6171d;
+    font-size: 34px;
+    margin: 0;
+}
+
+.leave-header p {
+    margin: 8px 0 0;
+    color: #6d6d6d;
+    font-size: 18px;
+}
+
+.leave-form-card {
+    background: linear-gradient(180deg, #ffffff 0%, #fff8eb 100%);
+    border: 1px solid #f2e6ce;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    padding: 18px 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    gap: 12px 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+.field-span-2 {
+    grid-column: span 2;
+}
+
+.duration-date-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(210px, 1fr));
+    gap: 12px;
+    align-items: end;
+}
+
+.duration-date-row-absence {
+    grid-template-columns: minmax(520px, 920px);
+    justify-content: center;
+    align-items: stretch;
+}
+
+.duration-date-row-advance {
+    grid-template-columns: minmax(360px, 620px);
+    justify-content: center;
+    align-items: stretch;
+}
+
+.duration-date-row-attestation {
+    grid-template-columns: minmax(520px, 920px);
+    justify-content: center;
+    align-items: stretch;
+}
+
+.attestation-card {
+    background: #fffdf6;
+    border: 1px solid #f2e6ce;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.attestation-select {
+    min-height: 74px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    border-width: 2px;
+    border-radius: 12px;
+}
+
+.attestation-extra-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attestation-subtitle {
+    color: #4e4e4e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.attestation-choice-hint {
+    margin: 0;
+    color: #6d6d6d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.attestation-choice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.attestation-choice-btn {
+    min-height: 64px;
+    border: 2px solid #f0c46f;
+    border-radius: 12px;
+    background: #fff7e3;
+    color: #3f2f0b;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    text-align: left;
+}
+
+.attestation-choice-btn:hover {
+    border-color: #dca13f;
+    background: #fff3d4;
+}
+
+.attestation-choice-btn:focus-visible {
+    outline: 3px solid #9fc9ff;
+    outline-offset: 2px;
+}
+
+.attestation-choice-btn.active {
+    background: #f8a714;
+    border-color: #d88d08;
+    color: #ffffff;
+}
+
+.choice-radio {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid #9a7a34;
+    background: #ffffff;
+    flex: 0 0 auto;
+    box-shadow: inset 0 0 0 0 #f8a714;
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.choice-radio-active {
+    border-color: #ffffff;
+    box-shadow: inset 0 0 0 7px #ffffff;
+}
+
+.attestation-choice-btn:active {
+    transform: scale(0.98);
+}
+
+.attestation-month-year-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.advance-salary-card {
+    background: #fffdf6;
+    border: 1px solid #f2e6ce;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.advance-amount-input {
+    min-height: 82px;
+    font-size: 35px !important;
+    font-weight: 700;
+    text-align: center;
+    width: min(100%, 300px);
+}
+
+.advance-amount-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.amount-keypad {
+    width: min(100%, 330px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(82px, 1fr));
+    gap: 8px;
+}
+
+.amount-key {
+    min-height: 66px;
+    border: 2px solid #f0c46f;
+    border-radius: 12px;
+    background: #fff7e3;
+    color: #3f2f0b;
+    font-size: 28px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.amount-key:active {
+    transform: scale(0.98);
+}
+
+.amount-key-zero {
+    grid-column: 2 / 3;
+}
+
+.amount-key-delete-inline {
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    border: 2px solid #e0b4b4;
+    border-radius: 12px;
+    background: #f8e6e6;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.amount-key-delete-inline svg {
+    width: 28px;
+    height: 28px;
+    fill: #9f2d2d;
+}
+
+.amount-key:disabled {
+    background: #ededed;
+    border-color: #d4d4d4;
+    cursor: not-allowed;
+}
+
+.amount-key-delete-inline:disabled {
+    background: #ededed;
+    border-color: #d4d4d4;
+    cursor: not-allowed;
+}
+
+.amount-key-delete-inline:disabled svg {
+    fill: #b4b4b4;
+}
+
+.absence-time-card {
+    background: #fffdf6;
+    border: 1px solid #f2e6ce;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.absence-date-time-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 14px;
+    align-items: end;
+}
+
+.absence-helper {
+    margin: 0;
+    color: #6d6d6d;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.absence-time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.touch-input {
+    min-height: 54px;
+    font-size: 20px;
+    font-weight: 600;
+    border-width: 2px;
+}
+
+.absence-touch-input {
+    min-height: 74px;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    border-width: 2px;
+}
+
+.absence-time-input {
+    min-height: 74px;
+    border: 2px solid #c9d7e1;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #1b2a35;
+    font-size: 30px;
+    font-weight: 700;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.absence-time-input:disabled {
+    background: #ececec;
+    color: #9b9b9b;
+    border-color: #d6d6d6;
+    cursor: not-allowed;
+}
+
+.absence-motif-field textarea {
+    min-height: 170px;
+}
+
+.absence-signature-center {
+    grid-column: 2 / 3;
+}
+
+.date-range-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.compact-field {
+    gap: 6px;
+}
+
+.field label {
+    color: #4e4e4e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.field input,
+.field textarea {
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    font-size: 18px;
+    padding: 10px 12px;
+    background: #fff;
+    color: #222;
+}
+
+.field input[readonly] {
+    background: #f8f8f8;
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 94px;
+}
+
+.signature-pad {
+    width: 100%;
+    height: 124px;
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    background: #fff;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.btn-clear-signature {
+    align-self: flex-start;
+    border: none;
+    background: transparent;
+    color: #b6171d;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 4px;
+}
+
+.signature-error {
+    color: #b6171d;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.error-msg {
+    margin-top: 12px;
+    color: #b6171d;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.custom-btn {
+    width: 190px;
+    height: 50px;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.custom-btn:hover {
+    filter: brightness(1.04);
+}
+
+.custom-btn:active {
+    transform: scale(0.97);
+}
+
+.btn-login {
+    background-image: linear-gradient(315deg, #f8a714 0%, #ed1c24 74%);
+}
+
+.btn-cancel {
+    background-image: linear-gradient(315deg, #9e9e9e 0%, #5f5f5f 74%);
+}
+
+.signature-preview-card {
+    width: min(100%, 920px);
+    margin: 16px auto 0;
+    padding: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8eb 100%);
+    border: 1px solid #f2e6ce;
+    border-radius: 12px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+.signature-preview-card h3 {
+    margin: 0 0 10px;
+    color: #b6171d;
+}
+
+.signature-preview-card img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #dfdfdf;
+    border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field-span-2 {
+        grid-column: auto;
+    }
+
+    .date-range-row {
+        grid-template-columns: 1fr;
+    }
+
+    .duration-date-row {
+        grid-template-columns: 1fr;
+    }
+
+    .duration-date-row-attestation,
+    .duration-date-row-advance,
+    .duration-date-row-absence {
+        grid-template-columns: 1fr;
+    }
+
+    .attestation-select {
+        min-height: 64px;
+        font-size: 20px;
+    }
+
+    .attestation-choice-row,
+    .attestation-month-year-row {
+        grid-template-columns: 1fr;
+    }
+
+    .attestation-choice-btn {
+        min-height: 58px;
+        font-size: 20px;
+    }
+
+    .absence-signature-center {
+        grid-column: auto;
+    }
+
+    .absence-time-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .absence-date-time-row {
+        grid-template-columns: 1fr;
+    }
+
+    .absence-touch-input {
+        min-height: 64px;
+        font-size: 24px;
+    }
+
+    .advance-amount-input {
+        min-height: 70px;
+        font-size: 28px;
+        width: min(100%, 250px);
+    }
+
+    .amount-key-delete-inline {
+        width: 50px;
+        min-width: 50px;
+        height: 50px;
+    }
+
+    .amount-key-delete-inline svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .amount-keypad {
+        width: min(100%, 280px);
+        grid-template-columns: repeat(3, minmax(74px, 1fr));
+    }
+
+    .amount-key {
+        min-height: 58px;
+        font-size: 24px;
+    }
+
+    .absence-time-input {
+        min-height: 64px;
+        font-size: 24px;
+    }
+
+    .leave-header h2 {
+        font-size: 28px;
+    }
+
+    .field label,
+    .field input,
+    .field textarea {
+        font-size: 18px;
+    }
+
+    .action-row {
+        flex-direction: column;
+        align-items: center;
+    }
+}

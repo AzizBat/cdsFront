@@ -1,0 +1,18 @@
+<div class="popup-overlay" *ngIf="visible">
+    <div class="popup-card" role="dialog" aria-modal="true" aria-label="confirmation-popup">
+        <h3>{{ message }}</h3>
+
+        <div class="timer-chip">
+            Deconnexion automatique dans {{ countdown }}s
+        </div>
+
+        <div class="popup-actions">
+            <button type="button" class="custom-btn btn-yes" (click)="onPrimary()">
+                <span>{{ primaryLabel }}</span>
+            </button>
+            <button type="button" class="custom-btn btn-logout" (click)="onSecondary()">
+                <span>{{ secondaryLabel }}</span>
+            </button>
+        </div>
+    </div>
+</div>

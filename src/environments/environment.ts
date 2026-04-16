@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:5000'
-  apiUrl: 'https://cds-server.azurewebsites.net'
+   apiUrl: 'http://localhost:5000'
+  // apiUrl: 'https://cds-server.azurewebsites.net'
 
 };
 
