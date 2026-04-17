@@ -2,10 +2,35 @@
     <ng-container *ngIf="!showSummary; else summaryView">
         <div class="leave-header">
             <h2>{{requestTitleKey | translate}}</h2>
-            <p>Renseignez votre demande puis cliquez sur Continuer.</p>
+            <p *ngIf="!isAttestationRequest">Renseignez votre demande puis cliquez sur Continuer.</p>
+            <p *ngIf="isAttestationSelectionStep && hasAttestationInfoStep">Etape 1 sur 2 : selectionnez les documents a
+                demander puis cliquez sur
+                Suivant.</p>
+            <p *ngIf="isAttestationSelectionStep && !hasAttestationInfoStep">Selectionnez les documents a demander puis
+                cliquez sur Continuer pour afficher le resume.</p>
+            <p *ngIf="isAttestationDetailsStep">Etape 2 sur 2 : renseignez les informations requises puis cliquez sur
+                Continuer.</p>
         </div>
 
         <form [formGroup]="leaveForm" class="leave-form-card" novalidate>
+            <div class="attestation-stepper" *ngIf="isAttestationRequest">
+                <div class="step-item" [class.step-item-active]="isAttestationSelectionStep">
+                    <span class="step-index">1</span>
+                    <span class="step-text">Documents</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item" *ngIf="hasAttestationInfoStep"
+                    [class.step-item-active]="isAttestationDetailsStep">
+                    <span class="step-index">2</span>
+                    <span class="step-text">Informations</span>
+                </div>
+                <div class="step-divider" *ngIf="hasAttestationInfoStep"></div>
+                <div class="step-item">
+                    <span class="step-index">{{hasAttestationInfoStep ? '3' : '2'}}</span>
+                    <span class="step-text">Resume</span>
+                </div>
+            </div>
+
             <div class="form-grid">
                 <div class="field">
                     <label>Matricule</label>
@@ -23,83 +48,124 @@
                         [class.duration-date-row-attestation]="isAttestationRequest">
                         <ng-container *ngIf="isAttestationRequest; else nonAttestationFields">
                             <div class="attestation-card">
-                                <div class="field compact-field">
-                                    <label>Type de document</label>
-                                    <select class="touch-input attestation-select"
-                                        formControlName="attestationDocumentType"
-                                        (change)="onAttestationDocumentTypeChange()">
-                                        <option value="" disabled>Choisir un type de document</option>
-                                        <option *ngFor="let option of attestationDocumentTypeOptions"
-                                            [value]="option.value">
-                                            {{option.label}}
-                                        </option>
-                                    </select>
+                                <div class="attestation-extra-block" *ngIf="isAttestationSelectionStep">
+                                    <label class="attestation-subtitle">Selection des documents</label>
+                                    <p class="attestation-choice-hint">Touchez un ou plusieurs documents.</p>
+
+                                    <div class="attestation-doc-grid">
+                                        <button type="button" class="attestation-doc-btn"
+                                            *ngFor="let option of attestationDocumentTypeOptions"
+                                            [class.active]="isDocumentSelected(option.value)"
+                                            [attr.aria-pressed]="isDocumentSelected(option.value)"
+                                            (click)="toggleAttestationDocumentType(option.value)">
+                                            <span class="choice-radio"
+                                                [class.choice-radio-active]="isDocumentSelected(option.value)"
+                                                aria-hidden="true"></span>
+                                            <span class="doc-label-wrap">
+                                                <span class="doc-label">{{option.label}}</span>
+                                                <span class="doc-subtitle">{{option.subtitle}}</span>
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div class="attestation-extra-block" *ngIf="isWorkAttestationSelected">
-                                    <label class="attestation-subtitle">Motif de l'attestation de travail</label>
-                                    <p class="attestation-choice-hint">Selectionnez une option ci-dessous :</p>
+                                <div class="attestation-extra-block"
+                                    *ngIf="isAttestationDetailsStep && hasSelectedAttestationDocuments">
+                                    <label class="attestation-subtitle">Documents selectionnes</label>
+
+                                    <div class="attestation-selected-list">
+                                        <span class="selected-doc-chip"
+                                            *ngFor="let selectedDoc of selectedAttestationDocumentTypes">
+                                            {{getDocumentLabel(selectedDoc)}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="attestation-extra-block" *ngIf="isAttestationDetailsStep">
+                                    <label class="attestation-subtitle">Informations document
+                                        {{attestationInfoDocumentStepIndex + 1}} /
+                                        {{requiredInfoDocumentTypes.length}}</label>
+                                    <div class="attestation-doc-stepper">
+                                        <div class="doc-step-chip"
+                                            *ngFor="let docType of requiredInfoDocumentTypes; let stepIdx = index"
+                                            [class.doc-step-chip-active]="stepIdx === attestationInfoDocumentStepIndex">
+                                            <span class="doc-step-index">{{stepIdx + 1}}</span>
+                                            <span>{{getDocumentLabel(docType)}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="attestation-extra-block"
+                                    *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.ATTESTATION_TRAVAIL">
+                                    <label class="attestation-subtitle">Motif de l attestation de travail</label>
+                                    <p class="attestation-choice-hint">Vous pouvez choisir un ou deux motifs.</p>
+
                                     <div class="attestation-choice-row">
                                         <button type="button" class="attestation-choice-btn"
-                                            [class.active]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
-                                            [attr.aria-pressed]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
-                                            (click)="onWorkAttestationReasonSelect('cin')">
+                                            *ngFor="let reasonOption of workReasonOptions"
+                                            [class.active]="isWorkReasonSelected(reasonOption.value)"
+                                            [attr.aria-pressed]="isWorkReasonSelected(reasonOption.value)"
+                                            (click)="toggleWorkAttestationReason(reasonOption.value)">
                                             <span class="choice-radio"
-                                                [class.choice-radio-active]="leaveForm.get('attestationWorkReason')?.value === 'cin'"
+                                                [class.choice-radio-active]="isWorkReasonSelected(reasonOption.value)"
                                                 aria-hidden="true"></span>
-                                            <span>Pour renouvellement de CIN</span>
-                                        </button>
-                                        <button type="button" class="attestation-choice-btn"
-                                            [class.active]="leaveForm.get('attestationWorkReason')?.value === 'other'"
-                                            [attr.aria-pressed]="leaveForm.get('attestationWorkReason')?.value === 'other'"
-                                            (click)="onWorkAttestationReasonSelect('other')">
-                                            <span class="choice-radio"
-                                                [class.choice-radio-active]="leaveForm.get('attestationWorkReason')?.value === 'other'"
-                                                aria-hidden="true"></span>
-                                            <span>Autre</span>
+                                            <span>{{reasonOption.label}}</span>
                                         </button>
                                     </div>
 
                                     <div class="field compact-field" *ngIf="isWorkAttestationOtherSelected">
                                         <label>Preciser</label>
-                                        <textarea rows="3" formControlName="attestationWorkOtherText"
+                                        <textarea rows="3" [value]="workOtherReasonText"
+                                            (input)="workOtherReasonText = $any($event.target).value"
                                             placeholder="Saisir votre motif"></textarea>
                                     </div>
                                 </div>
 
-                                <div class="attestation-extra-block" *ngIf="isRetenueSelected">
-                                    <div class="field compact-field">
-                                        <label>Annee</label>
-                                        <select class="touch-input attestation-select"
-                                            formControlName="attestationYear">
-                                            <option value="" disabled>Choisir une annee</option>
-                                            <option *ngFor="let year of yearOptions" [value]="year">{{year}}</option>
-                                        </select>
+                                <div class="attestation-extra-block"
+                                    *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.CERTIFICAT_RETENUE">
+                                    <label class="attestation-subtitle">Annees du certificat de retenue</label>
+                                    <p class="attestation-choice-hint">Touchez toutes les annees souhaitees.</p>
+
+                                    <div class="attestation-year-grid">
+                                        <button type="button" class="attestation-choice-btn attestation-chip-btn"
+                                            *ngFor="let year of yearOptions"
+                                            [class.active]="isRetenueYearSelected(year)"
+                                            [attr.aria-pressed]="isRetenueYearSelected(year)"
+                                            (click)="toggleRetenueYear(year)">
+                                            <span>{{year}}</span>
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div class="attestation-extra-block" *ngIf="isPayslipCopySelected">
-                                    <div class="attestation-month-year-row">
-                                        <div class="field compact-field">
-                                            <label>Mois</label>
-                                            <select class="touch-input attestation-select"
-                                                formControlName="attestationMonth">
-                                                <option value="" disabled>Choisir un mois</option>
-                                                <option *ngFor="let month of monthOptions" [value]="month.value">
-                                                    {{month.label}}
-                                                </option>
-                                            </select>
-                                        </div>
+                                <div class="attestation-extra-block"
+                                    *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.COPIE_FICHE_PAIE">
+                                    <label class="attestation-subtitle">Mois et annee de la fiche de paie</label>
+                                    <p class="attestation-choice-hint">1) Touchez une annee. 2) Touchez les mois.</p>
 
-                                        <div class="field compact-field">
-                                            <label>Annee</label>
-                                            <select class="touch-input attestation-select"
-                                                formControlName="attestationYear">
-                                                <option value="" disabled>Choisir une annee</option>
-                                                <option *ngFor="let year of yearOptions" [value]="year">{{year}}
-                                                </option>
-                                            </select>
-                                        </div>
+                                    <div class="attestation-year-tabs">
+                                        <button type="button" class="attestation-year-tab"
+                                            *ngFor="let year of yearOptions" [class.active]="activePayslipYear === year"
+                                            (click)="setActivePayslipYear(year)">
+                                            {{year}}
+                                        </button>
+                                    </div>
+
+                                    <div class="attestation-month-grid">
+                                        <button type="button" class="attestation-month-btn"
+                                            *ngFor="let month of monthOptions"
+                                            [class.active]="isPayslipMonthSelected(activePayslipYear, month.value)"
+                                            [attr.aria-pressed]="isPayslipMonthSelected(activePayslipYear, month.value)"
+                                            (click)="togglePayslipMonth(month.value)">
+                                            {{month.label}}
+                                        </button>
+                                    </div>
+
+                                    <div class="attestation-selected-months" *ngIf="selectedPayslipMonths.length">
+                                        <button type="button" class="selected-month-chip"
+                                            *ngFor="let monthSelection of selectedPayslipMonths"
+                                            (click)="removePayslipMonth(monthSelection)">
+                                            {{getMonthLabel(monthSelection.month)}} {{monthSelection.year}} x
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -208,20 +274,6 @@
                     <textarea rows="4" formControlName="motif"></textarea>
                 </div>
 
-                <div class="field" *ngIf="isLeaveRequest || isAbsenceRequest"
-                    [class.absence-signature-center]="isAbsenceRequest">
-                    <label>Signature</label>
-                    <canvas #signaturePad class="signature-pad" (pointerdown)="startSignature($event)"
-                        (pointermove)="drawSignature($event)" (pointerup)="endSignature()"
-                        (pointerleave)="endSignature()" (pointercancel)="endSignature()"></canvas>
-                    <button type="button" class="btn-clear-signature" (click)="clearSignature()">
-                        Effacer la signature
-                    </button>
-                    <div class="signature-error"
-                        *ngIf="leaveForm.get('signature')?.invalid && leaveForm.get('signature')?.touched">
-                        La signature est obligatoire.
-                    </div>
-                </div>
             </div>
 
             <div *ngIf="isLeaveRequest && invalidRange" class="error-msg">
@@ -232,14 +284,30 @@
                 L'heure A doit etre posterieure a l'heure De.
             </div>
 
-            <div class="action-row">
-                <button type="button" class="custom-btn btn-login" (click)="onContinue()">
-                    <span>Continuer</span>
-                </button>
+            <div *ngIf="isAttestationRequest && submissionErrorMessage" class="error-msg">
+                {{ submissionErrorMessage }}
+            </div>
 
-                <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
-                    <span>Annuler</span>
-                </button>
+            <div class="action-row">
+                <ng-container *ngIf="isAttestationRequest; else defaultActionRow">
+                    <button type="button" class="custom-btn btn-login" (click)="onAttestationNextStep()">
+                        <span>{{attestationPrimaryLabel}}</span>
+                    </button>
+
+                    <button type="button" class="custom-btn btn-cancel" (click)="onAttestationBackToSelection()">
+                        <span>{{attestationSecondaryLabel}}</span>
+                    </button>
+                </ng-container>
+
+                <ng-template #defaultActionRow>
+                    <button type="button" class="custom-btn btn-login" (click)="onContinue()">
+                        <span>Continuer</span>
+                    </button>
+
+                    <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
+                        <span>Annuler</span>
+                    </button>
+                </ng-template>
             </div>
         </form>
     </ng-container>
@@ -248,6 +316,10 @@
         <app-request-summary [title]="requestTitleKey | translate" [rows]="summaryRows" [confirmLabel]="'Confirmer'"
             [cancelLabel]="'Annuler'" (confirm)="onConfirmSummary()" (cancel)="onEditSummary()">
         </app-request-summary>
+
+        <div *ngIf="submissionErrorMessage" class="error-msg">
+            {{ submissionErrorMessage }}
+        </div>
     </ng-template>
 
     <app-action-popup [visible]="showPopup" [message]="'Voulez vous soumettre une nouvelle demande'"

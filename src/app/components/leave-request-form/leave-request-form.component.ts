@@ -1,5 +1,17 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+
+import {
+  AbsenceRequestCreateDto,
+  DocumentRequestCreateDto,
+  DocumentType,
+  LeaveRequestCreateDto,
+  PayslipMonthYearSelectionDto,
+  SalaryAdvanceCreateDto,
+  WorkCertificateReason
+} from '../../models/personal-request.dto';
+import { PersonalRequestService } from '../../services/personal-request.service';
 import { SummaryRow } from '../request-summary/request-summary.component';
 
 @Component({
@@ -7,44 +19,79 @@ import { SummaryRow } from '../request-summary/request-summary.component';
   templateUrl: './leave-request-form.component.html',
   styleUrls: ['./leave-request-form.component.css']
 })
-export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
+  readonly documentTypeEnum = DocumentType;
   @Input() user: any;
   @Input() requestTitleKey = 'home.leaveRequest';
   @Output() backToPersonalCards = new EventEmitter<void>();
-  @ViewChild('signaturePad') signaturePad?: ElementRef<HTMLCanvasElement>;
 
   leaveForm!: FormGroup;
   showSummary = false;
   showPopup = false;
+  isSubmitting = false;
+  submissionErrorMessage = '';
   invalidRange = false;
   invalidAbsenceTimeRange = false;
   readonly amountKeypadDigits: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
   readonly attestationDocumentTypeOptions = [
-    { value: 'salary', label: 'Attestation de salaire' },
-    { value: 'work', label: 'Attestation de travail' },
-    { value: 'loan-benefit', label: 'Attestation de benefice de pret' },
-    { value: 'loan-non-benefit', label: 'Attestation de non benefice de pret' },
-    { value: 'retenue', label: 'Certificat Retenu' },
-    { value: 'payslip-copy', label: 'Copie Fiche de paie' }
+    {
+      value: DocumentType.ATTESTATION_SALAIRE,
+      label: 'Attestation de salaire',
+      subtitle: 'Document standard'
+    },
+    {
+      value: DocumentType.ATTESTATION_TRAVAIL,
+      label: 'Attestation de travail',
+      subtitle: 'Motif obligatoire'
+    },
+    {
+      value: DocumentType.ATTESTATION_BENEFICE_PRET,
+      label: 'Attestation de benefice de pret',
+      subtitle: 'Document standard'
+    },
+    {
+      value: DocumentType.ATTESTATION_NON_BENEFICE_PRET,
+      label: 'Attestation de non benefice de pret',
+      subtitle: 'Document standard'
+    },
+    {
+      value: DocumentType.CERTIFICAT_RETENUE,
+      label: 'Certificat de retenue',
+      subtitle: 'Selection multiple d annees'
+    },
+    {
+      value: DocumentType.COPIE_FICHE_PAIE,
+      label: 'Copie fiche de paie',
+      subtitle: 'Selection multiple mois/annee'
+    }
   ];
   readonly monthOptions = [
-    { value: '01', label: 'Janvier' },
-    { value: '02', label: 'Fevrier' },
-    { value: '03', label: 'Mars' },
-    { value: '04', label: 'Avril' },
-    { value: '05', label: 'Mai' },
-    { value: '06', label: 'Juin' },
-    { value: '07', label: 'Juillet' },
-    { value: '08', label: 'Aout' },
-    { value: '09', label: 'Septembre' },
-    { value: '10', label: 'Octobre' },
-    { value: '11', label: 'Novembre' },
-    { value: '12', label: 'Decembre' }
+    { value: 1, label: 'Janvier' },
+    { value: 2, label: 'Fevrier' },
+    { value: 3, label: 'Mars' },
+    { value: 4, label: 'Avril' },
+    { value: 5, label: 'Mai' },
+    { value: 6, label: 'Juin' },
+    { value: 7, label: 'Juillet' },
+    { value: 8, label: 'Aout' },
+    { value: 9, label: 'Septembre' },
+    { value: 10, label: 'Octobre' },
+    { value: 11, label: 'Novembre' },
+    { value: 12, label: 'Decembre' }
+  ];
+  readonly workReasonOptions = [
+    { value: WorkCertificateReason.CIN_RENEWAL, label: 'Pour renouvellement de CIN' },
+    { value: WorkCertificateReason.OTHER, label: 'Autre motif' }
   ];
   readonly yearOptions = this.buildYearOptions();
-  private signatureCtx?: CanvasRenderingContext2D;
-  private isDrawing = false;
-  private hasSignatureStroke = false;
+  selectedAttestationDocumentTypes: DocumentType[] = [];
+  selectedWorkReasons: WorkCertificateReason[] = [];
+  selectedRetenueYears: number[] = [];
+  selectedPayslipMonths: PayslipMonthYearSelectionDto[] = [];
+  activePayslipYear: number = this.yearOptions[0];
+  workOtherReasonText = '';
+  attestationStep: 'selection' | 'details' = 'selection';
+  attestationInfoDocumentStepIndex = 0;
   private pageScrollLocked = false;
 
   get absenceStartMinTime(): string {
@@ -131,24 +178,84 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     return this.requestTitleKey === 'home.leaveRequest';
   }
 
-  get selectedAttestationDocumentType(): string {
-    return String(this.leaveForm?.get('attestationDocumentType')?.value || '');
+  get isAttestationSelectionStep(): boolean {
+    return this.isAttestationRequest && this.attestationStep === 'selection';
+  }
+
+  get isAttestationDetailsStep(): boolean {
+    return this.isAttestationRequest && this.attestationStep === 'details';
+  }
+
+  get requiredInfoDocumentTypes(): DocumentType[] {
+    return this.selectedAttestationDocumentTypes.filter((documentType) => (
+      documentType === DocumentType.ATTESTATION_TRAVAIL
+      || documentType === DocumentType.CERTIFICAT_RETENUE
+      || documentType === DocumentType.COPIE_FICHE_PAIE
+    ));
+  }
+
+  get hasAttestationInfoStep(): boolean {
+    return this.requiredInfoDocumentTypes.length > 0;
+  }
+
+  get currentInfoDocumentType(): DocumentType | null {
+    if (!this.requiredInfoDocumentTypes.length) {
+      return null;
+    }
+
+    const maxIndex = this.requiredInfoDocumentTypes.length - 1;
+    const safeIndex = Math.min(this.attestationInfoDocumentStepIndex, maxIndex);
+    return this.requiredInfoDocumentTypes[safeIndex] || null;
+  }
+
+  get hasNextInfoDocumentStep(): boolean {
+    return this.attestationInfoDocumentStepIndex < (this.requiredInfoDocumentTypes.length - 1);
+  }
+
+  get attestationPrimaryLabel(): string {
+    if (this.isAttestationSelectionStep) {
+      return this.hasAttestationInfoStep ? 'Suivant' : 'Continuer';
+    }
+
+    return this.hasNextInfoDocumentStep ? 'Suivant' : 'Continuer';
+  }
+
+  get attestationSecondaryLabel(): string {
+    if (!this.isAttestationDetailsStep) {
+      return 'Annuler';
+    }
+
+    return this.attestationInfoDocumentStepIndex > 0 ? 'Precedent' : 'Retour';
+  }
+
+  get hasSelectedAttestationDocuments(): boolean {
+    return this.selectedAttestationDocumentTypes.length > 0;
   }
 
   get isWorkAttestationSelected(): boolean {
-    return this.selectedAttestationDocumentType === 'work';
+    return this.isDocumentSelected(DocumentType.ATTESTATION_TRAVAIL);
   }
 
   get isRetenueSelected(): boolean {
-    return this.selectedAttestationDocumentType === 'retenue';
+    return this.isDocumentSelected(DocumentType.CERTIFICAT_RETENUE);
   }
 
   get isPayslipCopySelected(): boolean {
-    return this.selectedAttestationDocumentType === 'payslip-copy';
+    return this.isDocumentSelected(DocumentType.COPIE_FICHE_PAIE);
   }
 
   get isWorkAttestationOtherSelected(): boolean {
-    return this.leaveForm?.get('attestationWorkReason')?.value === 'other';
+    return this.isWorkReasonSelected(WorkCertificateReason.OTHER);
+  }
+
+  get selectedAttestationDocumentsSummary(): string {
+    if (!this.selectedAttestationDocumentTypes.length) {
+      return '-';
+    }
+
+    return this.selectedAttestationDocumentTypes
+      .map((docType) => this.getDocumentLabel(docType))
+      .join(', ');
   }
 
   get advanceAmountDisplay(): string {
@@ -164,34 +271,25 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     return this.advanceAmountDisplay.length > 0;
   }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private personalRequestService: PersonalRequestService) {}
 
   ngOnInit(): void {
     this.leaveForm = this.fb.group({
       matricule: [{ value: '', disabled: true }, Validators.required],
       fullName: [{ value: '', disabled: true }, Validators.required],
       amount: [null],
-      attestationDocumentType: [''],
-      attestationWorkReason: [''],
-      attestationWorkOtherText: [''],
-      attestationYear: [''],
-      attestationMonth: [''],
       duration: [1, [Validators.required, Validators.min(1)]],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       absenceDate: [''],
       absenceStartTime: [''],
       absenceEndTime: [''],
-      motif: ['', [Validators.required]],
-      signature: ['', [Validators.required]]
+      motif: ['', [Validators.required]]
     });
 
+    this.resetAttestationSelections();
     this.patchUserDefaults();
     this.configureFormByRequestType();
-  }
-
-  ngAfterViewInit(): void {
-    this.initializeSignaturePad();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -212,27 +310,20 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     const raw = this.leaveForm.getRawValue();
 
     if (this.isAttestationRequest) {
+      const payload = this.buildDocumentRequestsPayload(this.normalizeOptionalText(raw.motif));
       const rows: SummaryRow[] = [
         { label: 'Matricule', value: raw.matricule || '-' },
         { label: 'Nom et prenom', value: raw.fullName || '-' },
-        { label: 'Type de document', value: this.getAttestationDocumentLabel(raw.attestationDocumentType) }
+        { label: 'Documents selectionnes', value: this.selectedAttestationDocumentsSummary },
+        { label: 'Nombre de demandes', value: String(payload.length) }
       ];
 
-      if (raw.attestationDocumentType === 'work') {
-        const reason = raw.attestationWorkReason === 'other'
-          ? `Autre: ${raw.attestationWorkOtherText || '-'}`
-          : 'Pour renouvellement CIN';
-        rows.push({ label: 'Motif du document', value: reason });
-      }
-
-      if (raw.attestationDocumentType === 'retenue') {
-        rows.push({ label: 'Annee', value: raw.attestationYear || '-' });
-      }
-
-      if (raw.attestationDocumentType === 'payslip-copy') {
-        rows.push({ label: 'Mois', value: this.getMonthLabel(raw.attestationMonth) });
-        rows.push({ label: 'Annee', value: raw.attestationYear || '-' });
-      }
+      payload.forEach((documentRequest, index) => {
+        rows.push({
+          label: `Document ${index + 1}`,
+          value: this.formatDocumentRequestSummary(documentRequest)
+        });
+      });
 
       return rows;
     }
@@ -253,8 +344,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
         { label: 'Date', value: this.formatDisplayDate(raw.absenceDate) },
         { label: 'De', value: this.formatDisplayTime(raw.absenceStartTime) },
         { label: 'A', value: this.formatDisplayTime(raw.absenceEndTime) },
-        { label: 'Motif', value: raw.motif || '-' },
-        { label: 'Signature', value: raw.signature || '', type: 'image', alt: 'Signature' }
+        { label: 'Motif', value: raw.motif || '-' }
       ];
     }
 
@@ -264,8 +354,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       { label: 'Duree', value: `${raw.duration || 0} jour(s)` },
       { label: 'De', value: this.formatDisplayDate(raw.startDate) },
       { label: 'A', value: this.formatDisplayDate(raw.endDate) },
-      { label: 'Motif', value: raw.motif || '-' },
-      { label: 'Signature', value: raw.signature || '', type: 'image', alt: 'Signature' }
+      { label: 'Motif', value: raw.motif || '-' }
     ];
   }
 
@@ -317,17 +406,162 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     this.onAbsenceEndTimeChange();
   }
 
-  onAttestationDocumentTypeChange(): void {
-    this.configureAttestationFieldsByDocumentType();
-  }
+  toggleAttestationDocumentType(documentType: DocumentType): void {
+    const isSelected = this.selectedAttestationDocumentTypes.includes(documentType);
 
-  onWorkAttestationReasonSelect(reason: 'cin' | 'other'): void {
-    this.leaveForm.patchValue({ attestationWorkReason: reason }, { emitEvent: false });
-    if (reason !== 'other') {
-      this.leaveForm.patchValue({ attestationWorkOtherText: '' }, { emitEvent: false });
+    if (isSelected) {
+      this.selectedAttestationDocumentTypes = this.selectedAttestationDocumentTypes
+        .filter((current) => current !== documentType);
+    } else {
+      this.selectedAttestationDocumentTypes = [...this.selectedAttestationDocumentTypes, documentType];
     }
 
-    this.configureAttestationFieldsByDocumentType();
+    this.submissionErrorMessage = '';
+
+    if (!this.isDocumentSelected(DocumentType.ATTESTATION_TRAVAIL)) {
+      this.selectedWorkReasons = [];
+      this.workOtherReasonText = '';
+    }
+
+    if (!this.isDocumentSelected(DocumentType.CERTIFICAT_RETENUE)) {
+      this.selectedRetenueYears = [];
+    }
+
+    if (!this.isDocumentSelected(DocumentType.COPIE_FICHE_PAIE)) {
+      this.selectedPayslipMonths = [];
+    }
+
+    const maxIndex = Math.max(this.requiredInfoDocumentTypes.length - 1, 0);
+    this.attestationInfoDocumentStepIndex = Math.min(this.attestationInfoDocumentStepIndex, maxIndex);
+  }
+
+  onAttestationNextStep(): void {
+    this.submissionErrorMessage = '';
+
+    if (!this.selectedAttestationDocumentTypes.length) {
+      this.submissionErrorMessage = 'Veuillez selectionner au moins un document.';
+      return;
+    }
+
+    if (this.isAttestationSelectionStep) {
+      if (!this.hasAttestationInfoStep) {
+        this.showSummary = true;
+        this.togglePageScroll(true);
+        return;
+      }
+
+      this.attestationStep = 'details';
+      this.attestationInfoDocumentStepIndex = 0;
+      return;
+    }
+
+    if (!this.isAttestationDetailsStep) {
+      return;
+    }
+
+    const currentStepValidationMessage = this.getCurrentInfoStepValidationMessage();
+    if (currentStepValidationMessage) {
+      this.submissionErrorMessage = currentStepValidationMessage;
+      return;
+    }
+
+    if (this.hasNextInfoDocumentStep) {
+      this.attestationInfoDocumentStepIndex += 1;
+      return;
+    }
+
+    const attestationValidationMessage = this.getAttestationValidationMessage();
+    if (attestationValidationMessage) {
+      this.submissionErrorMessage = attestationValidationMessage;
+      return;
+    }
+
+    this.showSummary = true;
+    this.togglePageScroll(true);
+  }
+
+  onAttestationBackToSelection(): void {
+    this.submissionErrorMessage = '';
+
+    if (!this.isAttestationDetailsStep) {
+      this.onCancel();
+      return;
+    }
+
+    if (this.attestationInfoDocumentStepIndex > 0) {
+      this.attestationInfoDocumentStepIndex -= 1;
+      return;
+    }
+
+    this.attestationStep = 'selection';
+  }
+
+  toggleWorkAttestationReason(reason: WorkCertificateReason): void {
+    if (this.isWorkReasonSelected(reason)) {
+      this.selectedWorkReasons = this.selectedWorkReasons.filter((current) => current !== reason);
+    } else {
+      this.selectedWorkReasons = [...this.selectedWorkReasons, reason];
+    }
+
+    if (!this.isWorkReasonSelected(WorkCertificateReason.OTHER)) {
+      this.workOtherReasonText = '';
+    }
+
+    this.submissionErrorMessage = '';
+  }
+
+  toggleRetenueYear(year: number): void {
+    if (this.selectedRetenueYears.includes(year)) {
+      this.selectedRetenueYears = this.selectedRetenueYears.filter((current) => current !== year);
+    } else {
+      this.selectedRetenueYears = [...this.selectedRetenueYears, year].sort((a, b) => a - b);
+    }
+
+    this.submissionErrorMessage = '';
+  }
+
+  setActivePayslipYear(year: number): void {
+    this.activePayslipYear = year;
+  }
+
+  togglePayslipMonth(month: number): void {
+    const year = this.activePayslipYear;
+    const existingIndex = this.selectedPayslipMonths.findIndex(
+      (selection) => selection.year === year && selection.month === month
+    );
+
+    if (existingIndex >= 0) {
+      this.selectedPayslipMonths = this.selectedPayslipMonths.filter(
+        (selection) => !(selection.year === year && selection.month === month)
+      );
+    } else {
+      this.selectedPayslipMonths = [...this.selectedPayslipMonths, { year, month }];
+    }
+
+    this.selectedPayslipMonths = this.sortPayslipSelections(this.selectedPayslipMonths);
+    this.submissionErrorMessage = '';
+  }
+
+  removePayslipMonth(selection: PayslipMonthYearSelectionDto): void {
+    this.selectedPayslipMonths = this.selectedPayslipMonths.filter(
+      (current) => !(current.year === selection.year && current.month === selection.month)
+    );
+  }
+
+  isDocumentSelected(documentType: DocumentType): boolean {
+    return this.selectedAttestationDocumentTypes.includes(documentType);
+  }
+
+  isWorkReasonSelected(reason: WorkCertificateReason): boolean {
+    return this.selectedWorkReasons.includes(reason);
+  }
+
+  isRetenueYearSelected(year: number): boolean {
+    return this.selectedRetenueYears.includes(year);
+  }
+
+  isPayslipMonthSelected(year: number, month: number): boolean {
+    return this.selectedPayslipMonths.some((selection) => selection.year === year && selection.month === month);
   }
 
   onAdvanceAmountDigit(digit: number): void {
@@ -365,8 +599,11 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
   onContinue(): void {
     this.invalidRange = false;
     this.invalidAbsenceTimeRange = false;
-    if (!this.isAdvanceSalaryRequest) {
-      this.leaveForm.get('signature')?.markAsTouched();
+    this.submissionErrorMessage = '';
+
+    if (this.isAttestationSelectionStep) {
+      this.onAttestationNextStep();
+      return;
     }
 
     if (this.isAbsenceRequest) {
@@ -377,6 +614,14 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     if (this.leaveForm.invalid) {
       this.leaveForm.markAllAsTouched();
       return;
+    }
+
+    if (this.isAttestationRequest) {
+      const attestationValidationMessage = this.getAttestationValidationMessage();
+      if (attestationValidationMessage) {
+        this.submissionErrorMessage = attestationValidationMessage;
+        return;
+      }
     }
 
     if (this.isAbsenceRequest) {
@@ -398,56 +643,190 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
   onCancel(): void {
     this.showSummary = false;
     this.showPopup = false;
+    this.isSubmitting = false;
+    this.submissionErrorMessage = '';
     this.invalidRange = false;
     this.invalidAbsenceTimeRange = false;
     this.togglePageScroll(false);
 
     this.leaveForm.reset({
       amount: null,
-      attestationDocumentType: '',
-      attestationWorkReason: '',
-      attestationWorkOtherText: '',
-      attestationYear: '',
-      attestationMonth: '',
       duration: 1,
       startDate: '',
       endDate: '',
       absenceDate: this.isAbsenceRequest ? this.getTodayInputDate() : '',
       absenceStartTime: '',
       absenceEndTime: '',
-      motif: '',
-      signature: ''
+      motif: ''
     });
 
+    this.resetAttestationSelections();
     this.patchUserDefaults();
-    this.clearSignature();
   }
 
   onConfirmSummary(): void {
-    const payload = this.leaveForm.getRawValue();
-    console.log('Demande personnelle:', this.requestTitleKey, payload);
+    if (this.isSubmitting) {
+      return;
+    }
+
+    this.submissionErrorMessage = '';
+
+    if (this.isLeaveRequest) {
+      this.submitLeaveRequest();
+      return;
+    }
+
+    if (this.isAbsenceRequest) {
+      this.submitAbsenceRequest();
+      return;
+    }
+
+    if (this.isAdvanceSalaryRequest) {
+      this.submitSalaryAdvanceRequest();
+      return;
+    }
+
+    if (this.isAttestationRequest) {
+      this.submitAttestationOrCertificateRequest();
+      return;
+    }
+
     this.showPopup = true;
   }
 
   onEditSummary(): void {
     this.showSummary = false;
     this.showPopup = false;
+    this.submissionErrorMessage = '';
     this.togglePageScroll(false);
-
-    // The canvas is recreated when leaving summary view, so re-bind context on next tick.
-    setTimeout(() => this.initializeSignaturePad(), 0);
   }
 
   onPopupYes(): void {
     this.showPopup = false;
+    this.submissionErrorMessage = '';
     this.onCancel();
     this.backToPersonalCards.emit();
   }
 
   onPopupDisconnect(): void {
     this.showPopup = false;
+    this.submissionErrorMessage = '';
     this.togglePageScroll(false);
     location.reload();
+  }
+
+  private submitLeaveRequest(): void {
+    const raw = this.leaveForm.getRawValue();
+    const payload: LeaveRequestCreateDto = {
+      reason: String(raw.motif || '').trim(),
+      duration: Number(raw.duration),
+      startDate: String(raw.startDate || ''),
+      endDate: String(raw.endDate || '')
+    };
+
+    this.isSubmitting = true;
+    this.personalRequestService
+      .createLeaveRequest(payload)
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+      }))
+      .subscribe({
+        next: () => {
+          this.showPopup = true;
+        },
+        error: (error) => {
+          console.error('Leave request submit failed', error);
+          this.submissionErrorMessage = 'Echec de l envoi de la demande de conge. Veuillez reessayer.';
+        }
+      });
+  }
+
+  private submitAbsenceRequest(): void {
+    const raw = this.leaveForm.getRawValue();
+    const payload: AbsenceRequestCreateDto = {
+      reason: String(raw.motif || '').trim(),
+      date: String(raw.absenceDate || ''),
+      startTime: String(raw.absenceStartTime || ''),
+      endTime: String(raw.absenceEndTime || '')
+    };
+
+    this.isSubmitting = true;
+    this.personalRequestService
+      .createAbsenceRequest(payload)
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+      }))
+      .subscribe({
+        next: () => {
+          this.showPopup = true;
+        },
+        error: (error) => {
+          console.error('Absence request submit failed', error);
+          this.submissionErrorMessage = 'Echec de l envoi de la demande d absence. Veuillez reessayer.';
+        }
+      });
+  }
+
+  private submitSalaryAdvanceRequest(): void {
+    const raw = this.leaveForm.getRawValue();
+    const payload: SalaryAdvanceCreateDto = {
+      reason: String(raw.motif || '').trim(),
+      amount: Number(raw.amount || 0)
+    };
+
+    this.isSubmitting = true;
+    this.personalRequestService
+      .createSalaryAdvanceRequest(payload)
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+      }))
+      .subscribe({
+        next: () => {
+          this.showPopup = true;
+        },
+        error: (error) => {
+          console.error('Salary advance request submit failed', error);
+          this.submissionErrorMessage = 'Echec de l envoi de la demande d avance sur salaire. Veuillez reessayer.';
+        }
+      });
+  }
+
+  private submitAttestationOrCertificateRequest(): void {
+    const raw = this.leaveForm.getRawValue();
+    const optionalReason = this.normalizeOptionalText(raw.motif);
+
+    const validationMessage = this.getAttestationValidationMessage();
+    if (validationMessage) {
+      this.submissionErrorMessage = validationMessage;
+      return;
+    }
+
+    const payload = this.buildDocumentRequestsPayload(optionalReason);
+    if (!payload.length) {
+      this.submissionErrorMessage = 'Veuillez selectionner au moins un document.';
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.personalRequestService
+      .createMultipleDocumentRequests(payload)
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+      }))
+      .subscribe({
+        next: () => {
+          this.showPopup = true;
+        },
+        error: (error) => {
+          console.error('Document request submit failed', error);
+          this.submissionErrorMessage = 'Echec de l envoi de la demande de document. Veuillez reessayer.';
+        }
+      });
+  }
+
+  private normalizeOptionalText(value: unknown): string | null {
+    const normalized = String(value || '').trim();
+    return normalized ? normalized : null;
   }
 
   private togglePageScroll(lock: boolean): void {
@@ -459,63 +838,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     const overflow = lock ? 'hidden' : '';
     document.body.style.overflow = overflow;
     document.documentElement.style.overflow = overflow;
-  }
-
-  startSignature(event: PointerEvent): void {
-    if (!this.signaturePad || !this.signatureCtx) {
-      return;
-    }
-
-    event.preventDefault();
-    const canvas = this.signaturePad.nativeElement;
-    canvas.setPointerCapture(event.pointerId);
-
-    const position = this.getPointerPosition(event);
-    this.signatureCtx.beginPath();
-    this.signatureCtx.moveTo(position.x, position.y);
-    this.isDrawing = true;
-  }
-
-  drawSignature(event: PointerEvent): void {
-    if (!this.isDrawing || !this.signatureCtx) {
-      return;
-    }
-
-    event.preventDefault();
-    const position = this.getPointerPosition(event);
-    this.signatureCtx.lineTo(position.x, position.y);
-    this.signatureCtx.stroke();
-    this.hasSignatureStroke = true;
-  }
-
-  endSignature(): void {
-    if (!this.isDrawing) {
-      return;
-    }
-
-    this.isDrawing = false;
-    this.signatureCtx?.closePath();
-
-    if (this.hasSignatureStroke && this.signaturePad) {
-      const dataUrl = this.signaturePad.nativeElement.toDataURL('image/png');
-      this.leaveForm.patchValue({ signature: dataUrl }, { emitEvent: false });
-      this.leaveForm.get('signature')?.markAsDirty();
-      this.leaveForm.get('signature')?.updateValueAndValidity({ emitEvent: false });
-    }
-  }
-
-  clearSignature(): void {
-    if (!this.signaturePad || !this.signatureCtx) {
-      return;
-    }
-
-    const canvas = this.signaturePad.nativeElement;
-    this.signatureCtx.clearRect(0, 0, canvas.width, canvas.height);
-    this.fillSignatureBackground();
-    this.hasSignatureStroke = false;
-    this.leaveForm.patchValue({ signature: '' }, { emitEvent: false });
-    this.leaveForm.get('signature')?.markAsPristine();
-    this.leaveForm.get('signature')?.updateValueAndValidity({ emitEvent: false });
   }
 
   private patchUserDefaults(): void {
@@ -538,11 +860,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     }
 
     const amountControl = this.leaveForm.get('amount');
-    const attestationDocumentTypeControl = this.leaveForm.get('attestationDocumentType');
-    const attestationWorkReasonControl = this.leaveForm.get('attestationWorkReason');
-    const attestationWorkOtherTextControl = this.leaveForm.get('attestationWorkOtherText');
-    const attestationYearControl = this.leaveForm.get('attestationYear');
-    const attestationMonthControl = this.leaveForm.get('attestationMonth');
     const motifControl = this.leaveForm.get('motif');
     const durationControl = this.leaveForm.get('duration');
     const startDateControl = this.leaveForm.get('startDate');
@@ -550,12 +867,10 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     const absenceDateControl = this.leaveForm.get('absenceDate');
     const absenceStartTimeControl = this.leaveForm.get('absenceStartTime');
     const absenceEndTimeControl = this.leaveForm.get('absenceEndTime');
-    const signatureControl = this.leaveForm.get('signature');
 
     if (this.isAttestationRequest) {
       amountControl?.clearValidators();
       amountControl?.setValue(null, { emitEvent: false });
-      attestationDocumentTypeControl?.setValidators([Validators.required]);
       motifControl?.clearValidators();
 
       durationControl?.clearValidators();
@@ -564,7 +879,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.clearValidators();
       absenceStartTimeControl?.clearValidators();
       absenceEndTimeControl?.clearValidators();
-      signatureControl?.clearValidators();
 
       durationControl?.setValue(1, { emitEvent: false });
       startDateControl?.setValue('', { emitEvent: false });
@@ -572,18 +886,12 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.setValue('', { emitEvent: false });
       absenceStartTimeControl?.setValue('', { emitEvent: false });
       absenceEndTimeControl?.setValue('', { emitEvent: false });
-      signatureControl?.setValue('', { emitEvent: false });
       motifControl?.setValue('', { emitEvent: false });
 
-      this.configureAttestationFieldsByDocumentType();
+      this.resetAttestationSelections();
       this.invalidAbsenceTimeRange = false;
     } else if (this.isAdvanceSalaryRequest) {
       amountControl?.setValidators([Validators.required, Validators.min(1)]);
-      attestationDocumentTypeControl?.clearValidators();
-      attestationWorkReasonControl?.clearValidators();
-      attestationWorkOtherTextControl?.clearValidators();
-      attestationYearControl?.clearValidators();
-      attestationMonthControl?.clearValidators();
       motifControl?.setValidators([Validators.required]);
 
       durationControl?.clearValidators();
@@ -592,13 +900,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.clearValidators();
       absenceStartTimeControl?.clearValidators();
       absenceEndTimeControl?.clearValidators();
-      signatureControl?.clearValidators();
-
-      attestationDocumentTypeControl?.setValue('', { emitEvent: false });
-      attestationWorkReasonControl?.setValue('', { emitEvent: false });
-      attestationWorkOtherTextControl?.setValue('', { emitEvent: false });
-      attestationYearControl?.setValue('', { emitEvent: false });
-      attestationMonthControl?.setValue('', { emitEvent: false });
 
       durationControl?.setValue(1, { emitEvent: false });
       startDateControl?.setValue('', { emitEvent: false });
@@ -606,17 +907,12 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.setValue('', { emitEvent: false });
       absenceStartTimeControl?.setValue('', { emitEvent: false });
       absenceEndTimeControl?.setValue('', { emitEvent: false });
-      signatureControl?.setValue('', { emitEvent: false });
+      this.resetAttestationSelections();
 
       this.invalidAbsenceTimeRange = false;
     } else if (this.isAbsenceRequest) {
       amountControl?.clearValidators();
       amountControl?.setValue(null, { emitEvent: false });
-      attestationDocumentTypeControl?.clearValidators();
-      attestationWorkReasonControl?.clearValidators();
-      attestationWorkOtherTextControl?.clearValidators();
-      attestationYearControl?.clearValidators();
-      attestationMonthControl?.clearValidators();
       motifControl?.setValidators([Validators.required]);
 
       durationControl?.clearValidators();
@@ -625,13 +921,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.setValidators([Validators.required]);
       absenceStartTimeControl?.setValidators([Validators.required]);
       absenceEndTimeControl?.setValidators([Validators.required]);
-      signatureControl?.setValidators([Validators.required]);
-
-      attestationDocumentTypeControl?.setValue('', { emitEvent: false });
-      attestationWorkReasonControl?.setValue('', { emitEvent: false });
-      attestationWorkOtherTextControl?.setValue('', { emitEvent: false });
-      attestationYearControl?.setValue('', { emitEvent: false });
-      attestationMonthControl?.setValue('', { emitEvent: false });
 
       startDateControl?.setValue('', { emitEvent: false });
       endDateControl?.setValue('', { emitEvent: false });
@@ -640,14 +929,10 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       }
       absenceStartTimeControl?.setValue('', { emitEvent: false });
       absenceEndTimeControl?.setValue('', { emitEvent: false });
+      this.resetAttestationSelections();
     } else {
       amountControl?.clearValidators();
       amountControl?.setValue(null, { emitEvent: false });
-      attestationDocumentTypeControl?.clearValidators();
-      attestationWorkReasonControl?.clearValidators();
-      attestationWorkOtherTextControl?.clearValidators();
-      attestationYearControl?.clearValidators();
-      attestationMonthControl?.clearValidators();
       motifControl?.setValidators([Validators.required]);
 
       durationControl?.setValidators([Validators.required, Validators.min(1)]);
@@ -656,25 +941,14 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
       absenceDateControl?.clearValidators();
       absenceStartTimeControl?.clearValidators();
       absenceEndTimeControl?.clearValidators();
-      signatureControl?.setValidators([Validators.required]);
-
-      attestationDocumentTypeControl?.setValue('', { emitEvent: false });
-      attestationWorkReasonControl?.setValue('', { emitEvent: false });
-      attestationWorkOtherTextControl?.setValue('', { emitEvent: false });
-      attestationYearControl?.setValue('', { emitEvent: false });
-      attestationMonthControl?.setValue('', { emitEvent: false });
 
       absenceDateControl?.setValue('', { emitEvent: false });
       absenceStartTimeControl?.setValue('', { emitEvent: false });
       absenceEndTimeControl?.setValue('', { emitEvent: false });
+      this.resetAttestationSelections();
     }
 
     amountControl?.updateValueAndValidity({ emitEvent: false });
-    attestationDocumentTypeControl?.updateValueAndValidity({ emitEvent: false });
-    attestationWorkReasonControl?.updateValueAndValidity({ emitEvent: false });
-    attestationWorkOtherTextControl?.updateValueAndValidity({ emitEvent: false });
-    attestationYearControl?.updateValueAndValidity({ emitEvent: false });
-    attestationMonthControl?.updateValueAndValidity({ emitEvent: false });
     motifControl?.updateValueAndValidity({ emitEvent: false });
     durationControl?.updateValueAndValidity({ emitEvent: false });
     startDateControl?.updateValueAndValidity({ emitEvent: false });
@@ -682,60 +956,175 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     absenceDateControl?.updateValueAndValidity({ emitEvent: false });
     absenceStartTimeControl?.updateValueAndValidity({ emitEvent: false });
     absenceEndTimeControl?.updateValueAndValidity({ emitEvent: false });
-    signatureControl?.updateValueAndValidity({ emitEvent: false });
 
     if (this.isAbsenceRequest) {
       this.coerceAbsenceTimesToMinBounds();
     }
   }
 
-  private configureAttestationFieldsByDocumentType(): void {
-    const docControl = this.leaveForm.get('attestationDocumentType');
-    const workReasonControl = this.leaveForm.get('attestationWorkReason');
-    const workOtherTextControl = this.leaveForm.get('attestationWorkOtherText');
-    const yearControl = this.leaveForm.get('attestationYear');
-    const monthControl = this.leaveForm.get('attestationMonth');
-
-    const docType = String(docControl?.value || '');
-
-    workReasonControl?.clearValidators();
-    workOtherTextControl?.clearValidators();
-    yearControl?.clearValidators();
-    monthControl?.clearValidators();
-
-    if (docType !== 'work') {
-      workReasonControl?.setValue('', { emitEvent: false });
-      workOtherTextControl?.setValue('', { emitEvent: false });
+  private getAttestationValidationMessage(): string {
+    if (!this.selectedAttestationDocumentTypes.length) {
+      return 'Veuillez selectionner au moins un document.';
     }
 
-    if (docType !== 'retenue' && docType !== 'payslip-copy') {
-      yearControl?.setValue('', { emitEvent: false });
+    if (this.isWorkAttestationSelected && !this.selectedWorkReasons.length) {
+      return 'Selectionnez au moins un motif pour l attestation de travail.';
     }
 
-    if (docType !== 'payslip-copy') {
-      monthControl?.setValue('', { emitEvent: false });
+    if (this.isWorkAttestationOtherSelected && !this.normalizeOptionalText(this.workOtherReasonText)) {
+      return 'Veuillez preciser le motif "Autre" pour l attestation de travail.';
     }
 
-    if (docType === 'work') {
-      workReasonControl?.setValidators([Validators.required]);
-      if (workReasonControl?.value === 'other') {
-        workOtherTextControl?.setValidators([Validators.required]);
+    if (this.isRetenueSelected && !this.selectedRetenueYears.length) {
+      return 'Selectionnez au moins une annee pour le certificat de retenue.';
+    }
+
+    if (this.isPayslipCopySelected && !this.selectedPayslipMonths.length) {
+      return 'Selectionnez au moins un mois/annee pour la copie fiche de paie.';
+    }
+
+    return '';
+  }
+
+  private getCurrentInfoStepValidationMessage(): string {
+    const currentDocumentType = this.currentInfoDocumentType;
+    if (!currentDocumentType) {
+      return '';
+    }
+
+    if (currentDocumentType === DocumentType.ATTESTATION_TRAVAIL) {
+      if (!this.selectedWorkReasons.length) {
+        return 'Selectionnez au moins un motif pour l attestation de travail.';
       }
+
+      if (this.isWorkAttestationOtherSelected && !this.normalizeOptionalText(this.workOtherReasonText)) {
+        return 'Veuillez preciser le motif "Autre" pour l attestation de travail.';
+      }
+
+      return '';
     }
 
-    if (docType === 'retenue') {
-      yearControl?.setValidators([Validators.required]);
+    if (currentDocumentType === DocumentType.CERTIFICAT_RETENUE) {
+      return this.selectedRetenueYears.length
+        ? ''
+        : 'Selectionnez au moins une annee pour le certificat de retenue.';
     }
 
-    if (docType === 'payslip-copy') {
-      yearControl?.setValidators([Validators.required]);
-      monthControl?.setValidators([Validators.required]);
+    if (currentDocumentType === DocumentType.COPIE_FICHE_PAIE) {
+      return this.selectedPayslipMonths.length
+        ? ''
+        : 'Selectionnez au moins un mois/annee pour la copie fiche de paie.';
     }
 
-    workReasonControl?.updateValueAndValidity({ emitEvent: false });
-    workOtherTextControl?.updateValueAndValidity({ emitEvent: false });
-    yearControl?.updateValueAndValidity({ emitEvent: false });
-    monthControl?.updateValueAndValidity({ emitEvent: false });
+    return '';
+  }
+
+  private buildDocumentRequestsPayload(optionalReason: string | null): DocumentRequestCreateDto[] {
+    const payload: DocumentRequestCreateDto[] = [];
+
+    this.selectedAttestationDocumentTypes.forEach((documentType) => {
+      if (documentType === DocumentType.ATTESTATION_TRAVAIL) {
+        this.selectedWorkReasons.forEach((workReason) => {
+          payload.push({
+            documentType: DocumentType.ATTESTATION_TRAVAIL,
+            workCertificateReason: workReason,
+            otherWorkCertificateReason: workReason === WorkCertificateReason.OTHER
+              ? this.normalizeOptionalText(this.workOtherReasonText)
+              : null,
+            years: null,
+            months: null,
+            reason: optionalReason
+          });
+        });
+
+        return;
+      }
+
+      if (documentType === DocumentType.CERTIFICAT_RETENUE) {
+        payload.push({
+          documentType,
+          workCertificateReason: null,
+          otherWorkCertificateReason: null,
+          years: [...this.selectedRetenueYears].sort((a, b) => a - b),
+          months: null,
+          reason: optionalReason
+        });
+
+        return;
+      }
+
+      if (documentType === DocumentType.COPIE_FICHE_PAIE) {
+        payload.push({
+          documentType,
+          workCertificateReason: null,
+          otherWorkCertificateReason: null,
+          years: null,
+          months: this.sortPayslipSelections(this.selectedPayslipMonths),
+          reason: optionalReason
+        });
+
+        return;
+      }
+
+      payload.push({
+        documentType,
+        workCertificateReason: null,
+        otherWorkCertificateReason: null,
+        years: null,
+        months: null,
+        reason: optionalReason
+      });
+    });
+
+    return payload;
+  }
+
+  private formatDocumentRequestSummary(documentRequest: DocumentRequestCreateDto): string {
+    if (documentRequest.documentType === DocumentType.ATTESTATION_TRAVAIL) {
+      if (documentRequest.workCertificateReason === WorkCertificateReason.OTHER) {
+        return `${this.getDocumentLabel(documentRequest.documentType)} - Autre: ${documentRequest.otherWorkCertificateReason || '-'}`;
+      }
+
+      return `${this.getDocumentLabel(documentRequest.documentType)} - Pour renouvellement de CIN`;
+    }
+
+    if (documentRequest.documentType === DocumentType.CERTIFICAT_RETENUE) {
+      const years = documentRequest.years?.length ? documentRequest.years.join(', ') : '-';
+      return `${this.getDocumentLabel(documentRequest.documentType)} - Annees: ${years}`;
+    }
+
+    if (documentRequest.documentType === DocumentType.COPIE_FICHE_PAIE) {
+      const monthsText = documentRequest.months?.length
+        ? this.sortPayslipSelections(documentRequest.months)
+          .map((selection) => `${String(selection.month).padStart(2, '0')}/${selection.year}`)
+          .join(', ')
+        : '-';
+
+      return `${this.getDocumentLabel(documentRequest.documentType)} - Mois/annee: ${monthsText}`;
+    }
+
+    return this.getDocumentLabel(documentRequest.documentType);
+  }
+
+  private sortPayslipSelections(selections: PayslipMonthYearSelectionDto[]): PayslipMonthYearSelectionDto[] {
+    return [...selections].sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year - b.year;
+      }
+
+      return a.month - b.month;
+    });
+  }
+
+  private resetAttestationSelections(): void {
+    this.attestationStep = 'selection';
+    this.attestationInfoDocumentStepIndex = 0;
+    this.selectedAttestationDocumentTypes = [];
+    this.selectedWorkReasons = [];
+    this.selectedRetenueYears = [];
+    this.selectedPayslipMonths = [];
+    this.activePayslipYear = this.yearOptions[0];
+    this.workOtherReasonText = '';
   }
 
   private getTodayInputDate(): string {
@@ -887,110 +1276,19 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, AfterViewIn
     return `${hour12}:${String(mm).padStart(2, '0')} ${period}`;
   }
 
-  private getAttestationDocumentLabel(value: string): string {
+  getDocumentLabel(value: DocumentType): string {
     const option = this.attestationDocumentTypeOptions.find((item) => item.value === value);
     return option?.label || '-';
   }
 
-  private getMonthLabel(value: string): string {
+  getMonthLabel(value: number): string {
     const option = this.monthOptions.find((item) => item.value === value);
     return option?.label || '-';
   }
 
-  private buildYearOptions(): string[] {
+  private buildYearOptions(): number[] {
     const currentYear = new Date().getFullYear();
-    return Array.from({ length: 11 }, (_, index) => String(currentYear - index));
-  }
-
-  private initializeSignaturePad(): void {
-    if (!this.signaturePad) {
-      return;
-    }
-
-    const canvas = this.signaturePad.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-
-    canvas.width = rect.width * ratio;
-    canvas.height = rect.height * ratio;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      return;
-    }
-
-    ctx.scale(ratio, ratio);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#1f1f1f';
-
-    this.signatureCtx = ctx;
-    this.fillSignatureBackground();
-
-    const existingSignature = this.leaveForm?.getRawValue()?.signature;
-    if (existingSignature) {
-      this.restoreSignatureToCanvas(existingSignature);
-    } else {
-      this.hasSignatureStroke = false;
-    }
-  }
-
-  private restoreSignatureToCanvas(dataUrl: string): void {
-    if (!this.signaturePad || !this.signatureCtx || !dataUrl) {
-      return;
-    }
-
-    const image = new Image();
-    image.onload = () => {
-      if (!this.signaturePad || !this.signatureCtx) {
-        return;
-      }
-
-      const canvas = this.signaturePad.nativeElement;
-      const canvasWidth = canvas.clientWidth;
-      const canvasHeight = canvas.clientHeight;
-      const imageRatio = image.width / image.height;
-      const canvasRatio = canvasWidth / canvasHeight;
-
-      let drawWidth = canvasWidth;
-      let drawHeight = canvasHeight;
-
-      if (imageRatio > canvasRatio) {
-        drawHeight = canvasWidth / imageRatio;
-      } else {
-        drawWidth = canvasHeight * imageRatio;
-      }
-
-      const drawX = (canvasWidth - drawWidth) / 2;
-      const drawY = (canvasHeight - drawHeight) / 2;
-
-      this.signatureCtx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
-      this.hasSignatureStroke = true;
-    };
-
-    image.src = dataUrl;
-  }
-
-  private fillSignatureBackground(): void {
-    if (!this.signaturePad || !this.signatureCtx) {
-      return;
-    }
-
-    const canvas = this.signaturePad.nativeElement;
-    this.signatureCtx.save();
-    this.signatureCtx.setTransform(1, 0, 0, 1, 0, 0);
-    this.signatureCtx.fillStyle = '#ffffff';
-    this.signatureCtx.fillRect(0, 0, canvas.width, canvas.height);
-    this.signatureCtx.restore();
-  }
-
-  private getPointerPosition(event: PointerEvent): { x: number; y: number } {
-    const rect = this.signaturePad!.nativeElement.getBoundingClientRect();
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+    return Array.from({ length: 11 }, (_, index) => currentYear - index);
   }
 
   private syncEndDateFromDuration(): void {

@@ -34,6 +34,54 @@ app-request-summary {
     padding: 18px 22px;
 }
 
+.attestation-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 10px;
+    border: 1px solid #f0e1c2;
+    border-radius: 12px;
+    background: #fffdf6;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8a8a8a;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.step-item-active {
+    color: #7b2a00;
+}
+
+.step-index {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 2px solid #d9c39a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+}
+
+.step-item-active .step-index {
+    border-color: #d88d08;
+    background: #f8a714;
+    color: #fff;
+}
+
+.step-divider {
+    width: 26px;
+    height: 2px;
+    background: #dfd3bc;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(250px, 1fr));
@@ -83,25 +131,119 @@ app-request-summary {
     background: #fffdf6;
     border: 1px solid #f2e6ce;
     border-radius: 14px;
-    padding: 16px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-}
-
-.attestation-select {
-    min-height: 74px;
-    font-size: 24px;
-    font-weight: 700;
-    text-align: center;
-    border-width: 2px;
-    border-radius: 12px;
+    gap: 16px;
 }
 
 .attestation-extra-block {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+}
+
+.attestation-doc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.attestation-doc-btn {
+    min-height: 88px;
+    border: 2px solid #f0c46f;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fff9e9 0%, #fff5dc 100%);
+    color: #3f2f0b;
+    font-size: 21px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    text-align: left;
+}
+
+.attestation-doc-btn.active {
+    background: linear-gradient(180deg, #f8a714 0%, #ed8e08 100%);
+    border-color: #d88d08;
+    color: #ffffff;
+}
+
+.doc-label-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.doc-label {
+    line-height: 1.2;
+}
+
+.doc-subtitle {
+    font-size: 15px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.attestation-selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-doc-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #e5bd6d;
+    background: #fff5df;
+    color: #61430d;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.attestation-doc-stepper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.doc-step-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid #dec59a;
+    background: #fff8e8;
+    color: #6f5428;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.doc-step-chip-active {
+    border-color: #d88d08;
+    background: #f8a714;
+    color: #ffffff;
+}
+
+.doc-step-index {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #7a5a22;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.doc-step-chip-active .doc-step-index {
+    color: #d88d08;
 }
 
 .attestation-subtitle {
@@ -119,7 +261,7 @@ app-request-summary {
 
 .attestation-choice-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
     gap: 10px;
 }
 
@@ -173,6 +315,89 @@ app-request-summary {
 }
 
 .attestation-choice-btn:active {
+    transform: scale(0.98);
+}
+
+.attestation-chip-btn {
+    justify-content: center;
+    min-height: 58px;
+    font-size: 24px;
+}
+
+.attestation-year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(112px, 1fr));
+    gap: 10px;
+}
+
+.attestation-year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.attestation-year-tab {
+    min-height: 54px;
+    min-width: 108px;
+    border: 2px solid #f0c46f;
+    border-radius: 10px;
+    background: #fff6e2;
+    color: #3f2f0b;
+    font-size: 21px;
+    font-weight: 700;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.attestation-year-tab.active {
+    background: #f8a714;
+    border-color: #d88d08;
+    color: #ffffff;
+}
+
+.attestation-month-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.attestation-month-btn {
+    min-height: 58px;
+    border: 2px solid #f0c46f;
+    border-radius: 10px;
+    background: #fff7e3;
+    color: #3f2f0b;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 8px;
+}
+
+.attestation-month-btn.active {
+    background: #f8a714;
+    border-color: #d88d08;
+    color: #ffffff;
+}
+
+.attestation-selected-months {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-month-chip {
+    min-height: 40px;
+    border: 1px solid #dcbb7a;
+    border-radius: 999px;
+    background: #fff8e8;
+    color: #5a3f0f;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.selected-month-chip:active {
     transform: scale(0.98);
 }
 
@@ -339,10 +564,6 @@ app-request-summary {
     min-height: 170px;
 }
 
-.absence-signature-center {
-    grid-column: 2 / 3;
-}
-
 .date-range-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(220px, 1fr));
@@ -376,35 +597,6 @@ app-request-summary {
 .field textarea {
     resize: vertical;
     min-height: 94px;
-}
-
-.signature-pad {
-    width: 100%;
-    height: 124px;
-    border: 1px solid #dfdfdf;
-    border-radius: 10px;
-    background: #fff;
-    touch-action: none;
-    cursor: crosshair;
-}
-
-.btn-clear-signature {
-    align-self: flex-start;
-    border: none;
-    background: transparent;
-    color: #b6171d;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 0;
-    margin-top: 4px;
-}
-
-.signature-error {
-    color: #b6171d;
-    font-size: 15px;
-    font-weight: 600;
 }
 
 .error-msg {
@@ -449,30 +641,6 @@ app-request-summary {
     background-image: linear-gradient(315deg, #9e9e9e 0%, #5f5f5f 74%);
 }
 
-.signature-preview-card {
-    width: min(100%, 920px);
-    margin: 16px auto 0;
-    padding: 16px;
-    background: linear-gradient(180deg, #ffffff 0%, #fff8eb 100%);
-    border: 1px solid #f2e6ce;
-    border-radius: 12px;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
-}
-
-.signature-preview-card h3 {
-    margin: 0 0 10px;
-    color: #b6171d;
-}
-
-.signature-preview-card img {
-    width: 100%;
-    max-height: 140px;
-    object-fit: contain;
-    background: #fff;
-    border: 1px solid #dfdfdf;
-    border-radius: 8px;
-}
-
 @media (max-width: 900px) {
     .form-grid {
         grid-template-columns: 1fr;
@@ -496,9 +664,45 @@ app-request-summary {
         grid-template-columns: 1fr;
     }
 
+    .attestation-stepper {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .step-item {
+        font-size: 14px;
+    }
+
+    .step-divider {
+        width: 14px;
+    }
+
     .attestation-select {
         min-height: 64px;
         font-size: 20px;
+    }
+
+    .attestation-doc-grid,
+    .attestation-year-grid,
+    .attestation-month-grid,
+    .attestation-choice-row {
+        grid-template-columns: 1fr;
+    }
+
+    .attestation-doc-btn {
+        min-height: 76px;
+        font-size: 19px;
+    }
+
+    .attestation-year-tab {
+        min-height: 50px;
+        min-width: 94px;
+        font-size: 18px;
+    }
+
+    .attestation-month-btn {
+        min-height: 52px;
+        font-size: 18px;
     }
 
     .attestation-choice-row,
@@ -509,10 +713,6 @@ app-request-summary {
     .attestation-choice-btn {
         min-height: 58px;
         font-size: 20px;
-    }
-
-    .absence-signature-center {
-        grid-column: auto;
     }
 
     .absence-time-grid {
