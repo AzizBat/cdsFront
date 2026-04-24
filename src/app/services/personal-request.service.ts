@@ -52,8 +52,7 @@ export class PersonalRequestService {
       documentType,
       workCertificateReason: null,
       otherWorkCertificateReason: null,
-      years: null,
-      months: null,
+      requestPeriod: null,
       reason: reason ?? null
     });
   }
@@ -71,8 +70,7 @@ export class PersonalRequestService {
       documentType: DocumentType.ATTESTATION_TRAVAIL,
       workCertificateReason,
       otherWorkCertificateReason: normalizedOtherReason,
-      years: null,
-      months: null,
+      requestPeriod: null,
       reason: reason ?? null
     });
   }
@@ -82,8 +80,7 @@ export class PersonalRequestService {
       documentType: DocumentType.CERTIFICAT_RETENUE,
       workCertificateReason: null,
       otherWorkCertificateReason: null,
-      years: [year],
-      months: null,
+      requestPeriod: [{ year }],
       reason: reason ?? null
     });
   }
@@ -93,8 +90,7 @@ export class PersonalRequestService {
       documentType: DocumentType.COPIE_FICHE_PAIE,
       workCertificateReason: null,
       otherWorkCertificateReason: null,
-      years: null,
-      months: [{ year, month }],
+      requestPeriod: [{ year, month }],
       reason: reason ?? null
     });
   }

@@ -1,8 +1,8 @@
 .popup-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(31, 39, 55, 0.45);
-    backdrop-filter: blur(2px);
+    background: rgba(7, 14, 24, 0.58);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,17 +11,19 @@
 
 .popup-card {
     width: min(92vw, 620px);
-    border-radius: 18px;
-    background: linear-gradient(180deg, #ffffff 0%, #fff6ea 100%);
-    border: 1px solid #efdcb9;
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at top left, rgba(26, 93, 168, 0.14), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f4f8fc 100%);
+    border: 1px solid #ced9e5;
+    box-shadow: 0 24px 56px rgba(7, 14, 24, 0.28);
     padding: 28px;
     text-align: center;
 }
 
 .popup-card h3 {
     margin: 0;
-    color: #b6171d;
+    color: #0b1220;
     font-size: 30px;
     line-height: 1.2;
 }
@@ -29,13 +31,14 @@
 .timer-chip {
     margin: 18px auto 10px;
     display: inline-block;
-    background: #fff;
-    border: 1px solid #f2e7d0;
+    background: #ffffff;
+    border: 1px solid #ced9e5;
     border-radius: 999px;
     padding: 8px 16px;
-    color: #6b5a33;
+    color: #1a5da8;
     font-size: 18px;
     font-weight: 600;
+    box-shadow: 0 8px 18px rgba(9, 19, 34, 0.08);
 }
 
 .popup-actions {
@@ -48,12 +51,13 @@
 .custom-btn {
     height: 54px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #fff;
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s ease, filter 0.2s ease;
+    box-shadow: 0 10px 18px rgba(9, 19, 34, 0.14);
 }
 
 .custom-btn:hover {
@@ -65,11 +69,11 @@
 }
 
 .btn-yes {
-    background-image: linear-gradient(315deg, #f8a714 0%, #ed1c24 74%);
+    background-image: linear-gradient(135deg, #1a5da8 0%, #0f2037 100%);
 }
 
 .btn-logout {
-    background-image: linear-gradient(315deg, #9e9e9e 0%, #4f4f4f 74%);
+    background-image: linear-gradient(135deg, #5c6777 0%, #1a2230 100%);
 }
 
 @media (max-width: 640px) {
@@ -80,4 +84,31 @@
     .popup-actions {
         grid-template-columns: 1fr;
     }
+}
+
+:host .popup-overlay {
+    background: rgba(7, 14, 24, 0.58) !important;
+}
+
+:host .popup-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fc 100%) !important;
+    border-color: #ced9e5 !important;
+    box-shadow: 0 24px 56px rgba(7, 14, 24, 0.28) !important;
+}
+
+:host .popup-card h3 {
+    color: #0b1220 !important;
+}
+
+:host .timer-chip {
+    color: #1a5da8 !important;
+    border-color: #ced9e5 !important;
+}
+
+:host .btn-yes {
+    background-image: linear-gradient(135deg, #1a5da8 0%, #0f2037 100%) !important;
+}
+
+:host .btn-logout {
+    background-image: linear-gradient(135deg, #5c6777 0%, #1a2230 100%) !important;
 }

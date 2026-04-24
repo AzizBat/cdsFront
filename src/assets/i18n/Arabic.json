@@ -36,5 +36,126 @@
     "thankingMessage2": "لا يمكن تحقيق الإمتياز إلا من خلال أفراد شغوفين متواضعين يعززون ثقافة التغيير الإبداعي",
     "thankingMessage3": "",
     "finish": "الرجوع للصفحة الرئيسية"
+  },
+  "leaveRequestForm": {
+    "header": {
+      "fillRequestContinue": "قم بتعبئة طلبك ثم اضغط على متابعة.",
+      "step1Of2": "المرحلة 1 من 2: اختر الوثائق المطلوب طلبها ثم اضغط على التالي.",
+      "selectDocsShowSummary": "اختر الوثائق المطلوب طلبها ثم اضغط على متابعة لإظهار الملخص.",
+      "step2Of2": "المرحلة 2 من 2: أدخل المعلومات المطلوبة ثم اضغط على متابعة."
+    },
+    "steps": {
+      "documents": "الوثائق",
+      "information": "المعلومات",
+      "summary": "الملخص"
+    },
+    "fields": {
+      "matricule": "الرقم الوظيفي",
+      "fullName": "الاسم واللقب",
+      "specify": "حدد",
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "from": "من",
+      "to": "إلى",
+      "duration": "المدة",
+      "durationDays": "المدة (أيام)",
+      "reason": "السبب"
+    },
+    "attestation": {
+      "selectDocuments": "اختيار الوثائق",
+      "touchOneOrMoreDocuments": "اختر وثيقة واحدة أو أكثر.",
+      "selectedDocuments": "الوثائق المختارة",
+      "documentInformation": "معلومات الوثيقة",
+      "workCertificateReason": "سبب شهادة العمل",
+      "chooseOneOrTwoReasons": "يمكنك اختيار سبب واحد أو سببين.",
+      "withholdingYears": "سنوات شهادة الخصم",
+      "touchAllDesiredYears": "اختر كل السنوات المطلوبة.",
+      "payslipMonthYear": "شهر وسنة كشف الأجر",
+      "selectYearThenMonths": "1) اختر سنة. 2) اختر الأشهر."
+    },
+    "documents": {
+      "salaryCertificate": "شهادة الأجر",
+      "workCertificate": "شهادة عمل",
+      "loanBenefitCertificate": "شهادة الانتفاع بقرض",
+      "noLoanBenefitCertificate": "شهادة عدم الانتفاع بقرض",
+      "withholdingCertificate": "شهادة الخصم",
+      "payslipCopy": "نسخة من كشف الأجر",
+      "standardDocument": "وثيقة عادية",
+      "mandatoryReason": "سبب إجباري",
+      "multipleYears": "اختيار عدة سنوات",
+      "multipleMonthsYears": "اختيار عدة أشهر/سنوات"
+    },
+    "workReasons": {
+      "cinRenewal": "لتجديد بطاقة التعريف الوطنية",
+      "otherReason": "سبب آخر"
+    },
+    "months": {
+      "january": "جانفي",
+      "february": "فيفري",
+      "march": "مارس",
+      "april": "أفريل",
+      "may": "ماي",
+      "june": "جوان",
+      "july": "جويلية",
+      "august": "أوت",
+      "september": "سبتمبر",
+      "october": "أكتوبر",
+      "november": "نوفمبر",
+      "december": "ديسمبر"
+    },
+    "placeholders": {
+      "enterReason": "أدخل السبب"
+    },
+    "aria": {
+      "amountInTnd": "المبلغ بالدينار التونسي",
+      "deleteOneDigit": "حذف رقم واحد",
+      "amountNumericKeyboard": "لوحة أرقام المبلغ"
+    },
+    "actions": {
+      "next": "التالي",
+      "continue": "متابعة",
+      "cancel": "إلغاء",
+      "previous": "السابق",
+      "back": "رجوع",
+      "confirm": "تأكيد",
+      "yes": "نعم",
+      "disconnect": "تسجيل الخروج"
+    },
+    "errors": {
+      "endDateAfterStartDate": "يجب أن يكون تاريخ النهاية مساويا أو بعد تاريخ البداية.",
+      "endTimeAfterStartTime": "يجب أن يكون الوقت إلى بعد الوقت من.",
+      "selectAtLeastOneDocument": "يرجى اختيار وثيقة واحدة على الأقل.",
+      "selectWorkReason": "اختر سببا واحدا على الأقل لشهادة العمل.",
+      "specifyOtherReason": "يرجى تحديد السبب \"سبب آخر\" لشهادة العمل.",
+      "selectRetenueYear": "اختر سنة واحدة على الأقل لشهادة الخصم.",
+      "selectPayslipMonthYear": "اختر شهرا/سنة واحدة على الأقل لنسخة كشف الأجر.",
+      "submitLeaveFailed": "فشل إرسال طلب العطلة. يرجى المحاولة مرة أخرى.",
+      "submitAbsenceFailed": "فشل إرسال طلب الغياب. يرجى المحاولة مرة أخرى.",
+      "submitAdvanceFailed": "فشل إرسال طلب التسبقة على الراتب. يرجى المحاولة مرة أخرى.",
+      "submitDocumentFailed": "فشل إرسال طلب الوثيقة. يرجى المحاولة مرة أخرى."
+    },
+    "summary": {
+      "selectedDocuments": "الوثائق المختارة",
+      "requestCount": "عدد الطلبات",
+      "documentIndex": "الوثيقة {{index}}",
+      "dayCount": "{{count}} يوم",
+      "documentOtherReason": "{{document}} - سبب آخر: {{reason}}",
+      "documentCinRenewal": "{{document}} - لتجديد بطاقة التعريف الوطنية",
+      "documentYears": "{{document}} - السنوات: {{years}}",
+      "documentMonthYear": "{{document}} - شهر/سنة: {{months}}"
+    },
+    "popup": {
+      "newRequestQuestion": "هل تريد تقديم طلب جديد؟"
+    },
+    "common": {
+      "currency": "د.ت"
+    }
+  },
+  "requestSummary": {
+    "subtitle": "ملخص الطلب",
+    "referencePrefix": "مرجع"
+  },
+  "actionPopup": {
+    "autoDisconnectIn": "تسجيل خروج تلقائي خلال {{seconds}}ث"
   }
 }

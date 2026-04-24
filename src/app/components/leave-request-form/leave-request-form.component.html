@@ -2,43 +2,41 @@
     <ng-container *ngIf="!showSummary; else summaryView">
         <div class="leave-header">
             <h2>{{requestTitleKey | translate}}</h2>
-            <p *ngIf="!isAttestationRequest">Renseignez votre demande puis cliquez sur Continuer.</p>
-            <p *ngIf="isAttestationSelectionStep && hasAttestationInfoStep">Etape 1 sur 2 : selectionnez les documents a
-                demander puis cliquez sur
-                Suivant.</p>
-            <p *ngIf="isAttestationSelectionStep && !hasAttestationInfoStep">Selectionnez les documents a demander puis
-                cliquez sur Continuer pour afficher le resume.</p>
-            <p *ngIf="isAttestationDetailsStep">Etape 2 sur 2 : renseignez les informations requises puis cliquez sur
-                Continuer.</p>
+            <p *ngIf="!isAttestationRequest">{{ 'leaveRequestForm.header.fillRequestContinue' | translate }}</p>
+            <p *ngIf="isAttestationSelectionStep && hasAttestationInfoStep">{{ 'leaveRequestForm.header.step1Of2' |
+                translate }}</p>
+            <p *ngIf="isAttestationSelectionStep && !hasAttestationInfoStep">{{
+                'leaveRequestForm.header.selectDocsShowSummary' | translate }}</p>
+            <p *ngIf="isAttestationDetailsStep">{{ 'leaveRequestForm.header.step2Of2' | translate }}</p>
         </div>
 
         <form [formGroup]="leaveForm" class="leave-form-card" novalidate>
             <div class="attestation-stepper" *ngIf="isAttestationRequest">
                 <div class="step-item" [class.step-item-active]="isAttestationSelectionStep">
                     <span class="step-index">1</span>
-                    <span class="step-text">Documents</span>
+                    <span class="step-text">{{ 'leaveRequestForm.steps.documents' | translate }}</span>
                 </div>
                 <div class="step-divider"></div>
                 <div class="step-item" *ngIf="hasAttestationInfoStep"
                     [class.step-item-active]="isAttestationDetailsStep">
                     <span class="step-index">2</span>
-                    <span class="step-text">Informations</span>
+                    <span class="step-text">{{ 'leaveRequestForm.steps.information' | translate }}</span>
                 </div>
                 <div class="step-divider" *ngIf="hasAttestationInfoStep"></div>
                 <div class="step-item">
                     <span class="step-index">{{hasAttestationInfoStep ? '3' : '2'}}</span>
-                    <span class="step-text">Resume</span>
+                    <span class="step-text">{{ 'leaveRequestForm.steps.summary' | translate }}</span>
                 </div>
             </div>
 
             <div class="form-grid">
                 <div class="field">
-                    <label>Matricule</label>
+                    <label>{{ 'leaveRequestForm.fields.matricule' | translate }}</label>
                     <input type="text" formControlName="matricule" readonly>
                 </div>
 
                 <div class="field">
-                    <label>Nom et prenom</label>
+                    <label>{{ 'leaveRequestForm.fields.fullName' | translate }}</label>
                     <input type="text" formControlName="fullName" readonly>
                 </div>
 
@@ -49,8 +47,10 @@
                         <ng-container *ngIf="isAttestationRequest; else nonAttestationFields">
                             <div class="attestation-card">
                                 <div class="attestation-extra-block" *ngIf="isAttestationSelectionStep">
-                                    <label class="attestation-subtitle">Selection des documents</label>
-                                    <p class="attestation-choice-hint">Touchez un ou plusieurs documents.</p>
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.selectDocuments' | translate }}</label>
+                                    <p class="attestation-choice-hint">{{
+                                        'leaveRequestForm.attestation.touchOneOrMoreDocuments' | translate }}</p>
 
                                     <div class="attestation-doc-grid">
                                         <button type="button" class="attestation-doc-btn"
@@ -62,8 +62,8 @@
                                                 [class.choice-radio-active]="isDocumentSelected(option.value)"
                                                 aria-hidden="true"></span>
                                             <span class="doc-label-wrap">
-                                                <span class="doc-label">{{option.label}}</span>
-                                                <span class="doc-subtitle">{{option.subtitle}}</span>
+                                                <span class="doc-label">{{option.labelKey | translate}}</span>
+                                                <span class="doc-subtitle">{{option.subtitleKey | translate}}</span>
                                             </span>
                                         </button>
                                     </div>
@@ -71,7 +71,8 @@
 
                                 <div class="attestation-extra-block"
                                     *ngIf="isAttestationDetailsStep && hasSelectedAttestationDocuments">
-                                    <label class="attestation-subtitle">Documents selectionnes</label>
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.selectedDocuments' | translate }}</label>
 
                                     <div class="attestation-selected-list">
                                         <span class="selected-doc-chip"
@@ -82,7 +83,8 @@
                                 </div>
 
                                 <div class="attestation-extra-block" *ngIf="isAttestationDetailsStep">
-                                    <label class="attestation-subtitle">Informations document
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.documentInformation' | translate }}
                                         {{attestationInfoDocumentStepIndex + 1}} /
                                         {{requiredInfoDocumentTypes.length}}</label>
                                     <div class="attestation-doc-stepper">
@@ -97,8 +99,10 @@
 
                                 <div class="attestation-extra-block"
                                     *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.ATTESTATION_TRAVAIL">
-                                    <label class="attestation-subtitle">Motif de l attestation de travail</label>
-                                    <p class="attestation-choice-hint">Vous pouvez choisir un ou deux motifs.</p>
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.workCertificateReason' | translate }}</label>
+                                    <p class="attestation-choice-hint">{{
+                                        'leaveRequestForm.attestation.chooseOneOrTwoReasons' | translate }}</p>
 
                                     <div class="attestation-choice-row">
                                         <button type="button" class="attestation-choice-btn"
@@ -109,22 +113,24 @@
                                             <span class="choice-radio"
                                                 [class.choice-radio-active]="isWorkReasonSelected(reasonOption.value)"
                                                 aria-hidden="true"></span>
-                                            <span>{{reasonOption.label}}</span>
+                                            <span>{{reasonOption.labelKey | translate}}</span>
                                         </button>
                                     </div>
 
                                     <div class="field compact-field" *ngIf="isWorkAttestationOtherSelected">
-                                        <label>Preciser</label>
+                                        <label>{{ 'leaveRequestForm.fields.specify' | translate }}</label>
                                         <textarea rows="3" [value]="workOtherReasonText"
                                             (input)="workOtherReasonText = $any($event.target).value"
-                                            placeholder="Saisir votre motif"></textarea>
+                                            [placeholder]="'leaveRequestForm.placeholders.enterReason' | translate"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="attestation-extra-block"
                                     *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.CERTIFICAT_RETENUE">
-                                    <label class="attestation-subtitle">Annees du certificat de retenue</label>
-                                    <p class="attestation-choice-hint">Touchez toutes les annees souhaitees.</p>
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.withholdingYears' | translate }}</label>
+                                    <p class="attestation-choice-hint">{{
+                                        'leaveRequestForm.attestation.touchAllDesiredYears' | translate }}</p>
 
                                     <div class="attestation-year-grid">
                                         <button type="button" class="attestation-choice-btn attestation-chip-btn"
@@ -139,8 +145,10 @@
 
                                 <div class="attestation-extra-block"
                                     *ngIf="isAttestationDetailsStep && currentInfoDocumentType === documentTypeEnum.COPIE_FICHE_PAIE">
-                                    <label class="attestation-subtitle">Mois et annee de la fiche de paie</label>
-                                    <p class="attestation-choice-hint">1) Touchez une annee. 2) Touchez les mois.</p>
+                                    <label class="attestation-subtitle">{{
+                                        'leaveRequestForm.attestation.payslipMonthYear' | translate }}</label>
+                                    <p class="attestation-choice-hint">{{
+                                        'leaveRequestForm.attestation.selectYearThenMonths' | translate }}</p>
 
                                     <div class="attestation-year-tabs">
                                         <button type="button" class="attestation-year-tab"
@@ -156,7 +164,7 @@
                                             [class.active]="isPayslipMonthSelected(activePayslipYear, month.value)"
                                             [attr.aria-pressed]="isPayslipMonthSelected(activePayslipYear, month.value)"
                                             (click)="togglePayslipMonth(month.value)">
-                                            {{month.label}}
+                                            {{month.labelKey | translate}}
                                         </button>
                                     </div>
 
@@ -175,15 +183,16 @@
                             <ng-container *ngIf="isAdvanceSalaryRequest; else leaveOrAbsenceFields">
                                 <div class="advance-salary-card">
                                     <div class="field compact-field">
-                                        <label>Montant</label>
+                                        <label>{{ 'leaveRequestForm.fields.amount' | translate }}</label>
                                         <div class="advance-amount-row">
                                             <input class="touch-input advance-amount-input" type="text"
                                                 [value]="advanceAmountDisplay" placeholder="0" readonly inputmode="none"
-                                                autocomplete="off" aria-label="Montant en TND">
+                                                autocomplete="off"
+                                                [attr.aria-label]="'leaveRequestForm.aria.amountInTnd' | translate">
 
                                             <button type="button" class="amount-key-delete-inline"
                                                 [disabled]="!hasAdvanceAmountValue" (click)="onAdvanceAmountDelete()"
-                                                aria-label="Supprimer un chiffre">
+                                                [attr.aria-label]="'leaveRequestForm.aria.deleteOneDigit' | translate">
                                                 <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
                                                     <path
                                                         d="M22 6a2 2 0 0 0-2-2h-9a2 2 0 0 0-1.41.59L3.17 11a2 2 0 0 0 0 2.83l6.42 6.41A2 2 0 0 0 11 21h9a2 2 0 0 0 2-2V6zM15.41 16 13 13.59 10.59 16 9.17 14.59 11.59 12 9.17 9.41 10.59 8 13 10.41 15.41 8l1.42 1.41L14.41 12l2.42 2.59L15.41 16z" />
@@ -192,7 +201,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="amount-keypad" role="group" aria-label="Clavier numerique montant">
+                                    <div class="amount-keypad" role="group"
+                                        [attr.aria-label]="'leaveRequestForm.aria.amountNumericKeyboard' | translate">
                                         <button type="button" class="amount-key" [class.amount-key-zero]="digit === 0"
                                             *ngFor="let digit of amountKeypadDigits"
                                             (click)="onAdvanceAmountDigit(digit)">
@@ -207,36 +217,41 @@
                                     <div class="absence-time-card">
                                         <div class="absence-date-time-row">
                                             <div class="field compact-field">
-                                                <label>Date</label>
+                                                <label>{{ 'leaveRequestForm.fields.date' | translate }}</label>
                                                 <input class="touch-input absence-touch-input" type="date"
-                                                    formControlName="absenceDate" (change)="onAbsenceDateChange()">
+                                                    formControlName="absenceDate" [min]="todayInputDate"
+                                                    (change)="onAbsenceDateChange()">
                                             </div>
 
                                             <div class="field compact-field">
-                                                <label>De</label>
+                                                <label>{{ 'leaveRequestForm.fields.from' | translate }}</label>
                                                 <input class="touch-input absence-touch-input absence-time-input"
                                                     type="text" formControlName="absenceStartTime"
-                                                    [ngxTimepicker]="absenceStartPicker" [format]="12"
-                                                    [min]="absenceStartClockMin12" [max]="'11:00 PM'"
+                                                    [ngxTimepicker]="absenceStartPicker" [format]="24"
+                                                    [min]="absenceStartClockMin" [max]="'23:00'"
                                                     [disabled]="isAbsenceStartSelectionDisabled" readonly
                                                     placeholder="--:--" (change)="onAbsenceStartTimeChange()">
-                                                <ngx-material-timepicker #absenceStartPicker [format]="12"
-                                                    [hoursOnly]="true" [minutesGap]="60" [appendToInput]="true"
-                                                    [disableAnimation]="true" (timeSet)="onAbsenceStartTimeSet($event)">
+                                                <ngx-material-timepicker #absenceStartPicker [format]="24"
+                                                    [cancelBtnTmpl]="timepickerCancelBtnTmpl"
+                                                    [confirmBtnTmpl]="timepickerConfirmBtnTmpl" [hoursOnly]="true"
+                                                    [minutesGap]="60" [appendToInput]="true" [disableAnimation]="true"
+                                                    (timeSet)="onAbsenceStartTimeSet($event)">
                                                 </ngx-material-timepicker>
                                             </div>
 
                                             <div class="field compact-field">
-                                                <label>A</label>
+                                                <label>{{ 'leaveRequestForm.fields.to' | translate }}</label>
                                                 <input class="touch-input absence-touch-input absence-time-input"
                                                     type="text" formControlName="absenceEndTime"
-                                                    [ngxTimepicker]="absenceEndPicker" [format]="12"
-                                                    [min]="absenceEndClockMin12" [max]="'11:00 PM'"
+                                                    [ngxTimepicker]="absenceEndPicker" [format]="24"
+                                                    [min]="absenceEndClockMin" [max]="'23:00'"
                                                     [disabled]="isAbsenceEndSelectionDisabled" readonly
                                                     placeholder="--:--" (change)="onAbsenceEndTimeChange()">
-                                                <ngx-material-timepicker #absenceEndPicker [format]="12"
-                                                    [hoursOnly]="true" [minutesGap]="60" [appendToInput]="true"
-                                                    [disableAnimation]="true" (timeSet)="onAbsenceEndTimeSet($event)">
+                                                <ngx-material-timepicker #absenceEndPicker [format]="24"
+                                                    [cancelBtnTmpl]="timepickerCancelBtnTmpl"
+                                                    [confirmBtnTmpl]="timepickerConfirmBtnTmpl" [hoursOnly]="true"
+                                                    [minutesGap]="60" [appendToInput]="true" [disableAnimation]="true"
+                                                    (timeSet)="onAbsenceEndTimeSet($event)">
                                                 </ngx-material-timepicker>
                                             </div>
                                         </div>
@@ -247,41 +262,43 @@
 
                         <ng-template #leaveDateRange>
                             <div class="field compact-field">
-                                <label>Duree (jours)</label>
+                                <label>{{ 'leaveRequestForm.fields.durationDays' | translate }}</label>
                                 <input type="number" min="1" formControlName="duration" (change)="onDurationChange()">
                             </div>
 
                             <div class="field compact-field">
-                                <label>De</label>
-                                <input type="date" formControlName="startDate" (change)="onStartDateChange()">
+                                <label>{{ 'leaveRequestForm.fields.from' | translate }}</label>
+                                <input type="date" formControlName="startDate" [min]="todayInputDate"
+                                    (change)="onStartDateChange()">
                             </div>
 
                             <div class="field compact-field">
-                                <label>A</label>
-                                <input type="date" formControlName="endDate" (change)="onEndDateChange()">
+                                <label>{{ 'leaveRequestForm.fields.to' | translate }}</label>
+                                <input type="date" formControlName="endDate" [min]="todayInputDate"
+                                    (change)="onEndDateChange()">
                             </div>
                         </ng-template>
                     </div>
                 </div>
 
                 <div class="field field-full absence-motif-field" *ngIf="isAbsenceRequest || isAdvanceSalaryRequest">
-                    <label>Motif</label>
+                    <label>{{ 'leaveRequestForm.fields.reason' | translate }}</label>
                     <textarea rows="4" formControlName="motif"></textarea>
                 </div>
 
                 <div class="field field-span-2" *ngIf="isLeaveRequest">
-                    <label>Motif</label>
+                    <label>{{ 'leaveRequestForm.fields.reason' | translate }}</label>
                     <textarea rows="4" formControlName="motif"></textarea>
                 </div>
 
             </div>
 
             <div *ngIf="isLeaveRequest && invalidRange" class="error-msg">
-                La date de fin doit etre egale ou posterieure a la date de debut.
+                {{ 'leaveRequestForm.errors.endDateAfterStartDate' | translate }}
             </div>
 
             <div *ngIf="isAbsenceRequest && invalidAbsenceTimeRange" class="error-msg">
-                L'heure A doit etre posterieure a l'heure De.
+                {{ 'leaveRequestForm.errors.endTimeAfterStartTime' | translate }}
             </div>
 
             <div *ngIf="isAttestationRequest && submissionErrorMessage" class="error-msg">
@@ -301,11 +318,11 @@
 
                 <ng-template #defaultActionRow>
                     <button type="button" class="custom-btn btn-login" (click)="onContinue()">
-                        <span>Continuer</span>
+                        <span>{{ 'leaveRequestForm.actions.continue' | translate }}</span>
                     </button>
 
                     <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
-                        <span>Annuler</span>
+                        <span>{{ 'leaveRequestForm.actions.cancel' | translate }}</span>
                     </button>
                 </ng-template>
             </div>
@@ -313,8 +330,10 @@
     </ng-container>
 
     <ng-template #summaryView>
-        <app-request-summary [title]="requestTitleKey | translate" [rows]="summaryRows" [confirmLabel]="'Confirmer'"
-            [cancelLabel]="'Annuler'" (confirm)="onConfirmSummary()" (cancel)="onEditSummary()">
+        <app-request-summary [title]="requestTitleKey | translate" [rows]="summaryRows"
+            [confirmLabel]="'leaveRequestForm.actions.confirm' | translate"
+            [cancelLabel]="'leaveRequestForm.actions.cancel' | translate" (confirm)="onConfirmSummary()"
+            (cancel)="onEditSummary()">
         </app-request-summary>
 
         <div *ngIf="submissionErrorMessage" class="error-msg">
@@ -322,8 +341,17 @@
         </div>
     </ng-template>
 
-    <app-action-popup [visible]="showPopup" [message]="'Voulez vous soumettre une nouvelle demande'"
-        [primaryLabel]="'Oui'" [secondaryLabel]="'Deconnecter'" [countdownStart]="30" (primary)="onPopupYes()"
-        (secondary)="onPopupDisconnect()">
+    <app-action-popup [visible]="showPopup" [message]="'leaveRequestForm.popup.newRequestQuestion' | translate"
+        [primaryLabel]="'leaveRequestForm.actions.yes' | translate"
+        [secondaryLabel]="'leaveRequestForm.actions.disconnect' | translate" [countdownStart]="30"
+        (primary)="onPopupYes()" (secondary)="onPopupDisconnect()">
     </app-action-popup>
+
+    <ng-template #timepickerCancelBtnTmpl>
+        <button class="timepicker-button" type="button">{{ 'leaveRequestForm.actions.cancel' | translate }}</button>
+    </ng-template>
+
+    <ng-template #timepickerConfirmBtnTmpl>
+        <button class="timepicker-button" type="button">{{ 'leaveRequestForm.actions.confirm' | translate }}</button>
+    </ng-template>
 </div>

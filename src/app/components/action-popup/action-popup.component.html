@@ -3,7 +3,7 @@
         <h3>{{ message }}</h3>
 
         <div class="timer-chip">
-            Deconnexion automatique dans {{ countdown }}s
+            {{ 'actionPopup.autoDisconnectIn' | translate:{ seconds: countdown } }}
         </div>
 
         <div class="popup-actions">

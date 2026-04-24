@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 
 import {
   AbsenceRequestCreateDto,
   DocumentRequestCreateDto,
+  DocumentRequestPeriodDto,
   DocumentType,
   LeaveRequestCreateDto,
   PayslipMonthYearSelectionDto,
@@ -36,52 +38,52 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
   readonly attestationDocumentTypeOptions = [
     {
       value: DocumentType.ATTESTATION_SALAIRE,
-      label: 'Attestation de salaire',
-      subtitle: 'Document standard'
+      labelKey: 'leaveRequestForm.documents.salaryCertificate',
+      subtitleKey: 'leaveRequestForm.documents.standardDocument'
     },
     {
       value: DocumentType.ATTESTATION_TRAVAIL,
-      label: 'Attestation de travail',
-      subtitle: 'Motif obligatoire'
+      labelKey: 'leaveRequestForm.documents.workCertificate',
+      subtitleKey: 'leaveRequestForm.documents.mandatoryReason'
     },
     {
       value: DocumentType.ATTESTATION_BENEFICE_PRET,
-      label: 'Attestation de benefice de pret',
-      subtitle: 'Document standard'
+      labelKey: 'leaveRequestForm.documents.loanBenefitCertificate',
+      subtitleKey: 'leaveRequestForm.documents.standardDocument'
     },
     {
       value: DocumentType.ATTESTATION_NON_BENEFICE_PRET,
-      label: 'Attestation de non benefice de pret',
-      subtitle: 'Document standard'
+      labelKey: 'leaveRequestForm.documents.noLoanBenefitCertificate',
+      subtitleKey: 'leaveRequestForm.documents.standardDocument'
     },
     {
       value: DocumentType.CERTIFICAT_RETENUE,
-      label: 'Certificat de retenue',
-      subtitle: 'Selection multiple d annees'
+      labelKey: 'leaveRequestForm.documents.withholdingCertificate',
+      subtitleKey: 'leaveRequestForm.documents.multipleYears'
     },
     {
       value: DocumentType.COPIE_FICHE_PAIE,
-      label: 'Copie fiche de paie',
-      subtitle: 'Selection multiple mois/annee'
+      labelKey: 'leaveRequestForm.documents.payslipCopy',
+      subtitleKey: 'leaveRequestForm.documents.multipleMonthsYears'
     }
   ];
   readonly monthOptions = [
-    { value: 1, label: 'Janvier' },
-    { value: 2, label: 'Fevrier' },
-    { value: 3, label: 'Mars' },
-    { value: 4, label: 'Avril' },
-    { value: 5, label: 'Mai' },
-    { value: 6, label: 'Juin' },
-    { value: 7, label: 'Juillet' },
-    { value: 8, label: 'Aout' },
-    { value: 9, label: 'Septembre' },
-    { value: 10, label: 'Octobre' },
-    { value: 11, label: 'Novembre' },
-    { value: 12, label: 'Decembre' }
+    { value: 1, labelKey: 'leaveRequestForm.months.january' },
+    { value: 2, labelKey: 'leaveRequestForm.months.february' },
+    { value: 3, labelKey: 'leaveRequestForm.months.march' },
+    { value: 4, labelKey: 'leaveRequestForm.months.april' },
+    { value: 5, labelKey: 'leaveRequestForm.months.may' },
+    { value: 6, labelKey: 'leaveRequestForm.months.june' },
+    { value: 7, labelKey: 'leaveRequestForm.months.july' },
+    { value: 8, labelKey: 'leaveRequestForm.months.august' },
+    { value: 9, labelKey: 'leaveRequestForm.months.september' },
+    { value: 10, labelKey: 'leaveRequestForm.months.october' },
+    { value: 11, labelKey: 'leaveRequestForm.months.november' },
+    { value: 12, labelKey: 'leaveRequestForm.months.december' }
   ];
   readonly workReasonOptions = [
-    { value: WorkCertificateReason.CIN_RENEWAL, label: 'Pour renouvellement de CIN' },
-    { value: WorkCertificateReason.OTHER, label: 'Autre motif' }
+    { value: WorkCertificateReason.CIN_RENEWAL, labelKey: 'leaveRequestForm.workReasons.cinRenewal' },
+    { value: WorkCertificateReason.OTHER, labelKey: 'leaveRequestForm.workReasons.otherReason' }
   ];
   readonly yearOptions = this.buildYearOptions();
   selectedAttestationDocumentTypes: DocumentType[] = [];
@@ -134,10 +136,6 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.absenceStartMinTime;
   }
 
-  get absenceStartClockMin12(): string {
-    return this.to12HourLabel(this.absenceStartClockMin);
-  }
-
   get absenceEndClockMin(): string {
     if (this.absenceEndMinTime === '24:00') {
       return '23:59';
@@ -146,8 +144,8 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.absenceEndMinTime;
   }
 
-  get absenceEndClockMin12(): string {
-    return this.to12HourLabel(this.absenceEndClockMin);
+  get todayInputDate(): string {
+    return this.getTodayInputDate();
   }
 
   get isAbsenceStartSelectionDisabled(): boolean {
@@ -214,18 +212,24 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
   get attestationPrimaryLabel(): string {
     if (this.isAttestationSelectionStep) {
-      return this.hasAttestationInfoStep ? 'Suivant' : 'Continuer';
+      return this.hasAttestationInfoStep
+        ? this.t('leaveRequestForm.actions.next')
+        : this.t('leaveRequestForm.actions.continue');
     }
 
-    return this.hasNextInfoDocumentStep ? 'Suivant' : 'Continuer';
+    return this.hasNextInfoDocumentStep
+      ? this.t('leaveRequestForm.actions.next')
+      : this.t('leaveRequestForm.actions.continue');
   }
 
   get attestationSecondaryLabel(): string {
     if (!this.isAttestationDetailsStep) {
-      return 'Annuler';
+      return this.t('leaveRequestForm.actions.cancel');
     }
 
-    return this.attestationInfoDocumentStepIndex > 0 ? 'Precedent' : 'Retour';
+    return this.attestationInfoDocumentStepIndex > 0
+      ? this.t('leaveRequestForm.actions.previous')
+      : this.t('leaveRequestForm.actions.back');
   }
 
   get hasSelectedAttestationDocuments(): boolean {
@@ -271,7 +275,11 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.advanceAmountDisplay.length > 0;
   }
 
-  constructor(private fb: FormBuilder, private personalRequestService: PersonalRequestService) {}
+  constructor(
+    private fb: FormBuilder,
+    private personalRequestService: PersonalRequestService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.leaveForm = this.fb.group({
@@ -312,15 +320,15 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     if (this.isAttestationRequest) {
       const payload = this.buildDocumentRequestsPayload(this.normalizeOptionalText(raw.motif));
       const rows: SummaryRow[] = [
-        { label: 'Matricule', value: raw.matricule || '-' },
-        { label: 'Nom et prenom', value: raw.fullName || '-' },
-        { label: 'Documents selectionnes', value: this.selectedAttestationDocumentsSummary },
-        { label: 'Nombre de demandes', value: String(payload.length) }
+        { label: 'leaveRequestForm.fields.matricule', value: raw.matricule || '-' },
+        { label: 'leaveRequestForm.fields.fullName', value: raw.fullName || '-' },
+        { label: 'leaveRequestForm.summary.selectedDocuments', value: this.selectedAttestationDocumentsSummary },
+        { label: 'leaveRequestForm.summary.requestCount', value: String(payload.length) }
       ];
 
       payload.forEach((documentRequest, index) => {
         rows.push({
-          label: `Document ${index + 1}`,
+          label: this.t('leaveRequestForm.summary.documentIndex', { index: index + 1 }),
           value: this.formatDocumentRequestSummary(documentRequest)
         });
       });
@@ -330,31 +338,37 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.isAdvanceSalaryRequest) {
       return [
-        { label: 'Matricule', value: raw.matricule || '-' },
-        { label: 'Nom et prenom', value: raw.fullName || '-' },
-        { label: 'Montant', value: raw.amount ? `${raw.amount} TND` : '-' },
-        { label: 'Motif', value: raw.motif || '-' }
+        { label: 'leaveRequestForm.fields.matricule', value: raw.matricule || '-' },
+        { label: 'leaveRequestForm.fields.fullName', value: raw.fullName || '-' },
+        {
+          label: 'leaveRequestForm.fields.amount',
+          value: raw.amount ? `${raw.amount} ${this.t('leaveRequestForm.common.currency')}` : '-'
+        },
+        { label: 'leaveRequestForm.fields.reason', value: raw.motif || '-', isMotif: true }
       ];
     }
 
     if (this.isAbsenceRequest) {
       return [
-        { label: 'Matricule', value: raw.matricule || '-' },
-        { label: 'Nom et prenom', value: raw.fullName || '-' },
-        { label: 'Date', value: this.formatDisplayDate(raw.absenceDate) },
-        { label: 'De', value: this.formatDisplayTime(raw.absenceStartTime) },
-        { label: 'A', value: this.formatDisplayTime(raw.absenceEndTime) },
-        { label: 'Motif', value: raw.motif || '-' }
+        { label: 'leaveRequestForm.fields.matricule', value: raw.matricule || '-' },
+        { label: 'leaveRequestForm.fields.fullName', value: raw.fullName || '-' },
+        { label: 'leaveRequestForm.fields.date', value: this.formatDisplayDate(raw.absenceDate) },
+        { label: 'leaveRequestForm.fields.from', value: this.formatDisplayTime(raw.absenceStartTime) },
+        { label: 'leaveRequestForm.fields.to', value: this.formatDisplayTime(raw.absenceEndTime) },
+        { label: 'leaveRequestForm.fields.reason', value: raw.motif || '-', isMotif: true }
       ];
     }
 
     return [
-      { label: 'Matricule', value: raw.matricule || '-' },
-      { label: 'Nom et prenom', value: raw.fullName || '-' },
-      { label: 'Duree', value: `${raw.duration || 0} jour(s)` },
-      { label: 'De', value: this.formatDisplayDate(raw.startDate) },
-      { label: 'A', value: this.formatDisplayDate(raw.endDate) },
-      { label: 'Motif', value: raw.motif || '-' }
+      { label: 'leaveRequestForm.fields.matricule', value: raw.matricule || '-' },
+      { label: 'leaveRequestForm.fields.fullName', value: raw.fullName || '-' },
+      {
+        label: 'leaveRequestForm.fields.duration',
+        value: this.t('leaveRequestForm.summary.dayCount', { count: raw.duration || 0 })
+      },
+      { label: 'leaveRequestForm.fields.from', value: this.formatDisplayDate(raw.startDate) },
+      { label: 'leaveRequestForm.fields.to', value: this.formatDisplayDate(raw.endDate) },
+      { label: 'leaveRequestForm.fields.reason', value: raw.motif || '-', isMotif: true }
     ];
   }
 
@@ -439,7 +453,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     this.submissionErrorMessage = '';
 
     if (!this.selectedAttestationDocumentTypes.length) {
-      this.submissionErrorMessage = 'Veuillez selectionner au moins un document.';
+      this.submissionErrorMessage = this.t('leaveRequestForm.errors.selectAtLeastOneDocument');
       return;
     }
 
@@ -498,9 +512,9 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
   toggleWorkAttestationReason(reason: WorkCertificateReason): void {
     if (this.isWorkReasonSelected(reason)) {
-      this.selectedWorkReasons = this.selectedWorkReasons.filter((current) => current !== reason);
+      this.selectedWorkReasons = [];
     } else {
-      this.selectedWorkReasons = [...this.selectedWorkReasons, reason];
+      this.selectedWorkReasons = [reason];
     }
 
     if (!this.isWorkReasonSelected(WorkCertificateReason.OTHER)) {
@@ -736,7 +750,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (error) => {
           console.error('Leave request submit failed', error);
-          this.submissionErrorMessage = 'Echec de l envoi de la demande de conge. Veuillez reessayer.';
+          this.submissionErrorMessage = this.t('leaveRequestForm.errors.submitLeaveFailed');
         }
       });
   }
@@ -762,7 +776,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (error) => {
           console.error('Absence request submit failed', error);
-          this.submissionErrorMessage = 'Echec de l envoi de la demande d absence. Veuillez reessayer.';
+          this.submissionErrorMessage = this.t('leaveRequestForm.errors.submitAbsenceFailed');
         }
       });
   }
@@ -786,7 +800,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (error) => {
           console.error('Salary advance request submit failed', error);
-          this.submissionErrorMessage = 'Echec de l envoi de la demande d avance sur salaire. Veuillez reessayer.';
+          this.submissionErrorMessage = this.t('leaveRequestForm.errors.submitAdvanceFailed');
         }
       });
   }
@@ -803,7 +817,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
     const payload = this.buildDocumentRequestsPayload(optionalReason);
     if (!payload.length) {
-      this.submissionErrorMessage = 'Veuillez selectionner au moins un document.';
+      this.submissionErrorMessage = this.t('leaveRequestForm.errors.selectAtLeastOneDocument');
       return;
     }
 
@@ -819,7 +833,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (error) => {
           console.error('Document request submit failed', error);
-          this.submissionErrorMessage = 'Echec de l envoi de la demande de document. Veuillez reessayer.';
+          this.submissionErrorMessage = this.t('leaveRequestForm.errors.submitDocumentFailed');
         }
       });
   }
@@ -964,23 +978,23 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
   private getAttestationValidationMessage(): string {
     if (!this.selectedAttestationDocumentTypes.length) {
-      return 'Veuillez selectionner au moins un document.';
+      return this.t('leaveRequestForm.errors.selectAtLeastOneDocument');
     }
 
     if (this.isWorkAttestationSelected && !this.selectedWorkReasons.length) {
-      return 'Selectionnez au moins un motif pour l attestation de travail.';
+      return this.t('leaveRequestForm.errors.selectWorkReason');
     }
 
     if (this.isWorkAttestationOtherSelected && !this.normalizeOptionalText(this.workOtherReasonText)) {
-      return 'Veuillez preciser le motif "Autre" pour l attestation de travail.';
+      return this.t('leaveRequestForm.errors.specifyOtherReason');
     }
 
     if (this.isRetenueSelected && !this.selectedRetenueYears.length) {
-      return 'Selectionnez au moins une annee pour le certificat de retenue.';
+      return this.t('leaveRequestForm.errors.selectRetenueYear');
     }
 
     if (this.isPayslipCopySelected && !this.selectedPayslipMonths.length) {
-      return 'Selectionnez au moins un mois/annee pour la copie fiche de paie.';
+      return this.t('leaveRequestForm.errors.selectPayslipMonthYear');
     }
 
     return '';
@@ -994,11 +1008,11 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (currentDocumentType === DocumentType.ATTESTATION_TRAVAIL) {
       if (!this.selectedWorkReasons.length) {
-        return 'Selectionnez au moins un motif pour l attestation de travail.';
+        return this.t('leaveRequestForm.errors.selectWorkReason');
       }
 
       if (this.isWorkAttestationOtherSelected && !this.normalizeOptionalText(this.workOtherReasonText)) {
-        return 'Veuillez preciser le motif "Autre" pour l attestation de travail.';
+        return this.t('leaveRequestForm.errors.specifyOtherReason');
       }
 
       return '';
@@ -1007,13 +1021,13 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     if (currentDocumentType === DocumentType.CERTIFICAT_RETENUE) {
       return this.selectedRetenueYears.length
         ? ''
-        : 'Selectionnez au moins une annee pour le certificat de retenue.';
+        : this.t('leaveRequestForm.errors.selectRetenueYear');
     }
 
     if (currentDocumentType === DocumentType.COPIE_FICHE_PAIE) {
       return this.selectedPayslipMonths.length
         ? ''
-        : 'Selectionnez au moins un mois/annee pour la copie fiche de paie.';
+        : this.t('leaveRequestForm.errors.selectPayslipMonthYear');
     }
 
     return '';
@@ -1031,8 +1045,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
             otherWorkCertificateReason: workReason === WorkCertificateReason.OTHER
               ? this.normalizeOptionalText(this.workOtherReasonText)
               : null,
-            years: null,
-            months: null,
+            requestPeriod: null,
             reason: optionalReason
           });
         });
@@ -1045,8 +1058,9 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
           documentType,
           workCertificateReason: null,
           otherWorkCertificateReason: null,
-          years: [...this.selectedRetenueYears].sort((a, b) => a - b),
-          months: null,
+          requestPeriod: [...this.selectedRetenueYears]
+            .sort((a, b) => a - b)
+            .map((year) => ({ year })),
           reason: optionalReason
         });
 
@@ -1058,8 +1072,11 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
           documentType,
           workCertificateReason: null,
           otherWorkCertificateReason: null,
-          years: null,
-          months: this.sortPayslipSelections(this.selectedPayslipMonths),
+          requestPeriod: this.sortPayslipSelections(this.selectedPayslipMonths)
+            .map((selection): DocumentRequestPeriodDto => ({
+              year: selection.year,
+              month: selection.month
+            })),
           reason: optionalReason
         });
 
@@ -1070,8 +1087,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
         documentType,
         workCertificateReason: null,
         otherWorkCertificateReason: null,
-        years: null,
-        months: null,
+        requestPeriod: null,
         reason: optionalReason
       });
     });
@@ -1082,25 +1098,49 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
   private formatDocumentRequestSummary(documentRequest: DocumentRequestCreateDto): string {
     if (documentRequest.documentType === DocumentType.ATTESTATION_TRAVAIL) {
       if (documentRequest.workCertificateReason === WorkCertificateReason.OTHER) {
-        return `${this.getDocumentLabel(documentRequest.documentType)} - Autre: ${documentRequest.otherWorkCertificateReason || '-'}`;
+        return this.t('leaveRequestForm.summary.documentOtherReason', {
+          document: this.getDocumentLabel(documentRequest.documentType),
+          reason: documentRequest.otherWorkCertificateReason || '-'
+        });
       }
 
-      return `${this.getDocumentLabel(documentRequest.documentType)} - Pour renouvellement de CIN`;
+      return this.t('leaveRequestForm.summary.documentCinRenewal', {
+        document: this.getDocumentLabel(documentRequest.documentType)
+      });
     }
 
     if (documentRequest.documentType === DocumentType.CERTIFICAT_RETENUE) {
-      const years = documentRequest.years?.length ? documentRequest.years.join(', ') : '-';
-      return `${this.getDocumentLabel(documentRequest.documentType)} - Annees: ${years}`;
+      const requestPeriod = documentRequest.requestPeriod || [];
+      const years = requestPeriod
+        .map((selection) => selection.year)
+        .sort((a, b) => a - b);
+      const yearsText = years.length ? years.join(', ') : '-';
+
+      return this.t('leaveRequestForm.summary.documentYears', {
+        document: this.getDocumentLabel(documentRequest.documentType),
+        years: yearsText
+      });
     }
 
     if (documentRequest.documentType === DocumentType.COPIE_FICHE_PAIE) {
-      const monthsText = documentRequest.months?.length
-        ? this.sortPayslipSelections(documentRequest.months)
+      const requestPeriod = documentRequest.requestPeriod || [];
+      const payslipSelections = requestPeriod
+        .filter((selection) => Number.isInteger(selection.month))
+        .map((selection) => ({
+          year: selection.year,
+          month: Number(selection.month)
+        }));
+
+      const monthsText = payslipSelections.length
+        ? this.sortPayslipSelections(payslipSelections)
           .map((selection) => `${String(selection.month).padStart(2, '0')}/${selection.year}`)
           .join(', ')
         : '-';
 
-      return `${this.getDocumentLabel(documentRequest.documentType)} - Mois/annee: ${monthsText}`;
+      return this.t('leaveRequestForm.summary.documentMonthYear', {
+        document: this.getDocumentLabel(documentRequest.documentType),
+        months: monthsText
+      });
     }
 
     return this.getDocumentLabel(documentRequest.documentType);
@@ -1260,30 +1300,18 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return '';
   }
 
-  private to12HourLabel(value24: string): string {
-    const normalized = this.normalizeTimeTo24h(value24);
-    if (!normalized) {
-      return '12:00 AM';
-    }
-
-    const [hh, mm] = normalized.split(':').map((part) => Number(part));
-    if (Number.isNaN(hh) || Number.isNaN(mm)) {
-      return '12:00 AM';
-    }
-
-    const period = hh >= 12 ? 'PM' : 'AM';
-    const hour12 = hh % 12 === 0 ? 12 : hh % 12;
-    return `${hour12}:${String(mm).padStart(2, '0')} ${period}`;
-  }
-
   getDocumentLabel(value: DocumentType): string {
     const option = this.attestationDocumentTypeOptions.find((item) => item.value === value);
-    return option?.label || '-';
+    return option?.labelKey ? this.t(option.labelKey) : '-';
   }
 
   getMonthLabel(value: number): string {
     const option = this.monthOptions.find((item) => item.value === value);
-    return option?.label || '-';
+    return option?.labelKey ? this.t(option.labelKey) : '-';
+  }
+
+  private t(key: string, params?: Record<string, unknown>): string {
+    return this.translate.instant(key, params);
   }
 
   private buildYearOptions(): number[] {

@@ -36,5 +36,126 @@
     "thankingMessage2": "L'excellence ne peut être atteinte qu’à travers des individus passionnés qui font",
     "thankingMessage3": "preuve d’humilité et qui promeuvent une culture de changement créative.",
     "finish": "Retourner à la page d'accueil"
+  },
+  "leaveRequestForm": {
+    "header": {
+      "fillRequestContinue": "Renseignez votre demande puis cliquez sur Continuer.",
+      "step1Of2": "Etape 1 sur 2 : selectionnez les documents a demander puis cliquez sur Suivant.",
+      "selectDocsShowSummary": "Selectionnez les documents a demander puis cliquez sur Continuer pour afficher le resume.",
+      "step2Of2": "Etape 2 sur 2 : renseignez les informations requises puis cliquez sur Continuer."
+    },
+    "steps": {
+      "documents": "Documents",
+      "information": "Informations",
+      "summary": "Resume"
+    },
+    "fields": {
+      "matricule": "Matricule",
+      "fullName": "Nom et prenom",
+      "specify": "Preciser",
+      "amount": "Montant",
+      "date": "Date",
+      "from": "De",
+      "to": "A",
+      "duration": "Duree",
+      "durationDays": "Duree (jours)",
+      "reason": "Motif"
+    },
+    "attestation": {
+      "selectDocuments": "Selection des documents",
+      "touchOneOrMoreDocuments": "Touchez un ou plusieurs documents.",
+      "selectedDocuments": "Documents selectionnes",
+      "documentInformation": "Informations document",
+      "workCertificateReason": "Motif de l attestation de travail",
+      "chooseOneOrTwoReasons": "Vous pouvez choisir un ou deux motifs.",
+      "withholdingYears": "Annees du certificat de retenue",
+      "touchAllDesiredYears": "Touchez toutes les annees souhaitees.",
+      "payslipMonthYear": "Mois et annee de la fiche de paie",
+      "selectYearThenMonths": "1) Touchez une annee. 2) Touchez les mois."
+    },
+    "documents": {
+      "salaryCertificate": "Attestation de salaire",
+      "workCertificate": "Attestation de travail",
+      "loanBenefitCertificate": "Attestation de benefice de pret",
+      "noLoanBenefitCertificate": "Attestation de non benefice de pret",
+      "withholdingCertificate": "Certificat de retenue",
+      "payslipCopy": "Copie fiche de paie",
+      "standardDocument": "Document standard",
+      "mandatoryReason": "Motif obligatoire",
+      "multipleYears": "Selection multiple d annees",
+      "multipleMonthsYears": "Selection multiple mois/annee"
+    },
+    "workReasons": {
+      "cinRenewal": "Pour renouvellement de CIN",
+      "otherReason": "Autre motif"
+    },
+    "months": {
+      "january": "Janvier",
+      "february": "Fevrier",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Aout",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Decembre"
+    },
+    "placeholders": {
+      "enterReason": "Saisir votre motif"
+    },
+    "aria": {
+      "amountInTnd": "Montant en TND",
+      "deleteOneDigit": "Supprimer un chiffre",
+      "amountNumericKeyboard": "Clavier numerique montant"
+    },
+    "actions": {
+      "next": "Suivant",
+      "continue": "Continuer",
+      "cancel": "Annuler",
+      "previous": "Precedent",
+      "back": "Retour",
+      "confirm": "Confirmer",
+      "yes": "Oui",
+      "disconnect": "Deconnecter"
+    },
+    "errors": {
+      "endDateAfterStartDate": "La date de fin doit etre egale ou posterieure a la date de debut.",
+      "endTimeAfterStartTime": "L'heure A doit etre posterieure a l'heure De.",
+      "selectAtLeastOneDocument": "Veuillez selectionner au moins un document.",
+      "selectWorkReason": "Selectionnez au moins un motif pour l attestation de travail.",
+      "specifyOtherReason": "Veuillez preciser le motif \"Autre\" pour l attestation de travail.",
+      "selectRetenueYear": "Selectionnez au moins une annee pour le certificat de retenue.",
+      "selectPayslipMonthYear": "Selectionnez au moins un mois/annee pour la copie fiche de paie.",
+      "submitLeaveFailed": "Echec de l envoi de la demande de conge. Veuillez reessayer.",
+      "submitAbsenceFailed": "Echec de l envoi de la demande d absence. Veuillez reessayer.",
+      "submitAdvanceFailed": "Echec de l envoi de la demande d avance sur salaire. Veuillez reessayer.",
+      "submitDocumentFailed": "Echec de l envoi de la demande de document. Veuillez reessayer."
+    },
+    "summary": {
+      "selectedDocuments": "Documents selectionnes",
+      "requestCount": "Nombre de demandes",
+      "documentIndex": "Document {{index}}",
+      "dayCount": "{{count}} jour(s)",
+      "documentOtherReason": "{{document}} - Autre: {{reason}}",
+      "documentCinRenewal": "{{document}} - Pour renouvellement de CIN",
+      "documentYears": "{{document}} - Annees: {{years}}",
+      "documentMonthYear": "{{document}} - Mois/annee: {{months}}"
+    },
+    "popup": {
+      "newRequestQuestion": "Voulez vous soumettre une nouvelle demande"
+    },
+    "common": {
+      "currency": "TND"
+    }
+  },
+  "requestSummary": {
+    "subtitle": "Resume de la demande",
+    "referencePrefix": "Ref"
+  },
+  "actionPopup": {
+    "autoDisconnectIn": "Deconnexion automatique dans {{seconds}}s"
   }
 }

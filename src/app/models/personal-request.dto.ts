@@ -36,11 +36,15 @@ export interface PayslipMonthYearSelectionDto {
   month: number;
 }
 
+export interface DocumentRequestPeriodDto {
+  year: number;
+  month?: number;
+}
+
 export interface DocumentRequestCreateDto {
   documentType: DocumentType;
   workCertificateReason: WorkCertificateReason | null;
   otherWorkCertificateReason: string | null;
-  years: number[] | null;
-  months: PayslipMonthYearSelectionDto[] | null;
+  requestPeriod: DocumentRequestPeriodDto[] | null;
   reason: string | null;
 }

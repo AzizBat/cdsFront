@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" role="img" aria-labelledby="anonymousTitle anonymousDesc">
+  <title id="anonymousTitle">Rester anonyme</title>
+  <desc id="anonymousDesc">Illustration professionnelle pour la carte anonyme.</desc>
+  <defs>
+    <linearGradient id="bgAnon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7faf9"/>
+      <stop offset="100%" stop-color="#e8f6f0"/>
+    </linearGradient>
+    <linearGradient id="cloak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b5d5a"/>
+      <stop offset="100%" stop-color="#1e3d3a"/>
+    </linearGradient>
+    <linearGradient id="lock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15a270"/>
+      <stop offset="100%" stop-color="#0f8a5d"/>
+    </linearGradient>
+    <filter id="shadowAnon" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#1e3d3a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect x="20" y="20" width="440" height="300" rx="28" fill="url(#bgAnon)"/>
+
+  <g filter="url(#shadowAnon)">
+    <path d="M150 234c7-66 47-114 90-114s83 48 90 114" fill="url(#cloak)"/>
+    <ellipse cx="240" cy="154" rx="56" ry="50" fill="#f7d8bf"/>
+    <path d="M184 120c10-40 37-64 56-64s46 24 56 64" fill="#2d4f4c"/>
+    <rect x="198" y="150" width="84" height="30" rx="15" fill="#ffffff" opacity="0.9"/>
+    <circle cx="220" cy="165" r="6" fill="#294d49"/>
+    <circle cx="260" cy="165" r="6" fill="#294d49"/>
+  </g>
+
+  <g transform="translate(308,198)">
+    <rect x="0" y="14" width="88" height="64" rx="12" fill="#111111"/>
+    <path d="M22 14v-9c0-16 12-28 22-28s22 12 22 28v9" fill="none" stroke="#111111" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="44" cy="46" r="8" fill="#ffffff"/>
+    <rect x="41" y="50" width="6" height="12" rx="3" fill="#ffffff"/>
+  </g>
+
+  <rect x="56" y="264" width="170" height="16" rx="8" fill="#cfe4dc"/>
+  <rect x="236" y="264" width="102" height="16" rx="8" fill="#cfe4dc"/>
+</svg>

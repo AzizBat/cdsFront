@@ -60,7 +60,7 @@ p {
 
 .content {
   display: flex;
-  margin: 82px ;
+  margin: 82px;
   /*padding: 0 16px;*/
   /*max-width: 960px;*/
   flex-direction: column;
@@ -139,7 +139,7 @@ svg.material-icons:not(:last-child) {
   font-weight: 600;
   margin-left: 100%;
   margin-top: 45%;
-  border:  none;
+  border: none;
   width: auto;
   min-width: 30%;
   position: static;
@@ -210,7 +210,7 @@ svg.material-icons:not(:last-child) {
   background-color: #ffffff;
   color: #ED1C24;
   font-weight: 600;
-  border:  #F8A714 solid;
+  border: #F8A714 solid;
   width: auto;
   min-width: 30%;
   position: relative;
@@ -263,7 +263,7 @@ svg.material-icons:not(:last-child) {
   background-color: #ffffff;
   color: #ED1C24;
   font-weight: 600;
-  border:  #F8A714 solid;
+  border: #F8A714 solid;
   width: auto;
   min-width: 30%;
   position: relative;
@@ -318,7 +318,7 @@ svg.material-icons:not(:last-child) {
   background-color: #ffffff;
   color: #ED1C24;
   font-weight: 600;
-  border:  #F8A714 solid;
+  border: #F8A714 solid;
   width: auto;
   min-width: 30%;
   position: relative;
@@ -378,7 +378,7 @@ svg.material-icons:not(:last-child) {
   background-color: #ffffff;
   color: #ED1C24;
   font-weight: 600;
-  border:  #F8A714 solid;
+  border: #F8A714 solid;
   width: auto;
   min-width: 30%;
   position: relative;
@@ -424,9 +424,12 @@ a:hover {
   border-radius: 4px;
   border: 1px solid #eee;
   background-color: #fafafa;
-  height: 200px; /* Adjust the height as needed */
-  width: 300px; /* Adjust the width as needed */
-  margin: 16px; /* Adjust the margin as needed */
+  height: 200px;
+  /* Adjust the height as needed */
+  width: 300px;
+  /* Adjust the width as needed */
+  margin: 16px;
+  /* Adjust the margin as needed */
   padding: 16px;
   display: flex;
   justify-content: center;
@@ -440,9 +443,12 @@ a:hover {
   border-radius: 4px;
   border: 1px solid #eee;
   background-color: #fafafa;
-  height: 200px; /* Adjust the height as needed */
-  width: 300px; /* Adjust the width as needed */
-  margin: 16px; /* Adjust the margin as needed */
+  height: 200px;
+  /* Adjust the height as needed */
+  width: 300px;
+  /* Adjust the width as needed */
+  margin: 16px;
+  /* Adjust the margin as needed */
   padding: 16px;
   display: flex;
   justify-content: center;
@@ -488,7 +494,7 @@ a:hover {
   background-color: #ffffff;
   color: #ED1C24;
   font-weight: 600;
-  border:  #F8A714 solid;
+  border: #F8A714 solid;
   width: auto;
   min-width: 30%;
   position: relative;
@@ -506,7 +512,8 @@ a:hover {
   background-color: #fafafa;
   /*height: 200px; !* Adjust the height as needed *!*/
   /*width: 300px; !* Adjust the width as needed *!*/
-  margin: 16px; /* Adjust the margin as needed */
+  margin: 16px;
+  /* Adjust the margin as needed */
   padding: 16px;
   display: flex;
   justify-content: center;
@@ -548,7 +555,7 @@ a:hover {
 }
 
 .terminal pre {
-  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   color: white;
   padding: 0 1rem 1rem;
   margin: 0;
@@ -592,17 +599,17 @@ footer a {
   align-items: center;
   font-size: 12px;
   padding: 3px 10px;
-  border: 1px solid rgba(27,31,35,.2);
+  border: 1px solid rgba(27, 31, 35, .2);
   border-radius: 3px;
-  background-image: linear-gradient(-180deg,#fafbfc,#eff3f6 90%);
+  background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
   margin-left: 4px;
   font-weight: 600;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 }
 
 .github-star-badge:hover {
-  background-image: linear-gradient(-180deg,#f0f3f6,#e6ebf1 90%);
-  border-color: rgba(27,31,35,.35);
+  background-image: linear-gradient(-180deg, #f0f3f6, #e6ebf1 90%);
+  border-color: rgba(27, 31, 35, .35);
   background-position: -.5em;
 }
 
@@ -624,7 +631,7 @@ svg#clouds {
 /* Responsive Styles */
 @media screen and (max-width: 767px) {
 
-  .card-container > *:not(.circle-link) ,
+  .card-container>*:not(.circle-link),
   .terminal {
     width: 100%;
   }
@@ -651,45 +658,46 @@ svg#clouds {
   }
 }
 
-.logo{
+.logo {
   margin-left: -45%;
   margin-top: -4%;
-  width:35%;
+  width: 35%;
   /*height:100%;*/
 }
 
-img.logo1{
+img.logo1 {
   margin-left: -100%;
   margin-top: -12%;
-  width:110px;
-  height:110px
+  width: 110px;
+  height: 110px
 }
 
-img.logo2{
+img.logo2 {
   margin-left: 200%;
   margin-top: -12%;
-  width:130px;
-  height:130px
+  width: 130px;
+  height: 130px
 }
 
-.home{
+.home {
   /*margin-left: -135%;*/
   /*margin-top: -9%;*/
-  width:70px;
-  height:70px
+  width: 70px;
+  height: 70px
 }
 
-.return{
+.return {
   /*margin-left: -110%;*/
   /*margin-top: -18%;*/
-  width:70px;
-  height:70px
+  width: 70px;
+  height: 70px
 }
 
-.content{
+.content {
   font-family: 'CoconNextArabic', Arial, sans-serif;
 }
-.appName{
+
+.appName {
   font-size: 60px;
 }
 
@@ -698,21 +706,59 @@ img.logo2{
   flex-direction: column;
   align-items: center;
 }
-.flags1{
-  width: 100%;
-  height: 90%;
+
+#login #withMatricule,
+#login #WithoutMatricule,
+#login2 #withMatricule2 {
+  width: min(92vw, 420px);
+  min-height: 320px;
+  padding: 20px 24px;
+  border-radius: 14px;
 }
 
-.flags2{
+#login2>.card1.card1-container {
+  width: min(92vw, 420px);
+  min-height: 320px;
+  height: auto;
+  padding: 20px 24px;
+  border-radius: 14px;
+}
+
+#login2>.card1.card1-container .row {
+  width: 100%;
+}
+
+#login #withMatricule h2,
+#login #WithoutMatricule h2 {
+  font-size: 2.3rem;
+  text-align: center;
+}
+
+#login2 #withMatricule2 h2 {
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.flags1 {
+  width: min(95%, 320px);
+  height: 180px;
+  margin-top: 14px;
+  object-fit: contain;
+}
+
+.flags2 {
   width: 40%;
   height: 40%;
 }
-.flags3{
-  width: 70%;
-  height: 90%;
+
+.flags3 {
+  width: min(95%, 320px);
+  height: 180px;
+  margin-top: 14px;
+  object-fit: contain;
 }
 
-.flags4{
+.flags4 {
   width: 70%;
   height: 70%;
 }
@@ -731,9 +777,9 @@ img.logo2{
   transition: all 0.3s ease;
   position: relative;
   display: inline-block;
-  box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-  7px 7px 20px 0px rgba(0,0,0,.1),
-  4px 4px 5px 0px rgba(0,0,0,.1);
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
   outline: none;
 }
 
@@ -750,9 +796,9 @@ img.logo2{
   transition: all 0.3s ease;
   position: relative;
   display: inline-block;
-  box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-  7px 7px 20px 0px rgba(0,0,0,.1),
-  4px 4px 5px 0px rgba(0,0,0,.1);
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
   outline: none;
 }
 
@@ -763,12 +809,14 @@ img.logo2{
   padding: 0;
   border: none;
 }
+
 .btn-login span {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
 }
+
 .btn-login:before,
 .btn-login:after {
   position: absolute;
@@ -782,26 +830,33 @@ img.logo2{
     inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
   transition: all 0.3s ease;
 }
-.btn-login:before{
+
+.btn-login:before {
   height: 0%;
   width: 2px;
 }
+
 .btn-login:after {
   width: 0%;
   height: 2px;
 }
+
 .btn-login:hover:before {
   height: 100%;
 }
+
 .btn-login:hover:after {
   width: 100%;
 }
-.btn-login:hover{
+
+.btn-login:hover {
   background: transparent;
 }
-.btn-login span:hover{
+
+.btn-login span:hover {
   color: #ED1C24;
 }
+
 .btn-login span:before,
 .btn-login span:after {
   position: absolute;
@@ -815,17 +870,21 @@ img.logo2{
     inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
   transition: all 0.3s ease;
 }
+
 .btn-login span:before {
   width: 2px;
   height: 0%;
 }
+
 .btn-login span:after {
   height: 2px;
   width: 0%;
 }
+
 .btn-login span:hover:before {
   height: 100%;
 }
+
 .btn-login span:hover:after {
   width: 100%;
 }
@@ -833,14 +892,190 @@ img.logo2{
 textarea {
   resize: none;
   width: 100%;
-  height:100px;
+  height: 100px;
   font-size: 25px;
 }
 
-.change-password{
+#login2 input,
+#changePw input {
+  width: 90% !important;
+  min-height: 58px;
+  padding: 10px 14px;
+  border: 1.5px solid #d3dae6;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+#login2 input::placeholder,
+#changePw input::placeholder {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #5f6772;
+  letter-spacing: normal;
+}
+
+#login2 input[type="password"],
+#changePw input[type="password"] {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+#login2 input:focus,
+#changePw input:focus {
+  outline: none;
+  border-color: #7d8ea6;
+  box-shadow: 0 0 0 2px rgba(125, 142, 166, 0.2);
+}
+
+#login2 .btn-login {
+  width: 220px;
+  height: 62px;
+  border-radius: 10px;
+  line-height: 62px;
+  background-color: #2563eb;
+  background-image: none;
+}
+
+#login2 .btn-login span {
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+#login2 .btn-login:before,
+#login2 .btn-login:after,
+#login2 .btn-login span:before,
+#login2 .btn-login span:after {
+  display: none;
+}
+
+#login2 .btn-login:hover {
+  background: #1d4ed8;
+}
+
+#login2 .btn-login span:hover {
+  color: #ffffff;
+}
+
+#matricule,
+#matricule1 {
+  font-size: 1.65rem !important;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+#matricule::placeholder,
+#matricule1::placeholder {
+  letter-spacing: normal;
+}
+
+#matricule::-webkit-outer-spin-button,
+#matricule::-webkit-inner-spin-button,
+#matricule1::-webkit-outer-spin-button,
+#matricule1::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#matricule,
+#matricule1 {
+  -moz-appearance: textfield;
+}
+
+.change-password {
   cursor: pointer;
 }
 
-.homeButton{
-
+.personal-auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1100;
 }
+
+.personal-auth-dialog {
+  width: min(90vw, 760px);
+  background: #ffffff;
+  border: 2px solid #d9e0ea;
+  border-radius: 20px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.28);
+  padding: 28px 30px;
+  text-align: center;
+}
+
+.personal-auth-dialog h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.45rem, 2.1vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.personal-auth-dialog p {
+  margin: 14px auto 0;
+  max-width: 680px;
+  color: #334155;
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.personal-auth-actions {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.personal-auth-btn {
+  min-height: 62px;
+  border-radius: 12px;
+  border: 0;
+  font-size: clamp(1.05rem, 1.2vw, 1.25rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.16s ease, filter 0.2s ease;
+}
+
+.personal-auth-btn:hover {
+  filter: brightness(1.03);
+}
+
+.personal-auth-btn:active {
+  transform: scale(0.98);
+}
+
+.personal-auth-btn-primary {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.personal-auth-btn-secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+@media screen and (max-width: 860px) {
+  .personal-auth-dialog {
+    padding: 20px 16px;
+  }
+
+  .personal-auth-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-auth-btn {
+    min-height: 56px;
+  }
+}
+
+.homeButton {}

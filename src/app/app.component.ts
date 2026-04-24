@@ -37,6 +37,8 @@ export class AppComponent implements OnInit, OnDestroy  {
   homeDisplay = false
   message = false
   answer: string | undefined;
+  showPersonalSpaceAuthDialog = false;
+  returnToPersonalSpaceAfterAuth = false;
   personalSpaceCards = [
     'home.advanceSalary',
     'home.leaveRequest',
@@ -46,6 +48,8 @@ export class AppComponent implements OnInit, OnDestroy  {
   selectedPersonalSpaceCard = ''
 
   private onDestroy$ = new Subject<void>();
+  private ripplePointerHandler?: (event: PointerEvent) => void;
+  private screenRippleLayer?: HTMLDivElement;
 
   constructor(
     private translate: TranslateService,
@@ -54,11 +58,64 @@ export class AppComponent implements OnInit, OnDestroy  {
   ) {}
 
   ngOnInit() {
+    this.initGlobalRippleEffect();
   }
 
   ngOnDestroy() {
+    this.destroyGlobalRippleEffect();
     this.onDestroy$.next(); // Emit a signal to unsubscribe from observables
     this.onDestroy$.complete(); // Complete the observable to release resources
+  }
+
+  private initGlobalRippleEffect(): void {
+    if (!document.body) {
+      return;
+    }
+
+    const rippleLayer = document.createElement('div');
+    rippleLayer.className = 'screen-ripple-layer';
+    document.body.appendChild(rippleLayer);
+    this.screenRippleLayer = rippleLayer;
+
+    this.ripplePointerHandler = (event: PointerEvent) => {
+      if (event.pointerType !== 'touch' && event.button !== 0) {
+        return;
+      }
+
+      this.renderScreenRipple(event.clientX, event.clientY);
+    };
+
+    document.addEventListener('pointerdown', this.ripplePointerHandler, true);
+  }
+
+  private destroyGlobalRippleEffect(): void {
+    if (this.ripplePointerHandler) {
+      document.removeEventListener('pointerdown', this.ripplePointerHandler, true);
+      this.ripplePointerHandler = undefined;
+    }
+
+    if (this.screenRippleLayer) {
+      this.screenRippleLayer.remove();
+      this.screenRippleLayer = undefined;
+    }
+  }
+
+  private renderScreenRipple(clientX: number, clientY: number): void {
+    if (!this.screenRippleLayer) {
+      return;
+    }
+
+    const ripple = document.createElement('span');
+    ripple.className = 'screen-ripple-wave';
+
+    const rippleSize = Math.max(Math.max(window.innerWidth, window.innerHeight) * 0.22, 140);
+    ripple.style.width = `${rippleSize}px`;
+    ripple.style.height = `${rippleSize}px`;
+    ripple.style.left = `${clientX - rippleSize / 2}px`;
+    ripple.style.top = `${clientY - rippleSize / 2}px`;
+
+    this.screenRippleLayer.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
   }
 
 
@@ -101,8 +158,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 
 
   selectLanguage(selectedLanguage : string){
-    setTimeout(() => {
-      this.homeDisplay = true
+    this.homeDisplay = true
     this.startInactivityTimer();
     let language = document.getElementById('language') as HTMLButtonElement;
     let languageQuestion = document.getElementById('languageQuestion') as HTMLElement;
@@ -116,8 +172,6 @@ export class AppComponent implements OnInit, OnDestroy  {
     this.selectedLanguage =selectedLanguage
     console.log(this.translate)
     this.page = 'selectLogin'
-    }, 1000);
-
   }
 
   login(){
@@ -155,9 +209,17 @@ export class AppComponent implements OnInit, OnDestroy  {
 
             let login2 = document.getElementById('login2') as HTMLButtonElement;
             let spaces = document.getElementById('spaces') as HTMLElement;
+            let personalSpace = document.getElementById('personalSpace') as HTMLElement;
 
             login2.style.display = "none"
-            spaces.style.removeProperty( 'display' );
+            if (this.returnToPersonalSpaceAfterAuth) {
+              spaces.style.display = 'none';
+              personalSpace.style.removeProperty('display');
+              this.page = 'personalSpacePage';
+              this.returnToPersonalSpaceAfterAuth = false;
+            } else {
+              spaces.style.removeProperty( 'display' );
+            }
 
             },
       _error => {
@@ -167,6 +229,8 @@ export class AppComponent implements OnInit, OnDestroy  {
 
     }
     else{
+      this.anonymous = true
+      this.returnToPersonalSpaceAfterAuth = false
       this.service.getChecklists("Anonymous").subscribe(res1 => {(
         this.checklists = res1 || [])
       })
@@ -193,12 +257,41 @@ export class AppComponent implements OnInit, OnDestroy  {
   }
 
   openPersonalSpace() {
+    if (this.anonymous) {
+      this.showPersonalSpaceAuthDialog = true;
+      return;
+    }
+
     let spaces = document.getElementById('spaces') as HTMLElement;
     let personalSpace = document.getElementById('personalSpace') as HTMLElement;
 
     spaces.style.display = 'none'
     personalSpace.style.removeProperty('display');
     this.page = 'personalSpacePage'
+  }
+
+  closePersonalSpaceAuthDialog() {
+    this.showPersonalSpaceAuthDialog = false;
+  }
+
+  goToLoginFromPersonalSpaceDialog() {
+    this.showPersonalSpaceAuthDialog = false;
+    this.returnToPersonalSpaceAfterAuth = true;
+
+    let spaces = document.getElementById('spaces') as HTMLElement;
+    let personalSpace = document.getElementById('personalSpace') as HTMLElement;
+    let login = document.getElementById('login') as HTMLButtonElement;
+    let login2 = document.getElementById('login2') as HTMLButtonElement;
+    let changePw = document.getElementById('changePw') as HTMLButtonElement;
+
+    spaces.style.display = 'none';
+    personalSpace.style.display = 'none';
+    login.style.display = 'none';
+    login2.style.removeProperty('display');
+    changePw.style.display = 'none';
+
+    this.error = '';
+    this.page = 'loginPage';
   }
 
   openPersonalForm(card: string) {
@@ -435,14 +528,27 @@ export class AppComponent implements OnInit, OnDestroy  {
   }
 
   goBack(){
+    if (this.showPersonalSpaceAuthDialog) {
+      this.showPersonalSpaceAuthDialog = false;
+      return;
+    }
+
     console.log(this.page)
     if(this.page ==='selectLogin'){
       this.finish()
     }
     if(this.page === 'loginPage'){
       let login2 = document.getElementById('login2') as HTMLButtonElement;
-      login2.style.display ='none'
-      this.selectLanguage(this.selectedLanguage)
+      if (this.returnToPersonalSpaceAfterAuth) {
+        let spaces = document.getElementById('spaces') as HTMLElement;
+        login2.style.display = 'none'
+        spaces.style.removeProperty('display')
+        this.returnToPersonalSpaceAfterAuth = false
+        this.page = 'spaceSelectionPage'
+      } else {
+        login2.style.display ='none'
+        this.selectLanguage(this.selectedLanguage)
+      }
     }
 
     if(this.page === 'changePasswordPage'){

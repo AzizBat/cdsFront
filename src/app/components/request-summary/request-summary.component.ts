@@ -5,6 +5,7 @@ export interface SummaryRow {
   value: string;
   type?: 'text' | 'image';
   alt?: string;
+  isMotif?: boolean;
 }
 
 @Component({
