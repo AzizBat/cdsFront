@@ -651,6 +651,24 @@ app-request-summary {
     min-height: 94px;
 }
 
+.field textarea.motif-invalid {
+    border-color: var(--theme-danger);
+    box-shadow: 0 0 0 1px rgba(201, 76, 76, 0.16);
+}
+
+.field textarea.motif-invalid:focus,
+.field textarea.motif-invalid:hover {
+    border-color: var(--theme-danger);
+}
+
+.motif-error-msg {
+    color: var(--theme-danger);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-top: -2px;
+}
+
 .error-msg {
     margin-top: 12px;
     color: var(--theme-danger);
@@ -689,6 +707,18 @@ app-request-summary {
 
 .custom-btn:active {
     transform: scale(0.97);
+}
+
+.custom-btn:disabled,
+.custom-btn:disabled:hover,
+.custom-btn:disabled:active {
+    background: #b9b9b9;
+    background-image: none;
+    color: #ffffff;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: none;
+    transform: none;
 }
 
 .btn-login {
@@ -881,6 +911,14 @@ app-request-summary {
     background: linear-gradient(135deg, #1a5da8 0%, #0f2037 100%) !important;
     border-color: #0f2037 !important;
     color: #ffffff !important;
+}
+
+.leave-shell .btn-login:disabled {
+    background: #b9b9b9 !important;
+    background-image: none !important;
+    border-color: #b9b9b9 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
 }
 
 .leave-shell .attestation-doc-btn.active {

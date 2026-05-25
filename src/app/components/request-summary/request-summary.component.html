@@ -1,4 +1,7 @@
-<div class="summary-wrapper">
+<div class="summary-wrapper" [attr.aria-busy]="isSubmitting">
+    <div class="loading-overlay" *ngIf="isSubmitting" role="status" aria-live="polite">
+        <div class="spinner" aria-label="Loading"></div>
+    </div>
     <div class="paper-sheet">
         <div class="paper-header">
             <h2>{{ title }}</h2>
@@ -22,10 +25,10 @@
         </div>
 
         <div class="paper-footer">
-            <button type="button" class="custom-btn btn-cancel" (click)="onCancel()">
+            <button type="button" class="custom-btn btn-cancel" (click)="onCancel()" [disabled]="isSubmitting">
                 <span>{{ cancelLabel }}</span>
             </button>
-            <button type="button" class="custom-btn btn-login" (click)="onConfirm()">
+            <button type="button" class="custom-btn btn-login" (click)="onConfirm()" [disabled]="isSubmitting">
                 <span>{{ confirmLabel }}</span>
             </button>
         </div>

@@ -19,6 +19,7 @@ export class RequestSummaryComponent {
   @Input() confirmLabel = 'Confirmer';
   @Input() cancelLabel = 'Annuler';
   @Input() referenceCode = '';
+  @Input() isSubmitting = false;
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

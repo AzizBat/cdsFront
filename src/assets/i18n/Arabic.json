@@ -127,6 +127,7 @@
       "selectAtLeastOneDocument": "يرجى اختيار وثيقة واحدة على الأقل.",
       "selectWorkReason": "اختر سببا واحدا على الأقل لشهادة العمل.",
       "specifyOtherReason": "يرجى تحديد السبب \"سبب آخر\" لشهادة العمل.",
+      "motifRequired": "سبب الطلب إجباري *",
       "selectRetenueYear": "اختر سنة واحدة على الأقل لشهادة الخصم.",
       "selectPayslipMonthYear": "اختر شهرا/سنة واحدة على الأقل لنسخة كشف الأجر.",
       "submitLeaveFailed": "فشل إرسال طلب العطلة. يرجى المحاولة مرة أخرى.",

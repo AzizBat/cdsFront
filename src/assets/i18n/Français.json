@@ -127,6 +127,7 @@
       "selectAtLeastOneDocument": "Veuillez selectionner au moins un document.",
       "selectWorkReason": "Selectionnez au moins un motif pour l attestation de travail.",
       "specifyOtherReason": "Veuillez preciser le motif \"Autre\" pour l attestation de travail.",
+      "motifRequired": "Le raison de la demande et obligatoire *",
       "selectRetenueYear": "Selectionnez au moins une annee pour le certificat de retenue.",
       "selectPayslipMonthYear": "Selectionnez au moins un mois/annee pour la copie fiche de paie.",
       "submitLeaveFailed": "Echec de l envoi de la demande de conge. Veuillez reessayer.",

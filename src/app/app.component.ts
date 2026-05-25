@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {AppService} from "./app.service";
 import {Subject} from "rxjs";
+import { LeaveRequestFormComponent } from './components/leave-request-form/leave-request-form.component';
 
 @Component({
   selector: 'app-root',
@@ -46,6 +47,8 @@ export class AppComponent implements OnInit, OnDestroy  {
     'home.attestationsCertificates'
   ]
   selectedPersonalSpaceCard = ''
+
+  @ViewChild(LeaveRequestFormComponent) leaveRequestForm?: LeaveRequestFormComponent;
 
   private onDestroy$ = new Subject<void>();
   private ripplePointerHandler?: (event: PointerEvent) => void;
@@ -603,6 +606,7 @@ export class AppComponent implements OnInit, OnDestroy  {
     }
 
     if(this.page === 'personalFormPage'){
+      this.leaveRequestForm?.onCancel();
       let personalSpace = document.getElementById('personalSpace') as HTMLElement;
       let personalForm = document.getElementById('personalForm') as HTMLElement;
 

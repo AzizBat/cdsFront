@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 
@@ -94,7 +94,17 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
   workOtherReasonText = '';
   attestationStep: 'selection' | 'details' = 'selection';
   attestationInfoDocumentStepIndex = 0;
+  readonly motifMinLength = 5;
   private pageScrollLocked = false;
+
+  get motifControl(): AbstractControl | null {
+    return this.leaveForm?.get('motif') || null;
+  }
+
+  get showMotifValidationError(): boolean {
+    const motifControl = this.motifControl;
+    return !!motifControl && motifControl.invalid && (motifControl.dirty || motifControl.touched);
+  }
 
   get absenceStartMinTime(): string {
     const selectedDate = this.leaveForm?.get('absenceDate')?.value;
@@ -275,6 +285,14 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.advanceAmountDisplay.length > 0;
   }
 
+  get isContinueDisabled(): boolean {
+    if (!this.leaveForm) {
+      return true;
+    }
+
+    return this.isSubmitting || this.leaveForm.invalid;
+  }
+
   constructor(
     private fb: FormBuilder,
     private personalRequestService: PersonalRequestService,
@@ -292,7 +310,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
       absenceDate: [''],
       absenceStartTime: [''],
       absenceEndTime: [''],
-      motif: ['', [Validators.required]]
+      motif: ['', [this.trimmedRequiredMinLengthValidator(this.motifMinLength)]]
     });
 
     this.resetAttestationSelections();
@@ -843,6 +861,27 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     return normalized ? normalized : null;
   }
 
+  private trimmedRequiredMinLengthValidator(minLength: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const normalizedValue = String(control.value || '').trim();
+
+      if (!normalizedValue) {
+        return { motifRequired: true };
+      }
+
+      if (normalizedValue.length < minLength) {
+        return {
+          motifMinLength: {
+            requiredLength: minLength,
+            actualLength: normalizedValue.length
+          }
+        };
+      }
+
+      return null;
+    };
+  }
+
   private togglePageScroll(lock: boolean): void {
     if (this.pageScrollLocked === lock) {
       return;
@@ -906,7 +945,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
       this.invalidAbsenceTimeRange = false;
     } else if (this.isAdvanceSalaryRequest) {
       amountControl?.setValidators([Validators.required, Validators.min(1)]);
-      motifControl?.setValidators([Validators.required]);
+      motifControl?.setValidators([this.trimmedRequiredMinLengthValidator(this.motifMinLength)]);
 
       durationControl?.clearValidators();
       startDateControl?.clearValidators();
@@ -927,7 +966,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     } else if (this.isAbsenceRequest) {
       amountControl?.clearValidators();
       amountControl?.setValue(null, { emitEvent: false });
-      motifControl?.setValidators([Validators.required]);
+      motifControl?.setValidators([this.trimmedRequiredMinLengthValidator(this.motifMinLength)]);
 
       durationControl?.clearValidators();
       startDateControl?.clearValidators();
@@ -947,7 +986,7 @@ export class LeaveRequestFormComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       amountControl?.clearValidators();
       amountControl?.setValue(null, { emitEvent: false });
-      motifControl?.setValidators([Validators.required]);
+      motifControl?.setValidators([this.trimmedRequiredMinLengthValidator(this.motifMinLength)]);
 
       durationControl?.setValidators([Validators.required, Validators.min(1)]);
       startDateControl?.setValidators([Validators.required]);

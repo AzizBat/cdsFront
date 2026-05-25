@@ -9,6 +9,7 @@
     max-width: 100%;
     margin: 0 auto;
     padding: 2px 4px;
+    position: relative;
 }
 
 .paper-sheet {
@@ -167,6 +168,18 @@
     transform: scale(0.97);
 }
 
+.custom-btn:disabled,
+.custom-btn:disabled:hover,
+.custom-btn:disabled:active {
+    background: #b9b9b9;
+    background-image: none;
+    color: #ffffff;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: none;
+    transform: none;
+}
+
 .btn-login {
     background-image: linear-gradient(135deg, #1a5da8 0%, #0f2037 100%);
 }
@@ -177,6 +190,31 @@
 
 .btn-login span {
     display: inline-block;
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.spinner {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 5px solid #d7e1ee;
+    border-top-color: #1a5da8;
+    animation: summary-spin 0.9s linear infinite;
+}
+
+@keyframes summary-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 840px) {

@@ -283,12 +283,20 @@
 
                 <div class="field field-full absence-motif-field" *ngIf="isAbsenceRequest || isAdvanceSalaryRequest">
                     <label>{{ 'leaveRequestForm.fields.reason' | translate }}</label>
-                    <textarea rows="4" formControlName="motif"></textarea>
+                    <textarea rows="4" formControlName="motif"
+                        [class.motif-invalid]="showMotifValidationError"></textarea>
+                    <div class="motif-error-msg" *ngIf="showMotifValidationError">
+                        {{ 'leaveRequestForm.errors.motifRequired' | translate }}
+                    </div>
                 </div>
 
                 <div class="field field-span-2" *ngIf="isLeaveRequest">
                     <label>{{ 'leaveRequestForm.fields.reason' | translate }}</label>
-                    <textarea rows="4" formControlName="motif"></textarea>
+                    <textarea rows="4" formControlName="motif"
+                        [class.motif-invalid]="showMotifValidationError"></textarea>
+                    <div class="motif-error-msg" *ngIf="showMotifValidationError">
+                        {{ 'leaveRequestForm.errors.motifRequired' | translate }}
+                    </div>
                 </div>
 
             </div>
@@ -317,7 +325,8 @@
                 </ng-container>
 
                 <ng-template #defaultActionRow>
-                    <button type="button" class="custom-btn btn-login" (click)="onContinue()">
+                    <button type="button" class="custom-btn btn-login" (click)="onContinue()"
+                        [disabled]="isContinueDisabled">
                         <span>{{ 'leaveRequestForm.actions.continue' | translate }}</span>
                     </button>
 
@@ -332,8 +341,8 @@
     <ng-template #summaryView>
         <app-request-summary [title]="requestTitleKey | translate" [rows]="summaryRows"
             [confirmLabel]="'leaveRequestForm.actions.confirm' | translate"
-            [cancelLabel]="'leaveRequestForm.actions.cancel' | translate" (confirm)="onConfirmSummary()"
-            (cancel)="onEditSummary()">
+            [cancelLabel]="'leaveRequestForm.actions.cancel' | translate" [isSubmitting]="isSubmitting"
+            (confirm)="onConfirmSummary()" (cancel)="onEditSummary()">
         </app-request-summary>
 
         <div *ngIf="submissionErrorMessage" class="error-msg">
