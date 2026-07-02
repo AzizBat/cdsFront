@@ -1,0 +1,83 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>Notification</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="home">Home</a>
+      </li>
+
+      <li class="breadcrumb-item active">
+        <strong>Notification</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+<div class="wrapper wrapper-content">
+  <div class="row animated fadeInRight">
+    <div class="col-lg-12">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h5>Last Notifications in your Organisation</h5>
+        </div>
+
+        <div class="ibox-content inspinia-timeline">
+          <div *ngFor="let pd of  (notification); let i = index">
+            <div *ngIf="pd.auditId !== null">
+              <div class="timeline-item">
+                <div class="row">
+                  <div class="col-3 date">
+                    <em class="fa fa-list-alt"></em>
+                    {{pd.audit.modifiedDate}}
+                    <br/>
+                  </div>
+                  <div class="col-7 content ">
+                    <p class="m-b-xs"><strong>Audit</strong></p>
+
+                    <p>The Audit <strong>{{pd.audit.name}}</strong> has been <strong>{{pd.action}}</strong> by <strong>{{pd.creatorName}}</strong> in <strong>{{pd.audit.areaName}}</strong></p>
+                    <p><span data-diameter="40" class="updating-chart">
+                    </span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pd.auditActionId !== null">
+              <div class="timeline-item">
+                <div class="row">
+                  <div class="col-3 date">
+                    <em class="fa fa-gears"></em>
+                    {{pd.auditAction.modifiedDate}}
+                    <br/>
+                  </div>
+
+                  <div class="col-7 content" style="cursor: pointer" (click)="viewActionDetails(pd.auditActionId)">
+                    <p class="m-b-xs"><strong>Action</strong></p>
+                    <p>The Action <strong>{{pd.auditAction.instruction}}</strong> has been <strong>{{pd.action}}</strong> by <strong>{{pd.creatorName}}</strong> in <strong>{{pd.auditAction.areaName}}</strong></p>
+                    <p><span data-diameter="40" class="updating-chart">
+                    </span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pd.eventId !== null">
+              <div class="timeline-item">
+                <div class="row">
+                  <div class="col-3 date">
+                    <em class="fa fa-flash"></em>
+                    {{pd.event.modifiedDate}}
+                    <br/>
+                  </div>
+                  <div class="col-7 content">
+                    <p class="m-b-xs"><strong>Event</strong></p>
+                    <p>The Action <strong>{{pd.event.name}}</strong> has been <strong>{{pd.action}}</strong> by <strong>{{pd.creatorName}}</strong> in <strong>{{pd.event.areaName}}</strong></p>
+                    <p><span data-diameter="40" class="updating-chart">
+                    </span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

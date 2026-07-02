@@ -1,0 +1,81 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-9">
+    <h2>{{organisation?.name}} Checklists</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>Checklist</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-3">
+    <ng-container *ngIf="organizer">
+    <label class="btn btn-primary block m-b vertical-center"  style="float: right" title="Upload image file" for="inputImage">
+      <input   type="file" accept="application/vnd.ms-excel.sheet.macroEnabled.12"  (change)="addChecklist($any($event.target).files)" name="file" id="inputImage" style="display:none">
+      <em class="fa fa-plus"></em>&nbsp; Upload checklists
+    </label>
+    </ng-container>
+</div>
+</div>
+
+
+<div class="col-lg-12">
+  <div class="ibox ">
+    <div class="ibox-title">
+      <h5>Checklists List</h5>
+    </div>
+
+    <div class="ibox-content">
+      <table class="table">
+        <caption></caption>
+        <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Upload date</th>
+          <th>Status</th>
+          <th *ngIf="organizer">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let pd of  checklists; index as i">
+          <td> {{i+1}}</td>
+          <td >  {{pd.name}}</td>
+          <td>{{pd.createdDate}}
+
+          </td>
+          <td  class="client-status" *ngIf="pd.archived === false ">
+            <span class="label label-success">In production</span>
+          </td>
+          <td  class="project-status" *ngIf="pd.archived === true ">
+            <span class="label label-warning-light">Archived</span>
+          </td>
+
+          <td *ngIf="organizer">
+            <ng-container *ngIf="pd.archived === false;else elseBlock">
+              <a (click)="onDelete(pd.id)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+            </ng-container>
+            <ng-template #elseBlock>
+              <a (click)="restore(pd.id)"><em class="fa fa-share-square-o fa-lg" style="color: mediumseagreen" ></em></a>
+            </ng-template>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

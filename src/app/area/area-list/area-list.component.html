@@ -1,0 +1,89 @@
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-6">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="ibox ">
+              <div class="ibox-title">
+                <h5>Enter Area </h5>
+              </div>
+              <div  class="ibox-content">
+                <form  #form="ngForm" autocomplete="off"  class="ibox-content" method="get">
+                  <div class="form-group  row"><label class="col-sm-2 col-form-label">Name</label>
+
+                    <div class="col-sm-10">
+                      <input type="text" name="name" #name="ngModel" [(ngModel)]="service.formData.name" class="form-control"
+                             placeholder="{{ service.area.name? service.area.name : 'Name' }}" required></div>
+                  </div>
+                  <div class="hr-line-dashed"></div>
+                  <div class="form-group row"><label class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10"><input type="text" class="form-control"> <span class="form-text m-b-none">Describe your area thoroughly.</span>
+                    </div>
+                  </div>
+                  <div class="hr-line-dashed"></div>
+                  <div class="hr-line-dashed"></div>
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-sm-offset-2">
+                      <button class="btn btn-success btn-lg btn-block" type="submit" [disabled]="form.invalid"><em class="fas fa-database"></em> Save Area</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="col-lg-6">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h5>Areas List</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <em class="fa fa-chevron-up"></em>
+            </a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <em class="fa fa-wrench"></em>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+              <li><a href="#" class="dropdown-item">Config option 1</a>
+              </li>
+              <li><a href="#" class="dropdown-item">Config option 2</a>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+        <div class="ibox-content">
+
+          <table class="table">
+            <caption>Area list</caption>
+            <thead>
+            <tr>
+              <th>Area ID</th>
+              <th>Area Name</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let pd of  pageOfItems; index as i">
+              <td> {{i+1}}</td>
+              <td>  {{pd.name}}</td>
+              <td>     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <em class="fa fa-wrench"></em>
+              </a>
+                <ul class="dropdown-menu dropdown-user">
+                  <li> <button class="dropdown-item" (click)="viewDetails(pd.id)">Edit</button>
+                  </li>
+                  <li> <button class="dropdown-item" (click)="onDelete(pd.id)">Delete</button>
+                  </li>
+                </ul></td>
+            </tr>
+            <jw-pagination [items]="service.list" (changePage)="pageClick($event)" [pageSize]="pageSize"></jw-pagination>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

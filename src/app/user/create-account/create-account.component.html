@@ -1,0 +1,144 @@
+
+<div class="background">
+  <!--<body>-->
+  <div class="loginColumns animated fadeInDown">
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="font-bold"> </h2>
+        <h2 class="font-bold"> </h2>
+        <img alt="image"  src="/assets/logo.png"/>
+      </div>
+      <div class="col-md-6">
+        <div class="ibox-content" style="border-radius: 8px;">
+          <div id="title">
+            <h2 class="title">Sign up</h2>
+          </div>
+          <div id="msg">
+            Make the most of your audits
+          </div>
+          <div id="form1">
+            <form #form='ngForm'  autocomplete="off" [formGroup]="formModel" (submit)="onSubmit(form)"  class="m-t" role="form" aria-labelledby="CreatingAccount">
+              <div class="form-group ">
+                <input type="text" (input)="caracterOnlyValidator($event)" formControlName="FirstName" placeholder="FirstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.FirstName.errors }" />
+                <div *ngIf="submitted && f.FirstName.errors" class="invalid-feedback">
+                  <div *ngIf="f.FirstName.errors.required">First name is required</div>
+                </div>
+              </div>
+              <div class="form-group ">
+                <input type="text" (input)="caracterOnlyValidator($event)" formControlName="LastName" placeholder="LastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LastName.errors }" />
+                <div *ngIf="submitted && f.LastName.errors" class="invalid-feedback">
+                  <div *ngIf="f.LastName.errors.required">Last name is required</div>
+                </div>
+              </div>
+              <div class="form-group ">
+                <input type="text" (input)="numbersOnlyValidator($event)" formControlName="Phone" placeholder="Phone" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Phone.errors }" />
+                <div *ngIf="submitted && f.Phone.errors" class="invalid-feedback">
+                  <div *ngIf="f.Phone.errors.required">Phone is required</div>
+                </div>
+              </div>
+              <div class="form-group ">
+                <input type="text" formControlName="email" placeholder="Email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.email">Invalid email address</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <input type="password" formControlName="password" placeholder="Password" class="form-control" [ngClass]="{ 'is-invalid': (submitted && f.password.errors)|| incorrect===true  }" />
+                <div *ngIf="(submitted && f.password.errors) || incorrect===true" class="invalid-feedback">
+                  <div *ngIf="incorrect === true">Your password should contain uppercases , lowercases and numbers </div>
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+                  <div *ngIf="f.password.errors.minlength">password must be at least 6 characters</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <input type="password" formControlName="ConfirmPassword" placeholder="Confirm Password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.ConfirmPassword.errors }" />
+                <div *ngIf="(submitted && f.ConfirmPassword.errors)" class="invalid-feedback">
+                  <div *ngIf="f.ConfirmPassword.errors.required">Password confirmation is required</div>
+                  <div *ngIf="f.ConfirmPassword.errors.minlength">Password must be in 6 caracters</div>
+                  <div *ngIf="f.ConfirmPassword.errors.mustMatch">Your confirmation password doesn't match your password</div>
+                </div>
+              </div>
+
+              <button [disabled]="loading" class="btn btn-primary block full-width m-b">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Create an account
+              </button>
+
+
+              <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+
+            </form>
+
+            <hr>
+            Already on Cipa? &nbsp;
+            <a (click)="login()" style="color: #1AB394"> <strong>Sign in</strong></a>
+            <br>
+          </div>
+          <div id="form2" style="display: none">
+            <form #form1='ngForm'  autocomplete="off" [formGroup]="formModel1" (submit)="onSubmit1(form1)"  class="m-t" role="form" aria-labelledby="organisationName">
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <div class="form-group ">
+                <input type="text" formControlName="name" placeholder="Organisation name" class="form-control" [ngClass]="{ 'is-invalid': submitted1 && g.name.errors }" />
+                <div *ngIf="submitted1 && g.name.errors" class="invalid-feedback">
+                  <div *ngIf="g.name.errors.required">Organisation name is required</div>
+                </div>
+              </div>
+              <button type="submit" [disabled]="loading1" class="btn btn-primary block full-width m-b">
+                <span *ngIf="loading1" class="spinner-border spinner-border-sm mr-1"></span>
+                Add your organisation
+              </button>
+              <div *ngIf="error1" class="alert alert-danger mt-3 mb-0">{{error1}}</div>
+
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+            </form>
+
+          </div>
+          <div id="message" style="display: none">
+            <h2 class="center1"> Your account is now Created</h2>
+            <br>
+            <p> An e-mail was sent to you to complete registration</p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
+

@@ -1,13 +1,27 @@
 // This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+/*export const environment = {
+  production: false,
+  // apiUrl: 'http://Cipa.eu-west-3.elasticbeanstalk.com'
+
+
+  apiUrl: 'http://api.local'
+
+   // apiUrl: 'https://cds-server.azurewebsites.net'
+
+
+  // apiUrl: 'https://CipaProduction.eu-west-3.elasticbeanstalk.com'
+  // apiUrl: 'https://backendrpi.cipa-web.com'
+  // apiUrl: 'https://backend.cipa-web.com'
+  // apiUrl: 'https://sopalbackend.cipa-web.com'
+};*/
 
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:5000'
-  apiUrl: 'https://cds-server.azurewebsites.net'
-
+  apiUrl: '/api'
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file
@@ -16,4 +30,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

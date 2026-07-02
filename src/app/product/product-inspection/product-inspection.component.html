@@ -1,0 +1,387 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-8">
+    <h2>{{organisation?.name}} product's inspection</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>product-inspection</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="ibox">
+        <div class="ibox-content ">
+          <div class="row m-b-sm m-t-sm" [formGroup]="formModel">
+            <div class="row">
+              <div class="col-lg-4">
+                <select  class="col-md-12"  name="products" id="products" (change)="changeAudit()">
+                  <ng-container>
+                    <option  value="null" selected disabled hidden  >Filter by product</option>
+                    <option value="null"></option>
+                    <ng-container *ngFor="let Products of products">
+                      <option  value="{{Products.id}}" >{{Products.designation}}</option>
+                    </ng-container>
+                  </ng-container>
+
+                </select>
+              </div>
+
+              <div class="col-lg-4">
+                <select  class="col-md-12"  name="inspectionStep" id="inspectionStep" (change)="changeAudit()" >
+                  <option  value="null" selected disabled hidden  >Filter by inspection step</option>
+                  <option value="null"> </option>
+                  <ng-container *ngFor="let states of statusConstants">
+                    <option  value="{{states.value}}" >{{states.name}}</option>
+                  </ng-container>
+
+                </select>
+              </div>
+
+              <div class="col-lg-4">
+                <select class="col-md-12"  name="className" id="className" (change)="changeAudit()" >
+                  <ng-container >
+                    <option  value="null" selected disabled hidden  >Filter by class</option>
+                    <option value="null"></option>
+                    <option  value="C1" >C1</option>
+                    <option  value="C2" >C2</option>
+                    <option  value="C3" >C3</option>
+                  </ng-container>
+
+                </select></div>
+            </div>
+
+            <div class="row" style="padding-top: 5px">
+              <div class="col-lg-4">
+                <div class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="from" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="Starting date">
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div  class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="to" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="End date">
+                </div>
+              </div>
+
+
+              <div  class="col-lg-2">
+                <input type="text" class="col-md-12" placeholder="Enter serial number" formControlName="serialNumber" class="form-control" id="serialNumber">
+              </div>
+              <div class="col-lg-2">
+                <button class="btn btn-primary block full-width m-b" type="submit" (click)="changeAudit()"><em class="fa fa-check"></em> Search</button>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+            </div>
+          </div>
+
+          <div class="panel blank-panel">
+            <div class="panel-heading">
+              <div class="panel-options">
+                <ul class="nav nav-tabs">
+                  <li><a class="nav-link active" href="#tab-1" data-toggle="tab" (click)="changeTab(0)">Roto</a></li>
+                  <li><a class="nav-link " href="#tab-2" data-toggle="tab" (click)="changeTab(1)">Finition</a></li>
+                  <li><a class="nav-link " href="#tab-3" data-toggle="tab" (click)="changeTab(2)">Final control</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="tab-content">
+
+              <div class="tab-pane active" id="tab-1">
+
+                <table class="table table-hover" >
+                  <caption>product's inspection-Roto</caption>
+                  <thead>
+                  <tr>
+                    <th>Serial Number</th>
+                    <th>Product</th>
+                    <th>Team</th>
+                    <th>material reference</th>
+                    <th>Batch Number</th>
+                    <th>Creation Date</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>action</th>
+                  </tr>
+                  </thead>
+                  <tbody >
+
+
+                  <tr   *ngFor="let pd of filteredData; let i =index">
+                    <ng-container *ngIf="pd.audits.length ===1" >
+                      <td >
+                        <strong>{{pd.name}}</strong>
+                        <br>
+                        <small>Created in : {{pd.audits[0].name}}</small>
+                      </td>
+
+
+                      <td  class="project-title">
+                        <strong>{{pd.product.designation}}</strong>
+                        <br/>
+                      </td>
+
+                      <td >
+                        <ng-container *ngFor="let users of users" >
+                          <ng-container *ngIf="users.id === pd.createdUser">
+                            {{users.firstName}}  {{users.lastName}}
+
+                          </ng-container>
+                        </ng-container>
+                      </td>
+
+                      <td  >
+                        {{pd.referenceMatiere}}
+                      </td>
+
+                      <td >
+                        {{pd.batchNumber}}
+                      </td>
+                      <td  class="project-completion">
+                        {{pd.createdDate}}
+                      </td>
+
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C1' ">
+                        <span class="label label-success">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="project-status" *ngIf="pd.serialNumberClasse === 'C2' ">
+                        <span class="label label-warning-light">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C3' ">
+                        <span class="label label-danger">{{pd.serialNumberClasse}}</span>
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 1">
+                        Roto
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 2">
+                        Finition
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 3">
+                        Contrôle finale
+                      </td>
+
+                      <td>
+                        <em class="fa fa-eye fa-lg" style="color: cornflowerblue;" (click)="viewDetails(pd.id)"></em>
+                      </td>
+
+                    </ng-container>
+                  </tr>
+                  </tbody>
+                </table>
+<!--                  <jw-pagination [items]="service.list" (changePage)="pageClick($event)" [pageSize]="pageSize"></jw-pagination>&ndash;&gt;-->
+                <div class="center">
+                  <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+                </div>
+              </div>
+
+              <div class="tab-pane" id="tab-2">
+
+                <table class="table table-hover" >
+                  <caption>product's inspection-Finition</caption>
+                  <thead>
+                  <tr>
+                    <th>Serial Number</th>
+                    <th>Product</th>
+                    <th>material reference</th>
+                    <th>Batch Number</th>
+                    <th>Area</th>
+                    <th>Creation Date</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>action</th>
+                  </tr>
+                  </thead>
+                  <tbody >
+
+
+                  <tr   *ngFor="let pd of filteredData; let i =index">
+                    <ng-container *ngIf="pd.audits.length ===2" >
+                      <td >
+                        <strong>{{pd.name}}</strong>
+                        <br>
+                        <small>Created in : {{pd.areaName}}</small>
+                      </td>
+
+
+                      <td  class="project-title">
+                        <strong>{{pd.product.designation}}</strong>
+                        <br/>
+                      </td>
+
+                      <td  >
+                        {{pd.referenceMatiere}}
+                      </td>
+
+                      <td >
+                        {{pd.batchNumber}}
+                      </td>
+
+                        <td>
+                          <strong>{{pd.area}}</strong>
+                        </td>
+
+
+                      <td  class="project-completion">
+                        {{pd.createdDate}}
+                      </td>
+
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C1' ">
+                        <span class="label label-success">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="project-status" *ngIf="pd.serialNumberClasse === 'C2' ">
+                        <span class="label label-warning-light">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C3' ">
+                        <span class="label label-danger">{{pd.serialNumberClasse}}</span>
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 1">
+                        Roto
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 2">
+                        Finition
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 3">
+                        Contrôle finale
+                      </td>
+
+                      <td>
+                        <em class="fa fa-eye fa-lg" style="color: cornflowerblue;" (click)="viewDetails(pd.id)"></em>
+                      </td>
+
+                    </ng-container>
+                  </tr>
+                  </tbody>
+                </table>
+
+                <div class="center">
+                  <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+                </div>
+
+              </div>
+
+              <div class="tab-pane" id="tab-3">
+
+                <table class="table table-hover" >
+                  <caption>product's inspection-Final Control</caption>
+                  <thead>
+                  <tr>
+                    <th>Serial Number</th>
+                    <th>Product</th>
+                    <th>material reference</th>
+                    <th>Batch Number</th>
+                    <th>Area</th>
+                    <th>Creation Date</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>action</th>
+                  </tr>
+                  </thead>
+                  <tbody >
+
+
+                  <tr   *ngFor="let pd of filteredData; let i =index">
+                    <ng-container *ngIf="pd.audits.length ===3" >
+                      <td >
+                        <strong>{{pd.name}}</strong>
+                        <br>
+                        <small>Created in : {{pd.areaName}}</small>
+                      </td>
+
+
+                      <td  class="project-title">
+                        <strong>{{pd.product.reference}}</strong>
+                        <br/>
+                      </td>
+
+                      <td  >
+                        {{pd.referenceMatiere}}
+                      </td>
+
+                      <td >
+                        {{pd.batchNumber}}
+                      </td>
+
+                        <td>
+                          <strong>{{pd.area}}</strong>
+                        </td>
+
+
+                      <td  class="project-completion">
+                        {{pd.createdDate}}
+                      </td>
+
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C1' ">
+                        <span class="label label-success">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="project-status" *ngIf="pd.serialNumberClasse === 'C2' ">
+                        <span class="label label-warning-light">{{pd.serialNumberClasse}}</span>
+                      </td>
+                      <td  class="client-status" *ngIf="pd.serialNumberClasse === 'C3' ">
+                        <span class="label label-danger">{{pd.serialNumberClasse}}</span>
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 1">
+                        Roto
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 2">
+                        Finition
+                      </td>
+
+                      <td *ngIf="pd.audits.length === 3">
+                        Contrôle finale
+                      </td>
+                      <td>
+                        <em class="fa fa-search fa-lg" style="color: #18A689;" (click)="viewDetails(pd.id)"></em>
+                      </td>
+                    </ng-container>
+                  </tr>
+                  </tbody>
+                </table>
+
+                <div class="center">
+                  <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

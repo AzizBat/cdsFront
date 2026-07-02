@@ -1,0 +1,344 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-4">
+    <h2>Détail d'enquête</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="index.html">home </a>
+        <a (click)="goToAudit()">/ Liste d'enquêtes</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong> Détail d'enquête</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="ibox">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="m-b-md">
+                <strong style="font-size: 18px">Checklist :
+                  <ng-container *ngIf="enquete?.checklistId ===1">
+                    Questionnaire de recensement et d'inventaire des biens, des services et des personnes
+                  </ng-container>
+                  <ng-container *ngIf="enquete?.checklistId ===3">
+                    Questionnaire Complémentaire autres PAP affectées
+                  </ng-container>
+                </strong>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6" >
+              <dl class="row mb-0">
+                <div class="col-sm-4 text-sm-right"><dt>Code PAP : </dt> </div>
+                <div class="col-sm-8 text-sm-left">
+                  <dd class="mb-1">{{pap}}</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="col-lg-6" id="cluster_info">
+              <dl class="row mb-0">
+                <div class="col-sm-4 text-sm-right">
+                  <dt>Date:</dt>
+                </div>
+                <div class="col-sm-8 text-sm-left">
+                  <dd class="mb-1">	{{ enquete?.date }} </dd>
+                </div>
+              </dl>
+            </div>
+
+
+            <div class=" col-md-12 FixedHeightContainer">
+              <div  *ngFor="let pd of sortedQuestionGroup; index as j">
+                <div  class="row content">
+
+                  <div class="ibox" style=" text-align: left">
+                    <div class="ibox-title" style="background-color: #d4edda">
+                      <h5 style="color: #155724 ; font-size: 12px;margin-left: 7px">{{pd.name}}</h5>
+                      <div class="ibox-tools">
+                        <a class="collapse-link" *ngIf="formClosed(j) ===false" (click)="closeList(j)">
+                          <em style="color: #155724" class="fa fa-chevron-up"></em>
+                        </a>
+                        <a class="collapse-link" *ngIf="formClosed(j) ===true" (click)="openList(j)">
+                          <em style="color: #155724" class="fa fa-chevron-down"></em>
+                        </a>
+                      </div>
+                    </div>
+                    <br>
+                    <div [id]="'group' + j" class="ibox-content">
+
+                      <div *ngFor="let pdd of questions">
+                        <div class="row">
+                          <div class="col-sm-12" style="text-align: left ">
+                            <ng-container *ngIf="pdd[0]!.questionsGroupId === pd.id">
+                              <ng-container *ngFor="let questions of pdd ; let m = index">
+                                <h4>
+                                  {{questions.code}}
+                                </h4>
+
+                                <!--                                <br>-->
+                                <ng-container *ngIf="questions.content !== 'Nom, prénom et surnom de la PAP' && questions.content !== 'Ajouter un bien et équipement communautaire'">
+                                  <strong>
+                                    {{questions.content}}
+                                  </strong>
+
+                                  <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                  <ng-container *ngFor="let withoutAnswers of filteredNoAnswer">
+                                    <ng-container *ngIf="withoutAnswers === questions.id">
+                                      <button [id]="'Button' + m"  class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="hideButton(m)" > <i class="fa fa-plus"></i> Add Answer </button>
+                                      <div class="row" [id]="'ButtonChange' + m" style="display: none">
+                                        <input [id]="'inputButton' + m" class="col-md-4" placeholder="{{questions.content}}"> &nbsp;
+                                        <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="post(m, questions.id)"> Save</button>
+                                      </div>
+                                    </ng-container>
+                                  </ng-container>
+                                  </ng-container>
+
+                                </ng-container>
+                                <ng-container *ngIf="questions.content === 'Nom, prénom et surnom de la PAP'">
+                                  <ng-container *ngFor="let answers of answers ; index as i">
+                                    <ng-container *ngIf="answers.questionId === questions.id">
+                                      <div id="nom">
+                                      <strong>
+                                        Nom de la PAP : </strong>
+                                      <ng-container >
+                                      {{nomPap[0]}}
+                                        <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+
+                                        &nbsp; &nbsp; <i (click)="modifyPap('nom')" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                        </ng-container>
+                                      </ng-container>
+                                      </div>
+                                      <div class="row" id="nomChange" style="display: none">
+                                        <input id="inputnom" class="col-md-4" placeholder="Nom de la PAP"> &nbsp;
+                                        <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="papModified('nom')"> Save</button>
+                                      </div>
+
+                                      <div id="prenom">
+                                      <strong>
+                                        Prénom de la PAP : </strong>
+                                        {{nomPap[1]}}
+                                        <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                        &nbsp; &nbsp; <i (click)="modifyPap('prenom')" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                        </ng-container>
+                                      </div>
+                                      <div class="row" id="prenomChange" style="display: none">
+                                        <input id="inputprenom" class="col-md-4" placeholder="Prénom de la PAP"> &nbsp;
+                                        <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="papModified('prenom')"> Save</button>
+                                      </div>
+
+                                      <div id="surnom">
+                                      <strong>
+                                        Surnom de la PAP : </strong>
+                                      {{nomPap[2]}}
+                                        <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                        &nbsp; &nbsp; <i (click)="modifyPap('surnom')" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                        </ng-container>
+                                      </div>
+                                      <div class="row" id="surnomChange" style="display: none">
+                                      <input id="inputsurnom" class="col-md-4" placeholder="Surnom de la PAP"> &nbsp;
+                                      <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="papModified('surnom')"> Save</button>
+                                      </div>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                                <br>
+                                <ng-container *ngFor="let answers of answers; index as i ">
+                                  <ng-container *ngIf="answers.questionId === questions.id">
+                                    <!--      answers.questionId 48 = Nom, prénom et surnom de la PAP                              -->
+                                    <ng-container *ngIf="answers.content !== 'Image' && answers.content !== 'Signature' && answers.questionId !== 48 && answers.questionId !== 49  && answers.questionId !== 88 && answers.content !== 'Membre de ménage' && answers.content !== 'Membre(s) du ménage' ">
+                                      <div  [id]="i">
+                                      {{answers.content}}
+                                        <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                        &nbsp; &nbsp; <i (click)="modify(i)" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                        </ng-container>
+                                      </div>
+
+                                      <div class="row" [id]="i + 'Change'" style="display: none">
+                                        <input [id]="'input' + i " class="col-md-4" placeholder="{{questions.content}}"> &nbsp;
+                                        <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="generalModified(i, answers)"> Save</button>
+                                      </div>
+
+
+                                    </ng-container>
+                                    <ng-container *ngIf="answers.content === 'Image' || answers.content === 'Signature'">
+                                      <img class="d-block w-100 picture" [src]="'data:' + 'image/jpeg' + ';base64,' + answers.image">
+                                    </ng-container>
+
+                                    <ng-container *ngIf="answers.content === 'Membre de ménage' || answers.content === 'Membre(s) du ménage' ">
+                                      <ng-container *ngFor="let menage of Subanswers; let k = index">
+                                        <ng-container *ngIf="k<= Subanswers.length && menage[0]?.responseId === answers.id">
+                                          <div class="ibox-title" style="background-color: #d4edda">
+                                            <h5 style="color: #155724 ; font-size: 12px;margin-left: 7px">
+                                              {{menageNameList[k]}}
+                                            </h5>
+                                          </div>
+                                          <ng-container *ngFor="let subanswer of menage; let l = index">
+                                            <div #itemElement [id]="i + ',' +l">
+                                            <strong>{{subanswer.questionContent}} :</strong>
+
+                                            {{subanswer.responseContent}}
+                                              <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                              &nbsp; &nbsp; <i (click)="modifyMenage(i,l)" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                              </ng-container>
+                                            </div>
+
+                                            <div class="row" [id]="i + ',' +l + 'Change'" style="display: none">
+                                              <input [id]="'input' + i + ',' +l " class="col-md-4" placeholder="{{questions.content}}"> &nbsp;
+                                              <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="menageModified(i,l, subanswer)"> Save</button>
+                                            </div>
+
+                                          </ng-container>
+                                        </ng-container>
+                                      </ng-container>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="answers.questionId === 88">
+                                      <div class="ibox-title" style="background-color: #d4edda">
+                                        <h5 style="color: #155724 ; font-size: 12px;margin-left: 7px">
+                                          {{answers.content}} </h5>
+                                      </div>
+                                      <ng-container *ngFor="let biensTouches of bienTouchee">
+                                        <ng-container *ngFor="let bien of biensTouches ; let m = index">
+                                          <h4>
+                                            {{bien.questionCode}}
+                                          </h4>
+                                          <strong>
+                                            {{bien.questionContent}}
+                                          </strong>
+                                          <br>
+                                          <div [id]="i + ',' +m">
+                                          {{bien.responseContent}}
+                                            <ng-container *ngIf="enquete?.status !== 'DOUBLE_VALIDATED'">
+                                            &nbsp; &nbsp; <i (click)="modifyMenage(i,m)" class="fa fa-edit fa-lg" style="color: #4A61CA;" ></i>
+                                            </ng-container>
+                                          </div>
+                                          <div class="row" [id]="i + ',' +m + 'Change'" style="display: none">
+                                            <input [id]="'input' + i + ',' +m " class="col-md-4" placeholder="{{questions.content}}"> &nbsp;
+                                            <button class="btn-xs btn-primary  m-b vertical-center col-md-2" (click)="menageModified(i,m, bien)"> Save</button>
+                                          </div>
+                                          <hr>
+                                        </ng-container>
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                                <hr>
+                              </ng-container>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="ibox">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="m-b-md">
+                <strong style="font-size: 18px">
+                  Validation
+                </strong>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="currentUser?.roles[0]?.name === 'ROLE_SUPERVISOR' && enquete?.status !== 'VALIDATED' && enquete?.status !== 'DOUBLE_VALIDATED' ; else elseBlock">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="m-b-md">
+                Si vous souhaitez valider l'enquete merci de cliquer sur le bouton valider
+                <br>
+                <strong>Nb : si vous validez l'enquête elle passe à la validation finale par un chef</strong>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-5">
+            </div>
+            <div class="col-lg-4">
+              <button class=" btn-primary  m-b vertical-center" (click)="validate()"> <i class="fa fa-check"></i> Valider</button>
+            </div>
+          </div>
+          </ng-container>
+
+
+          <ng-template #elseBlock>
+            <ng-container *ngIf="currentUser?.roles[0]?.name === 'ROLE_SUPERVISOR' || (currentUser?.roles[0]?.name === 'ROLE_VALIDATEUR' && enquete?.status === 'DOUBLE_VALIDATED') ">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="m-b-md">
+                  Cette enquête est validée.
+                </div>
+              </div>
+            </div>
+            </ng-container>
+
+            <ng-container *ngIf="currentUser?.roles[0]?.name === 'ROLE_VALIDATEUR' && enquete?.status === 'VALIDATED' ">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="m-b-md">
+                    Si vous souhaitez valider l'enquete merci de cliquer sur le bouton valider
+                    <br>
+                    <strong>Nb : si vous validez l'enquête elle passe à la validation finale par un chef</strong>
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5">
+                </div>
+                <div class="col-lg-4">
+                  <button class=" btn-primary  m-b vertical-center" (click)="doubleValidate()"> <i class="fa fa-check"></i> Valider</button>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <ng-container *ngIf="currentUser?.roles[0]?.name === 'ROLE_VALIDATEUR' && enquete?.status !== 'VALIDATED' && enquete?.status !== 'DOUBLE_VALIDATED' ">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="m-b-md">
+                    <strong style="color: red">Cette enquête n'est pas encore validée par un superviseur , veuillez attendre sa validation</strong>
+
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

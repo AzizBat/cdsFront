@@ -1,0 +1,243 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-9">
+    <h2> {{organisation?.name}} Area's list</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>product-dashboard</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-3">
+    <div class="ibox">
+      <div class="ibox-content" style="height:200px">
+        <h5>Tonnage</h5>
+
+        <div id="sparkline7">
+          <div>
+            <em  style="font-size: 29px; font-weight: bold;" >{{todayWeight}}</em>&nbsp; Tons
+          </div>
+          <div>
+            <ng-container *ngIf="weightPercentage >= 0; else elseBlock">
+            <span style="color: #00CA20"> <em  style="font-size: 29px; font-weight: bold;" >+ {{weightPercentage}}%</em> &nbsp; of the average </span>
+            </ng-container>
+            <ng-template #elseBlock>
+              <span style="color: #CA0000"> <em  style="font-size: 29px; font-weight: bold;" > {{weightPercentage}}%</em> &nbsp; of the average </span>
+
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3">
+    <div class="ibox">
+      <div class="ibox-content" style="height:200px">
+        <h5>Total pieces</h5>
+        <div id="sparkline8">
+          <div>
+            <em  style="font-size: 29px; font-weight: bold;" >{{todaySerialNumber}}</em> &nbsp; pieces
+          </div>
+          <div>
+            <ng-container *ngIf="serialNumberPercentage >= 0; else elseBlock1">
+
+            <span style="color: #00CA20"> <em  style="font-size: 29px; font-weight: bold;" >+ {{serialNumberPercentage}}%</em> &nbsp; of the average </span>
+            </ng-container>
+            <ng-template #elseBlock1>
+              <span style="color: #CA0000"> <em  style="font-size: 29px; font-weight: bold;" > {{serialNumberPercentage}}%</em> &nbsp; of the average </span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3">
+    <div class="ibox">
+      <div class="ibox-content" style="height:200px">
+        <h5>Number of pieces per class</h5>
+        <div id="sparkline8">
+          <div>
+            <canvas id="class-chart" width="800" height="450"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3">
+    <div class="ibox">
+      <div class="ibox-content" style="height:200px">
+        <h5>Number of defects detected</h5>
+        <div id="sparkline9">
+          <div>
+            <em  style="font-size: 29px; font-weight: bold;" >{{totalDefects}}</em> &nbsp; Defects detected
+          </div>
+          <div>
+            <ng-container *ngIf="defectsPercentage >= 0; else elseBlock2">
+              <span style="color: #00CA20"> <em  style="font-size: 29px; font-weight: bold;" >{{defectsPercentage}}%</em> &nbsp; of today pieces </span>
+            </ng-container>
+
+            <ng-template #elseBlock2>
+              <span style="color: #CA0000"> <em  style="font-size: 29px; font-weight: bold;" >{{defectsPercentage}}%</em> &nbsp; of today pieces </span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class=" col-lg-12">
+    <div class="panel blank-panel">
+      <div class="panel-heading">
+        <div class="panel-options">
+          <ul class="nav nav-tabs">
+            <li><a class="nav-link active" href="#tab-1" data-toggle="tab" (click)="changeTab('weight')">Tonnage</a></li>
+            <li><a class="nav-link " href="#tab-1" data-toggle="tab" (click)="changeTab('pieces')">Total pieces</a></li>
+            <li><a class="nav-link " href="#tab-1" data-toggle="tab" (click)="changeTab('class')">Number of pieces per class</a></li>
+            <li><a class="nav-link " href="#tab-4" data-toggle="tab" (click)="changeTab('defects')">Number of defects detected</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ibox">
+        <div class="ibox-content justify-content-center" >
+          <div class="col-md-12">
+            <div id="detail-chart-div">
+
+
+
+              <div class="row">
+                <div class="col-md-3">
+                  <strong> filters</strong>
+                  <div class="panel-body">
+                    <div class="tab-content">
+                      <div class="tab-pane active">
+                        <div  class="col-md-11 input-group date" style="top: 30px; left: -15px"  name="startDate" id="startDate" >
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                          <input id="from" type="text" (change)="filterChart()" onfocus="(this.type='date')" class="form-control" placeholder="Starting date">
+                        </div>
+                        <div id="starting" class="col-md-1" style="left: 85%;">
+                          <a style="cursor: default"><em class="fa fa-times fa-lg" style="color: white;cursor: default" ></em></a>
+                        </div>
+
+                        <div id="canreset1" class="col-md-1" style="left: 85%;display: none">
+                          <a  (click)="reset(1)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+                        </div>
+
+                        <div  class="col-md-11 input-group date" style="top: 25px; left: -15px"  name="endDate" id="endDate" >
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                          <input id="to" type="text" (change)="filterChart()" onfocus="(this.type='date')" class="form-control" placeholder="End date">
+                        </div>
+                        <div id="ending" class="col-md-1" style="left: 85%; ">
+                          <a style="cursor: default"><em class="fa fa-times fa-lg" style="color: white;cursor: default" ></em></a>
+                        </div>
+                        <div id="canreset2" class="col-md-1" style="left: 85%;display: none">
+                          <a  (click)="reset(2)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+                        </div>
+                        <select  class="col-md-10" style="top: 25px"  name="area" id="area" (change)="filterChart()" >
+                          <ng-container>
+                            <option  value="null" selected disabled hidden  >--- Filter by area ---</option>
+                            <option value="null"></option>
+                            <ng-container *ngFor="let Areas of areas">
+                              <option  value="{{Areas.id}}" >{{Areas.name}}</option>
+                            </ng-container>
+                          </ng-container>
+                        </select>
+
+                        <div id="areaFilter" class="col-md-1" style="left: 85%; ">
+                          <a style="cursor: default"><em class="fa fa-times fa-lg" style="color: white;cursor: default" ></em></a>
+                        </div>
+                        <div id="canreset4" class="col-md-1" style="left: 85%;display: none">
+                          <a  (click)="reset(4)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+                        </div>
+
+                        <select  class="col-md-10" style="top: 25px"  name="team" id="team" (change)="filterChart()" >
+                          <ng-container >
+                            <option   value="null" selected disabled hidden  >--- Filter by team ---</option>
+                            <option value="null"></option>
+                            <option  value="1" >1st shift</option>
+                            <option  value="2" >2nd shift</option>
+                            <option  value="3" >3rd shift</option>
+                          </ng-container>
+                        </select>
+
+                        <div id="teamFilter" class="col-md-1" style="left: 85%; ">
+                          <a style="cursor: default"><em class="fa fa-times fa-lg" style="color: white;cursor: default" ></em></a>
+                        </div>
+                        <div id="canreset6" class="col-md-1" style="left: 85%;display: none">
+                          <a  (click)="reset(6)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+                        </div>
+                      </div>
+
+                      <div class="tab-pane">
+                          <select  class="col-md-10" style="top: 25px"  name="team" id="defectCat" (change)="filterChart()" >
+                            <ng-container >
+                              <option   value="null" selected disabled hidden  >Filter by category</option>
+                              <option value="null"></option>
+                              <option  value="01" >C1</option>
+                              <option  value="02" >C2</option>
+                              <option  value="03" >C3</option>
+                            </ng-container>
+                          </select>
+
+                          <div id="defectCatFilter" class="col-md-1" style="left: 85%; ">
+                            <a style="cursor: default"><em class="fa fa-times fa-lg" style="color: white;cursor: default" ></em></a>
+                          </div>
+                          <div id="canreset7" class="col-md-1" style="left: 85%;display: none">
+                            <a  (click)="reset(6)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+                          </div>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-9" style="text-align: center">
+
+                  <strong> your {{chartname}} detail </strong>
+                  <button class="btn btn2 btn-xs btn-white float-right" (click)="lineChartView(false)"><em class="fa fa-bar-chart-o fa-lg"></em> </button>
+                  <button class="btn btn2 btn-xs btn-white float-right" (click)="lineChartView(true)"><em class="fa fa-area-chart fa-lg"></em> </button>
+
+                  <div id="line-chart" class="chart-container" style="position: relative" >
+                    <canvas id="line-detail-chart"></canvas>
+                  </div>
+                  <div id="bar-chart" class="chart-container" style="visibility: hidden; margin-top: -460px">
+                    <canvas id="bar-detail-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-9">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

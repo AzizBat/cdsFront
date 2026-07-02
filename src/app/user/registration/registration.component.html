@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSPINIA | Register</title>
+
+    <link href="/assets/template/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/template/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/assets/template/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/assets/template/css/animate.css" rel="stylesheet">
+    <link href="/assets/template/css/style.css" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen   animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">CIPA</h1>
+
+            </div>
+            <h3>Register to CIP AUDIT</h3>
+            <p>Create an account.</p>
+
+            <form class="m-t" role="form"  [formGroup]="service.formModel" autocomplete="off" (submit)="onSubmit()">
+                <div class="form-group required">
+                  <input class="form-control" formControlName="firstName" placeholder="First Name" >
+                  <label class="text-danger" *ngIf="service.formModel.get('firstName').touched && service.formModel.get('firstName').errors?.required">This
+                    field is mandatory.</label>
+                </div>
+                <div class="form-group required">
+                    <input class="form-control" formControlName="lastName" placeholder="Last Name" >
+                    <label class="text-danger" *ngIf="service.formModel.get('lastName').touched && service.formModel.get('lastName').errors?.required">This
+                      field is mandatory.</label>
+                  </div>
+
+                <div class="form-group required">
+                    <input class="form-control" formControlName="phoneNumber" placeholder="Phone Number" >
+                    <label class="text-danger" *ngIf="service.formModel.get('phoneNumber').touched && service.formModel.get('phoneNumber').errors?.required">This
+                      field is mandatory.</label>
+                  </div>
+                <div class="form-group">
+                  <input class="form-control" formControlName="email" placeholder="Email">
+                  <label class="text-danger" *ngIf="service.formModel.get('email').touched && service.formModel.get('email').errors?.email">Invalid
+                    email address.</label>
+                </div>
+
+                <div formGroupName="Passwords">
+                  <div class="form-group required">
+                    <input type="password" class="form-control" formControlName="Password" placeholder="Password" >
+                    <label class="text-danger" *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.required">This
+                      field is mandatory.</label>
+                    <label class="text-danger" *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.minlength">Minimum
+                      4 characters required.</label>
+                  </div>
+                  <div class="form-group required">
+                    <input type="password" class="form-control" formControlName="ConfirmPassword" placeholder="Confirm Password" >
+                    <label class="text-danger" *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.required">This
+                      field is mandatory.</label>
+                    <label class="text-danger" *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Confirm
+                      Password does not match.</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox i-checks"><label> <input type="checkbox"><em></em> Agree the terms and policy </label></div>
+            </div>
+                <div class="form-row">
+                  <div class="form-group col-md-8 offset-md-2">
+                    <button type="submit" class="btn btn-primary block full-width m-b" [disabled]="!service.formModel.valid">Sign Up</button>
+                  </div>
+                </div>
+                <p class="text-muted text-center"><small>Already have an account?</small></p>
+                <a class="btn btn-sm btn-white btn-block" href="user/login">Login</a>
+
+              </form>
+            <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/assets/template/js/jquery-3.1.1.min.js"></script>
+    <script src="/assets/template/js/popper.min.js"></script>
+    <script src="/assets/template/js/bootstrap.js"></script>
+    <!-- iCheck -->
+    <script src="/assets/template/js/plugins/iCheck/icheck.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+    </script>
+</body>
+
+</html>

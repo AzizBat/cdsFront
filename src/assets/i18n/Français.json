@@ -1,34 +1,17 @@
 {
+  "header": {
+    "profile": "Profile",
+    "blog": "Blog",
+    "certificate": "Certificate",
+    "language": "Langue"
+  },
   "home": {
-    "matricule": "Matricule",
-    "withMatricule": "S'identifier",
-    "withoutMatricule": "Rester anonyme",
-    "password": "Mot de passe",
-    "newPassword": "Nouveau mot de passe",
-    "changePassword": "Changer de mot de passe",
-    "changingPassword": "Changement de mot de passe",
-    "anomaly": "Je signale une anomalie",
-    "innovativeIdea": "J’exprime mon idée innovante",
-    "congratulation": "J’exprime mes remerciements",
-    "emotion": "J’exprime mes émotions",
-    "personalSecurity": "Sécurité personnelle",
-    "productQuality": "Qualité du produit",
-    "productHealthiness": "Salubrité du produit",
-    "equipment": "Équipement",
-    "environment": "Environnement",
-    "workingCondition": "Conditions de travail",
-    "surprised": "Surpris",
-    "fear": "Peur",
-    "joy": "Joyeux",
-    "angry": "En colère",
-    "sad": "Triste",
-    "disgusted": "Dégoûté",
-    "submit": "Envoyer",
-    "successMessage": "Votre message est bien envoyé .",
-    "thankingMessage": "Merci d'avoir utilisé l'application et de partager vos pensées.",
-    "thankingMessage1": "Vos commentaires sont inestimables et nous aident à nous améliorer continuellement.",
-    "thankingMessage2": "L'excellence ne peut être atteinte qu’à travers des individus passionnés qui font",
-    "thankingMessage3": "preuve d’humilité et qui promeuvent une culture de changement créative.",
-    "finish": "Retourner à la page d'accueil"
+    "dashboard": "Tableau de bord"
+  },
+  "blog": {
+    "welcome_title": "Welcome to the blog page."
+  },
+  "certificate": {
+    "welcome_title": "Welcome to the certificate page."
   }
 }

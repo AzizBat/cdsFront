@@ -1,0 +1,246 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-8">
+    <h2>{{organisation?.name}} problem's list</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>Problem</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+    <label class="switch vertical-center">
+      <input  type="checkbox" (change)="sorting()" id="sort">
+      <div class="slider round">
+        <div *ngIf="checked" class="on">Sort by created date</div>
+        <div *ngIf="!checked" class="off">Sort by last modified date</div>
+      </div>
+    </label>
+    <!--    <p class="fixing2"> Sort by deadline</p>-->
+  </div>
+</div>
+
+
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+      <div class="ibox">
+        <div class="ibox-content ">
+          <div class="row m-b-sm m-t-sm">
+
+
+            <div class="row">
+
+              <div class="col-lg-2">
+                <select class="col-md-12"  name="creatorId" id="creatorId" (change)="changeProblem()" >
+                  <ng-container >
+                    <option  value="null" selected disabled hidden  >--- Filter by actor ---</option>
+                    <option value="null"></option>
+                    <ng-container *ngFor="let creatorId of users">
+                      <option  value="{{creatorId.id}}" >{{creatorId.firstName}} &nbsp;{{creatorId.lastName}}</option>
+                    </ng-container>
+                  </ng-container>
+
+                </select></div>
+
+              <div class="col-lg-2">
+                <select  class="col-md-12"  name="type" id="type" (change)="changeProblem()" >
+                  <option  value="null" selected disabled hidden  >--- Filter by type ---</option>
+                  <option value="null"> </option>
+                  <ng-container *ngFor="let types of typeConstants">
+                    <option  value="{{types.value}}" >{{types.name}}</option>
+                  </ng-container>
+
+                </select>
+              </div>
+
+
+
+              <div class="col-lg-3">
+                <div class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </span>
+                  <input id="from" type="text" (change)="changeProblem()" onfocus="(this.type='date')" class="form-control" placeholder="Starting date">
+                </div>
+              </div>
+
+              <div class="col-lg-3">
+                <div  class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <i class="fa fa-calendar"></i>
+            </span>
+                  <input id="to" type="text" (change)="changeProblem()" onfocus="(this.type='date')" class="form-control" placeholder="End date">
+                </div>
+              </div>
+
+          </div>
+
+          <div class="ibox-content">
+
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Problem Name</th>
+                <th>Problem Description</th>
+                <th>Creator</th>
+                <th>Created Date</th>
+                <th>Last modified date</th>
+                <th>Methodology</th>
+                <th>Type</th>
+                <th>Details</th>
+              </tr>
+              </thead>
+              <tbody>
+
+
+              <tr   *ngFor="let pd of filteredData; let i =index">
+
+                <td >
+                  <strong>{{pd.name}}</strong>
+                  <br>
+                </td>
+
+
+                <td  class="project-title">
+                  <strong>{{pd.description}}</strong>
+                  <br/>
+                  <small>Created At : {{pd.date}}</small>
+                </td>
+
+
+
+                <td  >
+                  <ng-container *ngFor="let creatorId of users">
+                    <div *ngIf="pd.createdBy === creatorId.id">{{creatorId.firstName}} &nbsp; {{creatorId.lastName}}</div>
+                  </ng-container>
+                </td>
+
+                <td >
+                  {{pd.date | date: 'dd-MM-yyyy'}}
+                </td>
+
+
+                <td >
+                  {{pd.modifiedDate | date: 'dd-MM-yyyy'}}
+                </td>
+
+
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'NULL' ">
+                  <span class="label label-source1">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'JUST_DO_IT' ">
+                  <span class="label label-source1">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'IS_IS_NOT' ">
+                  <span class="label label-source2">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'FAULT_TREE' ">
+                  <span class="label label-source3">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'PROCESS_MAP' ">
+                  <span class="label label-source4">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'WHYS' ">
+                  <span class="label label-source5">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'MULTI_VARI' ">
+                  <span class="label label-source6">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'FAILURE_MODES_AND_EFFECTS_ANALYSIS' ">
+                  <span class="label label-source7">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'PARETO' ">
+                  <span class="label label-source8">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'FISH_BONE' ">
+                  <span class="label label-source9">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'RELATIONSHIP_DIAGRAM' ">
+                  <span class="label label-source10">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'CURRENT_REALITY_TREE' ">
+                  <span class="label label-source11">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'SCATTER_PLOT' ">
+                  <span class="label label-source12">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'CONCENTRATION_CHART' ">
+                  <span class="label label-source13">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'DESIGN_OF_EXPERIMENTS' ">
+                  <span class="label label-source14">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'TREE_DIAGRAM' ">
+                  <span class="label label-source15">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'BRAINSTORMING' ">
+                  <span class="label label-source16">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === 'REGRESSION_ANALYSIS' ">
+                  <span class="label label-source17">{{pd.resolutionMethod}}</span>
+                </td>
+                <td  class="problem-methodology" *ngIf="pd.resolutionMethod === null ">
+                  <span class="label label-danger">Not Selected</span>
+                </td>
+
+
+<!--                <td >-->
+<!--                  <div *ngIf="difference[i]<0 && pd.status ==='FINISHED'" style="color: #ED5666">-->
+<!--                    <b>{{pd.modifiedDate | date: 'dd-MM-yyyy'}}</b>-->
+<!--                  </div>-->
+<!--                  <div *ngIf="difference[i]>0 || pd.status !=='FINISHED'">-->
+<!--                    {{pd.modifiedDate | date: 'dd-MM-yyyy'}}-->
+<!--                  </div>-->
+<!--                </td>-->
+
+
+<!--                <td  class="project-completion">-->
+<!--                  <small>Completion with: {{pd.type}}%</small>-->
+<!--                  <div class="progress progress-mini">-->
+<!--                    <div *ngIf="pd.type ==='AUDIT'"  style="background-color: #ED5666"></div>-->
+<!--                    <div *ngIf="pd.type ==='EVENT'"  style="background-color: #1D84C6; width: {{pd.progress}}%;" class="progress-bar"></div>-->
+<!--                    <div *ngIf="pd.type !=='RECLAMATion'"  style="background-color: #ED5666; width: {{pd.progress}}%;" class="progress-bar"></div>-->
+<!--                  </div>-->
+<!--                </td>-->
+
+
+
+                <td  class="problem-type" *ngIf="pd.type === 'AUDIT' ">
+                  <span class="label label-source1">{{pd.type}}</span>
+                </td>
+                <td  class="problem-type" *ngIf="pd.type === 'EVENT'" >
+                  <span class="label label-source2">{{pd.type}}</span>
+                </td>
+                <td  class="problem-type" *ngIf="pd.type === 'RECLAMATION' ">
+                  <span class="label label-source3">{{pd.type}}</span>
+                </td>
+
+
+
+                <td>
+                  <i class="fa fa-eye fa-lg" style="color: cornflowerblue;" (click)="viewDetailsProb(pd.id)"></i>
+                </td>
+
+
+              </tr>
+              </tbody>
+            </table>
+
+
+            <div class="center">
+              <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

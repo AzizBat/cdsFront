@@ -1,0 +1,200 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-8">
+    <h2>{{organisation?.name}} Action's list</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>Action</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+
+    <label class="switch vertical-center">
+      <input  type="checkbox" (change)="sorting()" id="sort">
+      <div class="slider round">
+      <div *ngIf="checked" class="on">Sort by deadline</div>
+      <div *ngIf="!checked" class="off">Sort by creation date</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+      <div class="ibox">
+        <div class="ibox-content ">
+          <div class="row m-b-sm m-t-sm">
+
+            <div class="row">
+
+
+              <div class="col-lg-2">
+                <select  class="col-md-12"  name="area" id="area" (change)="changeAudit()">
+                  <ng-container>
+                    <option  value="null" selected disabled hidden  >--- Filter by area ---</option>
+                    <option value="null"></option>
+                    <ng-container *ngFor="let Areas of areas">
+                      <option  value="{{Areas.id}}" >{{Areas.name}}</option>
+                    </ng-container>
+                  </ng-container>
+
+                </select>
+              </div>
+
+              <div class="col-lg-2">
+                <select  class="col-md-12"  name="state" id="state" (change)="changeAudit()" >
+                  <option  value="null" selected disabled hidden  >--- Filter by status ---</option>
+                  <option value="null"> </option>
+                  <ng-container *ngFor="let states of statusConstants">
+                    <option  value="{{states.value}}" >{{states.name}}</option>
+                  </ng-container>
+
+                </select>
+              </div>
+              <div class="col-lg-2">
+                <select class="col-md-12"  name="affectedUsers" id="affectedUsers" (change)="changeAudit()" >
+                  <ng-container >
+                    <option  value="null" selected disabled hidden  >--- Filter by actor ---</option>
+                    <option value="null"></option>
+                    <ng-container *ngFor="let affectedUsers of users">
+                      <option  value="{{affectedUsers.id}}" >{{affectedUsers.firstName}} &nbsp;{{affectedUsers.lastName}}</option>
+                    </ng-container>
+                  </ng-container>
+
+                </select></div>
+
+
+              <div class="col-lg-3">
+                <div class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="from" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="Starting date">
+                </div>
+              </div>
+
+              <div class="col-lg-3">
+                <div  class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="to" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="End date">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ibox-content">
+
+            <table class="table table-hover">
+              <caption>Action's list</caption>
+              <thead>
+              <tr>
+                <th>Source</th>
+                <th>Action description</th>
+                <th>Actor</th>
+                <th>Deadline</th>
+                <th>Last modified date</th>
+                <th>Evolution</th>
+                <th>Status</th>
+                <th>action</th>
+              </tr>
+              </thead>
+              <tbody>
+
+
+              <tr   *ngFor="let pd of filteredData; let i =index">
+                <!--Source-->
+                <td >
+                  <strong>{{pd.auditName}}</strong>
+                  <br>
+                  <small>Created in : {{pd.areaName}}</small>
+                </td>
+
+               <!--Action Description-->
+                <td  class="project-title">
+                  <strong>{{pd.instruction}}</strong>
+                  <br/>
+                  <small>Created At : {{pd.date}}</small>
+                </td>
+
+                <td>
+                  {{pd.affectedUsers[0].firstName}} &nbsp; {{pd.affectedUsers[0].lastName}}
+                </td>
+
+                <td >
+                  {{pd.deadline | date: 'dd-MM-yyyy'}}
+                </td>
+
+                <td >
+                  <div *ngIf="difference[i]<0 && pd.status ==='FINISHED'" style="color: #ED5666">
+                  <strong>{{pd.modifiedDate | date: 'dd-MM-yyyy'}}</strong>
+                  </div>
+                  <div *ngIf="difference[i]>0 || pd.status !=='FINISHED'">
+                    {{pd.modifiedDate | date: 'dd-MM-yyyy'}}
+                  </div>
+                </td>
+
+                <td  class="project-completion">
+                  <small>Completion with: {{pd.progress}}%</small>
+                  <div class="progress progress-mini">
+                    <div *ngIf="difference[i]<0 && pd.status ==='FINISHED'"  style="background-color: #ED5666; width: {{pd.progress}}%;" class="progress-bar"></div>
+                    <div *ngIf="difference[i]>0 && pd.status ==='FINISHED'"  style=" width:{{pd.progress}}%;" class="progress-bar"></div>
+                    <div *ngIf="difference[i]<0 && pd.status !=='FINISHED'"  style="background-color: darkorange; width: {{pd.progress}}%;" class="progress-bar"></div>
+                    <div *ngIf="difference[i]>0 && difference[i]>=pd.progress &&pd.status !=='FINISHED'"  style="background-color:#1D84C6; width: {{pd.progress}}%;" class="progress-bar"></div>
+                    <div *ngIf="difference[i]>0 && abs[i]<pd.progress && pd.status !=='FINISHED'"  style=" width: {{pd.progress}}%;" class="progress-bar"></div>
+                  </div>
+                </td>
+
+                <td  class="client-status" *ngIf="pd.status === 'STARTED' ">
+                  <span class="label label-success">{{pd.status}}</span>
+                </td>
+                <td  class="project-status" *ngIf="pd.status === 'CREATED' ">
+                  <span class="label label-warning-light">{{pd.status}}</span>
+                </td>
+                <td  class="client-status" *ngIf="pd.status === 'FINISHED' ">
+                  <span class="label label-primary">{{pd.status}}</span>
+                </td>
+                <td  class="project-status" *ngIf="pd.status === 'CANCELED' ">
+                  <span class="label label-danger">{{pd.status}}</span>
+                </td>
+
+                <td>
+                  <em class="fa fa-search fa-lg" style="color: #18A689;" (click)="viewDetails(pd.id)"></em>
+                </td>
+
+              </tr>
+              </tbody>
+            </table>
+
+            <div class="center">
+              <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

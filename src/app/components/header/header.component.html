@@ -1,0 +1,109 @@
+<!--<head>-->
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+    </div>
+<!--<ng-container *ngIf="notifier === true">-->
+<!--      yifi-->
+<!--</ng-container>-->
+        <ul class="nav navbar-top-links navbar-right">
+
+<!--            <li class="dropdown">-->
+<!--                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">-->
+<!--                    <em class="fa fa-bell"></em><span class="label label-warning">{{i}}</span>-->
+<!--                </a>-->
+<!--                <ul class="dropdown-menu dropdown-messages">-->
+<!--                    <li  *ngFor="let pd of  (notification ? notification.slice(0,7): [])">-->
+<!--                        <div class="dropdown-messages-box">-->
+<!--                            <a class="dropdown-item float-left" >-->
+<!--                              <ng-container *ngIf="currentUser?.picture !== null; else elseBlock1">-->
+<!--                                <img alt="image" class="rounded-circle" [src]="'data:' + 'image/jpeg' + ';base64,' + currentUser?.picture"/>-->
+<!--                              </ng-container>-->
+<!--                              <ng-template #elseBlock1>-->
+<!--                              <img alt="image" class="rounded-circle" src="/assets/blank-profile-picture.png">-->
+<!--                              </ng-template>-->
+<!--                            </a>-->
+<!--                            <div *ngIf="pd.auditActionId !== null  && pd.action === 'Created' " >-->
+<!--                                <button  class="float-right" (click)="viewActionDetails(pd.auditActionId)">View</button>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> created a new Action <strong>  <br>  & assigned it to {{pd.receiverUser.firstName}} {{pd.receiverUser.lastName}}</strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.auditActionId !== null && pd.action !== 'Created' && pd.action !== 'Commented'  "   >-->
+<!--                              <button  class="float-right" (click)="viewActionDetails(pd.auditActionId)">View</button>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> {{pd.action}} Action <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.auditActionId !== null && pd.action === 'Commented'  "   >-->
+<!--                                <button  class="float-right" (click)="viewActionDetails(pd.auditActionId)">View</button>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> commented on an Action <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+
+<!--                            <div *ngIf="pd.auditId !== null && pd.action !== 'Created'   && pd.action !== 'Commented' "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> {{pd.action}} Audit <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.auditId !== null && pd.action === 'Created'  "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> created a new Audit <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.auditId !== null && pd.action === 'Commented'  "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> commented on an Audit <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+
+<!--                            <div *ngIf="pd.eventId !== null && pd.action !== 'Created'  && pd.action !== 'Commented' "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> {{pd.action}} Event <strong> </strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.eventId !== null && pd.action === 'Created'  "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> created a new Event <strong>  <br> & assigned it to {{pd.receiverUser.firstName}} {{pd.receiverUser.lastName}}</strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                            <div *ngIf="pd.eventId !== null && pd.action === 'Commented'  "   >-->
+<!--                                <small class="float-right"> - </small>-->
+<!--                                <strong>  {{pd.creatorName}} </strong> commented on an Event <strong>  <br></strong>. <br>-->
+<!--                                <small class="text-muted">at {{pd.date}}</small>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="dropdown-divider"></div>-->
+
+
+
+<!--                    </li>-->
+
+
+<!--                    <li>-->
+<!--                        <div class="text-center link-block">-->
+<!--                            <a href="notification" class="dropdown-item">-->
+<!--                                <em class="fa fa-bell"></em> <strong>Open All Notifications</strong>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </li>-->
+
+<!--          <li class="nav-item dropdown align-right">-->
+<!--            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"-->
+<!--               aria-haspopup="true" aria-expanded="false">{{'header.language' | translate}}</a>-->
+<!--            <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--              <a *ngFor="let lang of languageArray" (click)="changeLang(lang)" class="dropdown-item">{{lang}}</a>-->
+<!--            </div>-->
+<!--          </li>-->
+
+            <li>
+                <a (click) = "onLogout()">
+                  <em class="fa fa-sign-out"></em> Déconnecter
+                </a>
+              </li>
+<!--            <li>-->
+        </ul>
+
+    </nav>
+    </div>

@@ -1,0 +1,104 @@
+
+<div class="background">
+  <!--<body>-->
+  <div class="loginColumns animated fadeInDown">
+    <div class="row">
+
+      <div class="col-md-6">
+        <h2 class="font-bold"> </h2>
+        <h2 class="font-bold"> </h2>
+        <img alt="image" src="/assets/aabber.png" style="width: 250px;" />
+
+
+      </div>
+      <div class="col-md-6">
+        <div class="ibox-content" style="border-radius: 8px;">
+          <div id="form1">
+
+            <form #form='ngForm'  autocomplete="off" [formGroup]="formModel" (submit)="onSubmit(form)"  class="m-t" role="form" aria-labelledby="loginIn">
+              <div class="form-group ">
+                <input type="text" formControlName="email" placeholder="Email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.email">Email is incorrect</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <input type="password" formControlName="password" placeholder="Password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+                </div>
+              </div>
+              <button [disabled]="loading" class="btn btn-primary block full-width m-b">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Login
+              </button>
+
+
+              <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+              <div class="d-flex justify-content-center">
+                <a style="color: #0d6fc6;" (click)="changePassword()" >Forgot password?</a>
+              </div>
+              <hr>
+              New to Cipa? &nbsp;
+              <a (click)="createAccount()" style="color: #1AB394"> <strong>Join Now</strong></a>
+              <br>
+            </form>
+          </div>
+
+
+          <div id="form2" style="display: none">
+            <form #form1='ngForm'  autocomplete="off" [formGroup]="formModel1" (submit)="onSubmit1(form1)"  class="m-t" role="form" aria-labelledby="OrganisationName">
+
+              <div class="form-group ">
+                <input type="text" formControlName="name" placeholder="Organisation name" class="form-control" [ngClass]="{ 'is-invalid': submitted1 && g.name.errors }" />
+                <div *ngIf="submitted1 && g.name.errors" class="invalid-feedback">
+                  <div *ngIf="g.name.errors.required">Organisation name is required</div>
+                </div>
+              </div>
+              <button type="submit" [disabled]="loading1" class="btn btn-primary block full-width m-b">
+                <span *ngIf="loading1" class="spinner-border spinner-border-sm mr-1"></span>
+                Add your organisation
+              </button>
+              <div *ngIf="error1" class="alert alert-danger mt-3 mb-0">{{error1}}</div>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+
+            </form>
+          </div>
+          <div id="message" style="display: none">
+            <h2 class="center1"> Confirm your account</h2>
+            <br>
+            <p> An email was sent to you to complete registration</p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>

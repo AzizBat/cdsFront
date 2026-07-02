@@ -1,0 +1,627 @@
+// ============================================
+// MODERN PROFESSIONAL SIDEBAR STYLES
+// ============================================
+
+// Variables
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 80px;
+$sidebar-bg: #0f172a;
+$sidebar-bg-light: #1e293b;
+$sidebar-border: rgba(255, 255, 255, 0.06);
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$accent-color: #0d9488;
+$accent-hover: #14b8a6;
+$transition-speed: 0.3s;
+$transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Host element styling
+:host {
+  display: block;
+  position: relative;
+  z-index: 1000;
+}
+
+// Sidebar Overlay (Mobile)
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-speed $transition-timing;
+  z-index: 998;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+// Mobile Toggle Button
+.sidebar-toggle {
+  position: fixed;
+  top: .7rem;
+  left: 1rem;
+  width: 44px;
+  height: 44px;
+  background: $sidebar-bg;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all $transition-speed $transition-timing;
+
+  &:hover {
+    background: $sidebar-bg-light;
+    transform: scale(1.05);
+  }
+
+  .toggle-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 20px;
+
+    span {
+      display: block;
+      height: 2px;
+      background: $text-primary;
+      border-radius: 2px;
+      transition: all $transition-speed $transition-timing;
+
+      &:nth-child(1) { width: 100%; }
+      &:nth-child(2) { width: 75%; }
+      &:nth-child(3) { width: 50%; }
+    }
+  }
+
+  &.active .toggle-icon {
+    span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    span:nth-child(2) {
+      opacity: 0;
+      width: 0;
+    }
+    span:nth-child(3) {
+      width: 100%;
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+// Main Sidebar
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  height: 100dvh;
+  background: linear-gradient(180deg, $sidebar-bg 0%, darken($sidebar-bg, 3%) 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  transition: all $transition-speed $transition-timing;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  // Subtle gradient overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(180deg, rgba(13, 148, 136, 0.08) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  // Mobile States
+  @media (max-width: 1023px) {
+    transform: translateX(-100%);
+
+    &.mobile-open {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  // Collapsed State (Desktop)
+  &.collapsed {
+    width: $sidebar-collapsed-width;
+
+    .logo-text,
+    .user-info,
+    .nav-section-title,
+    .nav-text,
+    .nav-badge,
+    .org-info,
+    .logout-text {
+      opacity: 0;
+      visibility: hidden;
+      width: 0;
+    }
+
+    .sidebar-header .logo {
+      justify-content: center;
+
+      img {
+        width: 55px;
+      }
+    }
+
+    .user-profile {
+      justify-content: center;
+      padding: 0.3rem 0.5rem !important;
+
+      .avatar {
+        margin-right: 0;
+      }
+    }
+
+    .nav-item {
+      justify-content: center;
+      padding: 0.875rem;
+
+      .nav-icon {
+        margin-right: 0;
+      }
+    }
+
+    .sidebar-footer {
+      padding: 1rem 0.5rem;
+      align-items: center;
+
+      .logout-btn {
+        justify-content: center;
+        padding: 0.875rem;
+      }
+    }
+  }
+}
+
+// Collapse Button
+.collapse-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 268px;
+  width: 31px;
+  height: 31px;
+  background: $accent-color;
+  border: 2px solid $sidebar-bg;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all $transition-speed $transition-timing;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: $accent-hover;
+    transform: scale(1.1);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    transition: transform $transition-speed $transition-timing;
+  }
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
+
+// Sidebar Header
+.sidebar-header {
+  padding: 1.5rem 1.25rem;
+  border-bottom: 1px solid $sidebar-border;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    
+    img {
+      width: 100px;
+      height: auto;
+    }
+  }
+}
+
+// User Profile Section
+.user-profile {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  margin: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid $sidebar-border;
+  transition: all $transition-speed $transition-timing;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .avatar {
+    position: relative;
+    margin-right: 0.875rem;
+    flex-shrink: 0;
+
+    img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .status-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      background: #22c55e;
+      border: 2px solid $sidebar-bg;
+      border-radius: 50%;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    transition: all $transition-speed $transition-timing;
+
+    .user-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: $text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: $text-muted;
+      margin-top: 0.125rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+// Navigation
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+}
+
+.nav-section {
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.nav-section-title {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  transition: all $transition-speed $transition-timing;
+  white-space: nowrap;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: $text-secondary;
+  text-decoration: none;
+  border-radius: 10px;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s $transition-timing;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: $accent-color;
+    border-radius: 0 4px 4px 0;
+    transition: height 0.2s $transition-timing;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: $text-primary;
+
+    .nav-icon {
+      color: $accent-color;
+    }
+  }
+
+  &.active {
+    background: rgba(13, 148, 136, 0.12);
+    color: $text-primary;
+
+    &::before {
+      height: 60%;
+    }
+
+    .nav-icon {
+      color: $accent-color;
+    }
+
+    .nav-text {
+      font-weight: 500;
+    }
+  }
+
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 0.875rem;
+    flex-shrink: 0;
+    color: $text-muted;
+    transition: all 0.2s $transition-timing;
+  }
+
+  .nav-text {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition: all $transition-speed $transition-timing;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    padding: 0.125rem 0.5rem;
+    background: $accent-color;
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    border-radius: 20px;
+    min-width: 20px;
+    text-align: center;
+    transition: all $transition-speed $transition-timing;
+  }
+}
+
+
+// Sidebar Footer
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid $sidebar-border;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all $transition-speed $transition-timing;
+
+  .org-info {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all $transition-speed $transition-timing;
+
+    .org-label {
+      font-size: 0.625rem;
+      color: $text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .org-name {
+      font-size: 0.8125rem;
+      color: $text-secondary;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // Logout Button
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 1rem;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid rgb(255 142 142 / 20%);
+    border-radius: 10px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s $transition-timing;
+    width: 100%;
+    text-align: left;
+    gap: 0.875rem;
+
+    &:hover {
+      background: rgba(220, 38, 38, 0.15);
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+
+    .logout-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .logout-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all $transition-speed $transition-timing;
+    }
+  }
+}
+
+// Tooltip for collapsed state
+.sidebar.collapsed .nav-item {
+  position: relative;
+
+  &:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: $sidebar-bg-light;
+    color: $text-primary;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: tooltipFade 0.2s ease;
+  }
+}
+
+@keyframes tooltipFade {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .user-profile {
+    margin: 0.5rem;
+    padding: 0.3rem 0.5rem !important;
+
+    .avatar img {
+      width: 42px;
+      height: 42px;
+    }
+  }
+
+  .nav-item {
+    padding: 0.875rem 1rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .sidebar:not(.collapsed) {
+    width: 260px;
+  }
+}
+
+// Animation for page load
+@keyframes sidebarSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar {
+  animation: sidebarSlideIn 0.4s $transition-timing;
+}
+
+// Dark scrollbar for webkit
+.sidebar-nav {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+}

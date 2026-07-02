@@ -1,0 +1,121 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-8">
+    <h2>{{organisation?.name}} Complaints list</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>Complaints</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+  </div>
+</div>
+
+
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="ibox">
+        <div class="ibox-content ">
+          <div class="row m-b-sm m-t-sm">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="from" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="Starting date">
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div  class="col-md-15 input-group date">
+            <span class="input-group-addon">
+              <em class="fa fa-calendar"></em>
+            </span>
+                  <input id="to" type="text" (change)="changeAudit()" onfocus="(this.type='date')" class="form-control" placeholder="End date">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ibox-content">
+
+            <table class="table table-hover">
+              <caption>Complaints list</caption>
+              <thead>
+              <tr>
+                <th>Company name</th>
+                <th>name</th>
+                <th>Email</th>
+                <th>product</th>
+                <th>issue</th>
+                <th>date of complaint</th>
+                <th>action</th>
+              </tr>
+              </thead>
+              <tbody>
+
+
+              <tr *ngFor="let pd of filteredData; let i =index">
+
+                <td >
+                  <strong>{{pd.companyName}}</strong>
+                </td>
+
+
+                <td  class="project-title">
+                  {{pd.name}}
+                </td>
+
+                <td  >
+                  {{pd.email}}
+                </td>
+
+                <td >
+                  {{pd.product}}
+                </td>
+
+                <td >
+                  {{pd.issue}}
+                </td>
+
+                <td>
+                  {{pd.createdDate}}
+                </td>
+
+
+                <td>
+                  <em class="fa fa-search fa-lg" style="color: #18A689;" (click)="viewDetails(pd.id)"></em>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <div class="center">
+              <ngb-pagination  [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="12" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

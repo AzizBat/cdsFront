@@ -1,0 +1,323 @@
+<div class="user-form-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-title-section">
+        <div class="header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" y1="8" x2="19" y2="14" *ngIf="user === undefined" />
+            <line x1="22" y1="11" x2="16" y2="11" *ngIf="user === undefined" />
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" *ngIf="user !== undefined" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" *ngIf="user !== undefined" />
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1>{{ user === undefined ? 'Nouvel Utilisateur' : 'Modifier Utilisateur' }}</h1>
+          <nav class="breadcrumb-nav">
+            <a routerLink="/home" class="breadcrumb-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              Accueil
+            </a>
+            <svg class="breadcrumb-separator" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <a routerLink="/user/list" class="breadcrumb-link">Utilisateurs</a>
+            <svg class="breadcrumb-separator" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span class="breadcrumb-current">{{ user === undefined ? 'Ajouter' : 'Modifier' }}</span>
+          </nav>
+        </div>
+      </div>
+
+      <button class="btn-back" (click)="previousState()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        <span>Retour a la liste</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Form Content -->
+  <section class="form-section">
+    <div class="form-container">
+      <form class="modern-form" #form='ngForm' [formGroup]="formModel" autocomplete="off" (submit)="onSubmit(form)">
+
+        <!-- Form Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="form-card-title">
+              <h2>{{ user === undefined ? 'Créer un utilisateur' : 'Modifier les informations' }}</h2>
+              <p>{{ user === undefined ? 'Remplissez les informations requises pour créer un nouvel utilisateur' :
+                'Modifiez les informations de l\'utilisateur' }}</p>
+            </div>
+          </div>
+
+          <div class="form-card-body">
+            <!-- Row 1: Name, Role, Matricule -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  Nom complet
+                  <span class="required-indicator">*</span>
+                </label>
+                <input type="text" class="form-input" formControlName="username" placeholder="Entrez le nom complet"
+                  (input)="caracterOnlyValidator($event)"
+                  [ngClass]="{ 'input-error': submitted && formModel.controls.username.errors?.required }">
+                <div class="error-message" *ngIf="submitted && formModel.controls.username.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.username.errors?.required">Le nom de l'utilisateur est requis</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
+                  </svg>
+                  Rôle
+                  <span class="required-indicator">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select class="form-select" formControlName="roleName" (change)="checkEmail()" id="roleName"
+                    [ngClass]="{ 'input-error': submitted && formModel.controls.roleName?.errors }">
+                    <option [ngValue]="null" disabled hidden>Sélectionnez un rôle</option>
+                    <option *ngFor="let Role of role" [value]="Role.value">{{Role.name}}</option>
+                  </select>
+                  <svg class="select-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="error-message" *ngIf="submitted && formModel.controls.roleName.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.roleName.errors?.required">Le rôle de l'utilisateur est requis</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  Matricule
+                  <span class="required-indicator">*</span>
+                </label>
+                <input type="text" class="form-input" formControlName="matricule" placeholder="Entrez le matricule"
+                  (input)="numbersOnlyValidator($event)"
+                  [ngClass]="{ 'input-error': submitted && formModel.controls.matricule.errors?.required }">
+                <div class="error-message" *ngIf="submitted && formModel.controls.matricule.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.matricule.errors?.required">Le matricule de l'utilisateur est
+                    requis</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Function, Service, Service Code -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+                    <polyline points="17 2 12 7 7 2" />
+                  </svg>
+                  Fonction
+                  <span class="required-indicator">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select class="form-select" formControlName="organisationsFunction"
+                    [ngClass]="{ 'input-error': submitted && formModel.controls.organisationsFunction.errors }">
+                    <option [ngValue]="null" disabled hidden>Sélectionnez une fonction</option>
+                    <option *ngFor="let OrganisationFunction of organisationFunction" [value]="OrganisationFunction">
+                      {{OrganisationFunction}}</option>
+                  </select>
+                  <svg class="select-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="error-message" *ngIf="submitted && formModel.controls.organisationsFunction.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.organisationsFunction.errors?.required">La fonction de l'utilisateur
+                    est requise</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                  Service
+                  <span class="required-indicator">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select class="form-select" formControlName="organisationsService"
+                    [ngClass]="{ 'input-error': submitted && formModel.controls.organisationsService.errors }">
+                    <option [ngValue]="null" disabled hidden>Sélectionnez un service</option>
+                    <option *ngFor="let OrganisationService of organisationService" [value]="OrganisationService">
+                      {{OrganisationService}}</option>
+                  </select>
+                  <svg class="select-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="error-message" *ngIf="submitted && formModel.controls.organisationsService.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.organisationsService.errors?.required">Le service de l'utilisateur est
+                    requis</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
+                  Code Service
+                  <span class="required-indicator">*</span>
+                </label>
+                <input type="text" class="form-input" formControlName="serviceCode" placeholder="Entrez le code service"
+                  (input)="numbersOnlyValidator($event)"
+                  [ngClass]="{ 'input-error': submitted && formModel.controls.serviceCode.errors?.required }">
+                <div class="error-message" *ngIf="submitted && formModel.controls.serviceCode.errors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.serviceCode.errors?.required">Le code de service est requis</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: Email (conditional) -->
+            <div class="form-row" id="mail" [style.display]="haveEmail ? 'grid' : 'none'">
+              <div class="form-group form-group-full">
+                <label class="form-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                  Adresse Email
+                </label>
+                <input type="email" class="form-input" formControlName="email" placeholder="utilisateur@example.com"
+                  [ngClass]="{ 'input-error': formModel.controls.email.errors && formModel.controls.email.touched }">
+                <div class="error-message"
+                  *ngIf="haveEmail && formModel.controls.email.errors && formModel.controls.email.touched">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span *ngIf="formModel.controls.email.errors?.required">L'adresse email est requise</span>
+                  <span *ngIf="formModel.controls.email.errors?.email">Adresse email invalide</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="previousState()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              <span>Annuler</span>
+            </button>
+
+            <button type="submit" class="btn-primary" *ngIf="user === undefined; else updateButton">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
+              </svg>
+              <span>Créer l'utilisateur</span>
+            </button>
+            <ng-template #updateButton>
+              <button type="submit" class="btn-primary" [disabled]="!formModel.valid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                  <polyline points="17 21 17 13 7 13 7 21" />
+                  <polyline points="7 3 7 8 15 8" />
+                </svg>
+                <span>Enregistrer les modifications</span>
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>

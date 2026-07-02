@@ -1,0 +1,525 @@
+<!-- Report Generation Loader -->
+<div *ngIf="printing" class="report-loader-overlay">
+  <div class="report-loader-content">
+    <div class="loader-spinner"></div>
+    <h3>Génération du rapport en cours...</h3>
+    <p>Veuillez patienter</p>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div *ngIf="!load" class="loading-container">
+  <mat-spinner diameter="48" color="primary"></mat-spinner>
+  <p class="loading-text">Chargement des données...</p>
+</div>
+
+<!-- Main Dashboard -->
+<div *ngIf="load" class="dashboard-container">
+
+  <!-- Header Section -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Tableau de Bord</h1>
+        <p class="header-subtitle">Analyse des requêtes et statistiques</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-badge">
+          <span class="stat-value">{{requests?.length || 0}}</span>
+          <span class="stat-label">Total Requêtes</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <mat-card class="filter-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>filter_list</mat-icon>
+          Filtres de recherche
+        </mat-card-title>
+        <button mat-raised-button color="primary" (click)="generateReport()" class="report-btn">
+          <mat-icon class="report-icon">description</mat-icon>
+          Générer le rapport
+        </button>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="filters-grid">
+          <!-- Date Range -->
+          <mat-form-field appearance="outline" class="filter-field date-range-field">
+            <mat-label>Période</mat-label>
+            <button *ngIf="fromDate || toDate" matPrefix mat-icon-button aria-label="Effacer"
+              (click)="clearDateFilter($event)" class="clear-date-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate [(ngModel)]="fromDate" placeholder="Date début" (dateChange)="filterRequests()">
+              <input matEndDate [(ngModel)]="toDate" placeholder="Date fin" (dateChange)="filterRequests()">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+
+          <!-- Requester Select -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Demandée par</mat-label>
+            <button *ngIf="auditorId !== -1" matPrefix mat-icon-button aria-label="Effacer"
+              (click)="clearRequesterFilter($event)" class="clear-date-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select [(ngModel)]="auditorId" (selectionChange)="filterRequests()">
+              <mat-option [value]="-1">Tous</mat-option>
+              <mat-option *ngFor="let auditor of users" [value]="auditor.id">
+                {{auditor.name}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+
+          <!-- Structure Select -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Structure</mat-label>
+            <button *ngIf="filteredStructure !== ''" matPrefix mat-icon-button aria-label="Effacer"
+              (click)="clearStructureFilter($event)" class="clear-date-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select [(ngModel)]="filteredStructure" (selectionChange)="filterRequests()">
+              <mat-option [value]="''">Toutes</mat-option>
+              <mat-option *ngFor="let service of organisationService" [value]="service">
+                {{service}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>business</mat-icon>
+          </mat-form-field>
+
+          <!-- Status Select -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>État d'avancement</mat-label>
+            <button *ngIf="filteredRequestStatus !== ''" matPrefix mat-icon-button aria-label="Effacer"
+              (click)="clearStatusFilter($event)" class="clear-date-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select [(ngModel)]="filteredRequestStatus" (selectionChange)="filterRequests()">
+              <mat-option [value]="''">Tous</mat-option>
+              <mat-option *ngFor="let s of status" [value]="s.value">
+                {{s.name}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>flag</mat-icon>
+          </mat-form-field>
+
+          <!-- Request Type Select -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Type de requête</mat-label>
+            <button *ngIf="filteredRequestType !== ''" matPrefix mat-icon-button aria-label="Effacer"
+              (click)="clearRequestTypeFilter($event)" class="clear-date-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-select [(ngModel)]="filteredRequestType" (selectionChange)="filterRequests()">
+              <mat-option [value]="''">Tous</mat-option>
+              <mat-option *ngFor="let rt of requestType" [value]="rt.value">
+                {{rt.name}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>category</mat-icon>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <!-- Charts Grid -->
+  <section class="charts-section">
+    <div class="charts-grid">
+
+      <!-- Status Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>donut_large</mat-icon>
+            État des requêtes
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="hasStatusData" class="chart-wrapper">
+            <canvas id="status-chart"></canvas>
+          </div>
+          <div *ngIf="!hasStatusData" class="no-data-message">
+            <mat-icon class="no-data-icon">pie_chart</mat-icon>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <div class="chart-legend" *ngIf="hasStatusData">
+            <div class="legend-item" *ngFor="let s of status; let i = index">
+              <span class="legend-color" [style.background]="getStatusColor(i)"></span>
+              <span class="legend-label">{{s.name}}</span>
+              <span class="legend-value">{{statusData[i] || 0}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- User Type Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>people</mat-icon>
+            Type d'authentification
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="hasUserData" class="chart-wrapper">
+            <canvas id="user-chart"></canvas>
+          </div>
+          <div *ngIf="!hasUserData" class="no-data-message">
+            <mat-icon class="no-data-icon">people_outline</mat-icon>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <div class="chart-legend" *ngIf="hasUserData">
+            <div class="legend-item" *ngFor="let ut of usersType; let i = index">
+              <span class="legend-color" [style.background]="getUserColor(i)"></span>
+              <span class="legend-label">{{ut}}</span>
+              <span class="legend-value">{{userData[i] || 0}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Hours Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>schedule</mat-icon>
+            Plage horaire
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="hasHoursData" class="chart-wrapper">
+            <canvas id="hours-chart"></canvas>
+          </div>
+          <div *ngIf="!hasHoursData" class="no-data-message">
+            <mat-icon class="no-data-icon">schedule</mat-icon>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <div class="chart-legend" *ngIf="hasHoursData">
+            <div class="legend-item" *ngFor="let h of hours; let i = index">
+              <span class="legend-color" [style.background]="getHoursColor(i)"></span>
+              <span class="legend-label">{{h}}</span>
+              <span class="legend-value">{{hoursData[i] || 0}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Request Type Chart -->
+      <mat-card class="chart-card chart-card-wide">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>assignment</mat-icon>
+            Type de requêtes
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="hasRequestTypeData" class="chart-wrapper" style="height: 330px !important;">
+            <canvas id="request-type-chart"></canvas>
+          </div>
+          <div *ngIf="!hasRequestTypeData" class="no-data-message" style="height: 330px;">
+            <mat-icon class="no-data-icon">assignment</mat-icon>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <div class="chart-legend" *ngIf="hasRequestTypeData">
+            <div class="legend-item" *ngFor="let label of requestTypeLabels; let i = index">
+              <span class="legend-color" [style.background]="requestTypeColors[i]"></span>
+              <span class="legend-label">{{label}}</span>
+              <span class="legend-value">{{requestTypeData[i]}} ({{requestTypeCumulative[i]?.toFixed(1)}}%)</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Anomaly Type Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>warning</mat-icon>
+            Type d'anomalie
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content [style.height]="!hasAnomalyTypeData ? '100%' : null">
+          <div *ngIf="hasAnomalyTypeData" class="chart-wrapper">
+            <canvas id="anomaly-type-chart"></canvas>
+          </div>
+          <div *ngIf="!hasAnomalyTypeData" class="no-data-message" style="height: 100%;">
+            <mat-icon class="no-data-icon">warning_amber</mat-icon>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <div class="chart-legend" *ngIf="hasAnomalyTypeData">
+            <div class="legend-item" *ngFor="let at of anomalyType; let i = index">
+              <span class="legend-color" [style.background]="getAnomalyColor(i)"></span>
+              <span class="legend-label">{{at}}</span>
+              <span class="legend-value">{{anomalyTypeData[i] || 0}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </section>
+
+  <!-- Data Tables Section -->
+  <section class="tables-section">
+    <div class="tables-grid">
+
+      <!-- Structure Table -->
+      <mat-card class="table-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>domain</mat-icon>
+            Répartition par structure
+          </mat-card-title>
+          <span class="count-badge">{{structure?.length || 0}} Structure{{structure?.length > 1 ? 's' : ''}}</span>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-container">
+            <table mat-table [dataSource]="structure" class="data-table">
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="structure">
+                <th mat-header-cell *matHeaderCellDef>Structure</th>
+                <td mat-cell *matCellDef="let element">{{element.structure}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Requêtes</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="value-chip">{{element.value}}</span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['index', 'structure', 'value']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['index', 'structure', 'value'];"></tr>
+            </table>
+
+            <div *ngIf="structure?.length === 0" class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <p>Aucune donnée disponible</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Requester Table -->
+      <mat-card class="table-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>person_outline</mat-icon>
+            Répartition par personne
+          </mat-card-title>
+          <span class="count-badge">{{requester?.length || 0}} Personne{{requester?.length > 1 ? 's' : ''}}</span>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-container">
+            <table mat-table [dataSource]="requester" class="data-table">
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Demandeur</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Requêtes</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="value-chip">{{element.value}}</span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['index', 'name', 'value']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['index', 'name', 'value'];"></tr>
+            </table>
+
+            <div *ngIf="requester?.length === 0" class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <p>Aucune donnée disponible</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</div>
+
+<!-- PDF Print Section (Hidden) -->
+<div #printable id="printable" class="print-container" style="display: none;">
+  <div class="print-content">
+    <div class="print-header">
+      <h2>Rapport d'analyse des requêtes</h2>
+      <p class="print-date">Généré le {{today | date:'dd/MM/yyyy HH:mm'}}</p>
+    </div>
+
+    <!-- Filter Summary -->
+    <div class="print-filters"
+      *ngIf="minDate || maxDate || auditorId !== -1 || filteredStructure || filteredRequestStatus || filteredRequestType">
+      <h3>Critères de filtrage</h3>
+      <div class="filter-summary">
+        <p *ngIf="minDate || maxDate">
+          <strong>Période :</strong>
+          <span *ngIf="minDate">du {{minDate}}</span>
+          <span *ngIf="maxDate"> au {{maxDate}}</span>
+        </p>
+        <p *ngIf="auditorId !== -1"><strong>Demandée par :</strong> {{selectedUser}}</p>
+        <p *ngIf="filteredStructure"><strong>Structure :</strong> {{filteredStructure}}</p>
+        <p *ngIf="filteredRequestStatus"><strong>État :</strong> {{selectedStatus}}</p>
+        <p *ngIf="filteredRequestType"><strong>Type :</strong> {{selectedRequestType}}</p>
+      </div>
+    </div>
+
+    <!-- Statistics Tables -->
+    <div class="print-section">
+      <h3>État des requêtes (Total: {{requests?.length}})</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Valeur</th>
+            <th>Pourcentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of status; let i = index">
+            <td>{{s.name}}</td>
+            <td>{{statusData[i]}}</td>
+            <td>{{(statusData[i] / requests?.length) * 100 | number:'1.0-2'}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Type d'authentification</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Valeur</th>
+            <th>Pourcentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ut of usersType; let i = index">
+            <td>{{ut}}</td>
+            <td>{{userData[i]}}</td>
+            <td>{{(userData[i] / totalUserData) * 100 | number:'1.0-2'}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Plage horaire</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Plage</th>
+            <th>Valeur</th>
+            <th>Pourcentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let h of hours; let i = index">
+            <td>{{h}}</td>
+            <td>{{hoursData[i]}}</td>
+            <td>{{(hoursData[i] / totalUserData) * 100 | number:'1.0-2'}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Type de requêtes</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Valeur</th>
+            <th>Pourcentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rt of requestType; let i = index">
+            <td>{{rt.name}}</td>
+            <td>{{requestTypeData[i]}}</td>
+            <td>{{(requestTypeData[i] / totalUserData) * 100 | number:'1.0-2'}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Type d'anomalie</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Valeur</th>
+            <th>Pourcentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let at of anomalyType; let i = index">
+            <td>{{at}}</td>
+            <td>{{anomalyTypeData[i]}}</td>
+            <td>{{(anomalyTypeData[i] / totalUserData) * 100 | number:'1.0-2'}}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Répartition par structure</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Structure</th>
+            <th>Nombre de requêtes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of structure">
+            <td>{{s.structure}}</td>
+            <td>{{s.value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h3>Répartition par personne</h3>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Demandeur</th>
+            <th>Nombre de requêtes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of requester">
+            <td>{{r.name}}</td>
+            <td>{{r.value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-footer">
+      <p>Generated by Industry X.0 © 2026</p>
+    </div>
+  </div>
+</div>

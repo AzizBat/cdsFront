@@ -1,0 +1,140 @@
+<div class="background">
+  <!--<body>-->
+  <div class="row">
+    <div class="col-md-6 center" style="margin-top: 60px">
+      <h2 class="font-bold"> </h2>
+      <h2 class="font-bold"> </h2>
+      <img alt="cipa Logo" class="center" src="/assets/logo.png" style="width: auto;max-height: 500%"/>
+    </div>
+  </div>
+  <div class="row">
+  <div class="col-md-8 center" style="margin-top: 460px">
+    <div class="ibox-content" style="border-radius: 8px;">
+      <div id="title">
+        <h2 class="title">Complaint</h2>
+      </div>
+      <div id="msg">
+        Your satisfaction is our duty. Share with us your concerns to help us fulfill your needs in return.
+      </div>
+<!--      <br>-->
+      <div id="form1">
+        <form #form='ngForm'  autocomplete="off" [formGroup]="formModel" (submit)="onSubmit(form)"  class="m-t" role="form" >
+          <div class="row">
+            <div class="col-md-6" style="text-align: left">
+          <h4 style="margin: 0px ; color: #18A689">General Informations</h4>
+            <hr>
+            </div>
+          </div>
+          <div class="row">
+         <div class="col-md-6">
+          <div class="form-group ">
+            <input type="text" (input)="caracterOnlyValidator($event)" formControlName="name" placeholder="Name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div *ngIf="f.name.errors.required">Your name is required</div>
+            </div>
+          </div>
+         </div>
+
+            <div class="col-md-6">
+              <div class="form-group ">
+                <input type="text"  formControlName="companyName" placeholder="Company name" class="form-control" />
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+
+
+            <div class="col-md-6">
+              <div class="form-group ">
+                <input type="text" formControlName="email" placeholder="Email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Your email is required to reach you</div>
+                  <div *ngIf="f.email.errors.email">Invalid email address</div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6">
+              <div class="form-group ">
+                <input type="text" (input)="numbersOnlyValidator($event)" formControlName="Phone" placeholder="Phone Number" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Phone.errors }" />
+                <div *ngIf="submitted && f.Phone.errors" class="invalid-feedback">
+                  <div *ngIf="f.Phone.errors.required">your phone number is required to reach you</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <br>
+          <div class="row">
+            <div class="col-md-6" style="text-align: left">
+              <h4 style="margin: 0px ; color: #18A689">Issue Desciption</h4>
+              <hr>
+            </div>
+          </div>
+
+
+          <div class="row">
+
+            <div class="col-md-6">
+              <div class="form-group ">
+                <input type="text" formControlName="product" placeholder="Product" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.product.errors }" />
+                <div *ngIf="submitted && f.product.errors" class="invalid-feedback">
+                  <div *ngIf="f.product.errors.required">The product is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group ">
+                <input type="text" formControlName="issue" placeholder="Issue" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.issue.errors }" />
+                <div *ngIf="submitted && f.issue.errors" class="invalid-feedback">
+                  <div *ngIf="f.issue.errors.required">The issue is required</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group ">
+                <textarea formControlName="description" placeholder="Description" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }"></textarea>
+                <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                  <div *ngIf="f.description.errors.required">The issue description is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="btn btn-primary block m-b vertical-center"   title="Upload image file" for="inputImage">
+                <input   type="file" accept="image/png, image/jpeg"  multiple (change)="addChecklist($any($event.target).files)" name="file" id="inputImage" style="display:none">
+                <em class="fa fa-plus"></em>&nbsp; Add detailed pictures
+              </label>
+              <div class="lightBoxGallery">
+                <ng-container *ngFor=" let picture of pictures; let i = index">
+                  <img alt="" [src]="imageToShow? imageToShow : picture.name " style="width: 100px; height: 100px" class="img-fluid  float-right" data-gallery>
+
+                </ng-container>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4"></div>
+          <div class="col-md-4">
+          <button [disabled]="loading" class="btn btn-primary block full-width m-b">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Submit your complaint
+          </button>
+          </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

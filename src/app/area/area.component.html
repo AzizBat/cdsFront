@@ -1,0 +1,172 @@
+<div *ngIf="load ===false" class="preloaderBg" id="preloader" onload="preloader()">
+  <div class="preloader"></div>
+  <div class="preloader2"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script    type="text/javascript">
+  $(window).load(function() {
+    $('#preloader').fadeOut();
+    $('#preloaderBg').delay(50).fadeOut(100);
+    $('body').delay(50).css({'overflow':'visible'});
+  })
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-9">
+    <h2> {{organisation?.name}} Area's list</h2>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/home">Home</a>
+      </li>
+      <li class="breadcrumb-item active">
+        <strong>Areas</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<ng-container *ngIf="currentRole !== 'ROLE_USER' ; else elseBlock1">
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox ">
+            <div class="ibox-title">
+              <h5>Add your new area name</h5>
+            </div>
+            <div  class="ibox-content">
+              <form  #form="ngForm" autocomplete="off" [formGroup]="formModel" (submit)="onSubmit(form)" class="ibox-content" method="get">
+                <div class="form-group  row"><label class="col-sm-2 col-form-label">Name</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" formControlName="name"  class="" [ngClass]="{ 'is-invalid': (submitted && f.name.errors) || exist===true }">
+                    <div *ngIf="(submitted && f.name.errors) || exist ===true" class="invalid-feedback">
+                      <div *ngIf="exist === true">This area name is already saved in your organisation</div>
+                      <div *ngIf="f.name.errors.required">Area name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row"><label  class="col-sm-2 col-form-label">Description</label>
+                  <div class="col-sm-10"><input type="text" formControlName="description" class="form-control"> <span class="form-text m-b-none">Describe your area thoroughly.</span>
+                  </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                  <div class="col-sm-4 col-sm-offset-2 center" >
+                    <button class="btn btn-primary block full-width m-b" type="submit"><em class="fa fa-check"></em> Save Area</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="ibox ">
+        <div class="ibox-title">
+          <h5>Areas List</h5>
+        </div>
+
+        <div class="ibox-content">
+          <table class="table">
+            <caption>Areas List</caption>
+            <thead>
+            <tr>
+              <th></th>
+              <th>Area Name</th>
+              <th>Area Description</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let pd of  pageOfItems; index as i">
+              <td> {{i+1}}</td>
+              <td >  {{pd.name}}</td>
+              <td>{{pd.description}}
+              &nbsp;
+                <ng-container *ngIf="pd.archived === true">
+                  <span class="label label-danger">Deleted</span>
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="pd.archived === false;else elseBlock">
+
+                <a (click)="viewDetails(pd.id)"><em class="fa fa-edit fa-lg" style="color: cornflowerblue;" ></em></a>
+                &nbsp; &nbsp;
+                <a (click)="onDelete(pd.id)"><em class="fa fa-times fa-lg" style="color: crimson" ></em></a>
+
+                <ul class="dropdown-menu dropdown-user">
+                  <li> <button class="dropdown-item" (click)="viewDetails(pd.id)">Edit</button>
+                  </li>
+                  <li> <button class="dropdown-item" (click)="onDelete(pd.id)">Delete</button>
+                  </li>
+                </ul>
+                </ng-container>
+                <ng-template #elseBlock>
+                  <a (click)="restore(pd.id)"><em class="fa fa-share-square-o fa-lg" style="color: mediumseagreen" ></em></a>
+                </ng-template>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="center">
+          <jw-pagination  [items]="service.list" (changePage)="pageClick($event)" [pageSize]="pageSize"></jw-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
+<ng-template #elseBlock1>
+  <div class="wrapper wrapper-content">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ibox ">
+          <div class="ibox-title">
+            <h5>Areas List</h5>
+          </div>
+
+          <div class="ibox-content">
+            <table class="table">
+              <caption>Areas List</caption>
+              <thead>
+              <tr>
+                <th></th>
+                <th>Area Name</th>
+                <th>Area Description</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let pd of  pageOfItems; index as i">
+                <td> {{i+1}}</td>
+                <td >  {{pd.name}}</td>
+                <td>{{pd.description}}
+                  &nbsp;
+
+                </td>
+                <td>
+                  <ng-container *ngIf="pd.archived === true">
+                    <span class="label label-danger">Deleted</span>
+                  </ng-container>
+                  <ng-container *ngIf="pd.archived === false">
+                    <span class="label label-primary">Active</span>
+                  </ng-container>
+
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="center">
+              <jw-pagination  [items]="service.list" (changePage)="pageClick($event)" [pageSize]="pageSize"></jw-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
