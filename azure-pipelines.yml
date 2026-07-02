@@ -112,7 +112,20 @@ steps:
       kubectl get deployment $DEPLOYMENT_NAME \
         -n $NAMESPACE \
         -o jsonpath="{.spec.template.spec.containers[0].image}"
-      echo ""
+            echo "========================================"
+      echo "13. Smoke test public HTTPS frontend"
+      echo "========================================"
+
+      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 https://homecds.cipa-web.com/)
+
+      echo "Frontend HTTP code: $HTTP_CODE"
+
+      if [ "$HTTP_CODE" != "200" ]; then
+        echo "Frontend public URL is not responding correctly"
+        exit 1
+      fi
+
+      echo "Frontend smoke test passed"
 
       echo "========================================"
       echo "Frontend deployment completed successfully"
