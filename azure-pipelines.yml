@@ -29,10 +29,15 @@ steps:
       echo "Frontend CI/CD Pipeline"
       echo "========================================"
 
-      TAG="$(Build.BuildId)"
+      SHORT_SHA=$(echo "$(Build.SourceVersion)" | cut -c1-7)
+      TAG="$(Build.BuildId)-$SHORT_SHA"
       IMAGE="$ACR_LOGIN_SERVER/$IMAGE_NAME:$TAG"
 
-      echo "Build ID: $TAG"
+      echo "Build ID: $(Build.BuildId)"
+      echo "Source branch: $(Build.SourceBranch)"
+      echo "Source version: $(Build.SourceVersion)"
+      echo "Short SHA: $SHORT_SHA"
+      echo "Image tag: $TAG"
       echo "Image: $IMAGE"
 
       echo "========================================"
@@ -64,7 +69,7 @@ steps:
       docker push $IMAGE
 
       echo "========================================"
-      echo "6. Verify image in ACR"
+      echo "6. Verify image tags in ACR"
       echo "========================================"
       az acr repository show-tags \
         --name $ACR_NAME \
@@ -112,11 +117,13 @@ steps:
       kubectl get deployment $DEPLOYMENT_NAME \
         -n $NAMESPACE \
         -o jsonpath="{.spec.template.spec.containers[0].image}"
-            echo "========================================"
+      echo ""
+
+      echo "========================================"
       echo "13. Smoke test public HTTPS frontend"
       echo "========================================"
 
-      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 https://homecds.cipa-web.com/)
+      HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" --connect-timeout 10 https://homecds.cipa-web.com/)
 
       echo "Frontend HTTP code: $HTTP_CODE"
 
