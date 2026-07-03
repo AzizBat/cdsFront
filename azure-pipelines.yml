@@ -128,12 +128,11 @@ steps:
 
       SUCCESS=false
 
-      for i in {1..12}; do
+      for i in $(seq 1 12); do
         echo "Smoke test attempt $i/12"
 
         HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" \
-      for i in {1..12}; do
-        echo "Smoke          --connect-timeout 10 \
+          --connect-timeout 10 \
           --max-time 20 \
           https://homecds.cipa-web.com/ || echo "000")
 
