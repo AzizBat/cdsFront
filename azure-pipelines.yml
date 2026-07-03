@@ -120,15 +120,39 @@ steps:
       echo ""
 
       echo "========================================"
-      echo "13. Smoke test public HTTPS frontend"
+      echo "13. Smoke test public HTTPS frontend with retries"
       echo "========================================"
 
-      HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" --connect-timeout 10 https://homecds.cipa-web.com/)
+      echo "Waiting a few seconds for Ingress endpoints propagation..."
+      sleep 20
 
-      echo "Frontend HTTP code: $HTTP_CODE"
+      SUCCESS=false
 
-      if [ "$HTTP_CODE" != "200" ]; then
-        echo "Frontend public URL is not responding correctly"
+      for i in {1..12}; do
+        echo "Smoke test attempt $i/12"
+
+        HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" \
+      for i in {1..12}; do
+        echo "Smoke          --connect-timeout 10 \
+          --max-time 20 \
+          https://homecds.cipa-web.com/ || echo "000")
+
+        echo "Frontend HTTP code: $HTTP_CODE"
+
+        if [ "$HTTP_CODE" = "200" ]; then
+          SUCCESS=true
+          break
+        fi
+
+        echo "Frontend not ready yet, waiting 10 seconds..."
+        sleep 10
+      done
+
+      if [ "$SUCCESS" != "true" ]; then
+        echo "Frontend public URL is not responding correctly after retries"
+        kubectl get pods -n $NAMESPACE
+        kubectl get svc -n $NAMESPACE
+        kubectl get ingress -n $NAMESPACE
         exit 1
       fi
 
