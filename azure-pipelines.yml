@@ -15,17 +15,6 @@ variables:
   DEPLOYMENT_NAME: 'frontend-deployment'
   CONTAINER_NAME: 'frontend'
 
-  HELM_RELEASE:'
-  ACR_LOGIN_SERVER: '074e602972fd46029dab25309335a35d.azurecr.io'
-  IMAGE_NAME: 'frontend-app'
-
-  AKS_RG: 'IndustryMain'
-  AKS_NAME: 'cds'
-  NAMESPACE: 'cds-pfe'
-
-  DEPLOYMENT_NAME: 'frontend-deployment'
-  CONTAINER_NAME: 'frontend'
-
   HELM_RELEASE: 'cds-app'
   HELM_CHART_PATH: 'helm/cds-app'
 
