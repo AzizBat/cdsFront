@@ -1,0 +1,162 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  ACR_NAME: '074e602972fd46029dab25309335a35d'
+  ACR_LOGIN_SERVER: '074e602972fd46029dab25309335a35d.azurecr.io'
+  IMAGE_NAME: 'frontend-app'
+
+  AKS_RG: 'IndustryMain'
+  AKS_NAME: 'cds'
+  NAMESPACE: 'cds-pfe'
+
+  DEPLOYMENT_NAME: 'frontend-deployment'
+  CONTAINER_NAME: 'frontend'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Build, push and deploy frontend to AKS'
+  inputs:
+    azureSubscription: 'azure-aks'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e
+
+      echo "========================================"
+      echo "Frontend CI/CD Pipeline"
+      echo "========================================"
+
+      SHORT_SHA=$(echo "$(Build.SourceVersion)" | cut -c1-7)
+      TAG="$(Build.BuildId)-$SHORT_SHA"
+      IMAGE="$ACR_LOGIN_SERVER/$IMAGE_NAME:$TAG"
+
+      echo "Build ID: $(Build.BuildId)"
+      echo "Source branch: $(Build.SourceBranch)"
+      echo "Source version: $(Build.SourceVersion)"
+      echo "Short SHA: $SHORT_SHA"
+      echo "Image tag: $TAG"
+      echo "Image: $IMAGE"
+
+      echo "========================================"
+      echo "1. Azure account"
+      echo "========================================"
+      az account show -o table
+
+      echo "========================================"
+      echo "2. Check project files"
+      echo "========================================"
+      ls -la
+      test -f Dockerfile
+      test -f package.json
+      test -f angular.json
+
+      echo "========================================"
+      echo "3. Login to Azure Container Registry"
+      echo "========================================"
+      az acr login --name $ACR_NAME
+
+      echo "========================================"
+      echo "4. Docker build"
+      echo "========================================"
+      docker build -t $IMAGE .
+
+      echo "========================================"
+      echo "5. Docker push to ACR"
+      echo "========================================"
+      docker push $IMAGE
+
+      echo "========================================"
+      echo "6. Verify image tags in ACR"
+      echo "========================================"
+      az acr repository show-tags \
+        --name $ACR_NAME \
+        --repository $IMAGE_NAME \
+        -o table
+
+      echo "========================================"
+      echo "7. Get AKS credentials"
+      echo "========================================"
+      az aks get-credentials \
+        --resource-group $AKS_RG \
+        --name $AKS_NAME \
+        --overwrite-existing
+
+      echo "========================================"
+      echo "8. Current frontend image before deployment"
+      echo "========================================"
+      kubectl get deployment $DEPLOYMENT_NAME \
+        -n $NAMESPACE \
+        -o jsonpath="{.spec.template.spec.containers[0].image}"
+      echo ""
+
+      echo "========================================"
+      echo "9. Deploy new frontend image to AKS"
+      echo "========================================"
+      kubectl set image deployment/$DEPLOYMENT_NAME \
+        $CONTAINER_NAME=$IMAGE \
+        -n $NAMESPACE
+
+      echo "========================================"
+      echo "10. Rollout status"
+      echo "========================================"
+      kubectl rollout status deployment/$DEPLOYMENT_NAME \
+        -n $NAMESPACE \
+        --timeout=180s
+
+      echo "========================================"
+      echo "11. Pods after deployment"
+      echo "========================================"
+      kubectl get pods -n $NAMESPACE
+
+      echo "========================================"
+      echo "12. Frontend image after deployment"
+      echo "========================================"
+      kubectl get deployment $DEPLOYMENT_NAME \
+        -n $NAMESPACE \
+        -o jsonpath="{.spec.template.spec.containers[0].image}"
+      echo ""
+
+      echo "========================================"
+      echo "13. Smoke test public HTTPS frontend with retries"
+      echo "========================================"
+
+      echo "Waiting a few seconds for Ingress endpoints propagation..."
+      sleep 20
+
+      SUCCESS=false
+
+      for i in $(seq 1 12); do
+        echo "Smoke test attempt $i/12"
+
+        HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" \
+          --connect-timeout 10 \
+          --max-time 20 \
+          https://homecds.cipa-web.com/ || echo "000")
+
+        echo "Frontend HTTP code: $HTTP_CODE"
+
+        if [ "$HTTP_CODE" = "200" ]; then
+          SUCCESS=true
+          break
+        fi
+
+        echo "Frontend not ready yet, waiting 10 seconds..."
+        sleep 10
+      done
+
+      if [ "$SUCCESS" != "true" ]; then
+        echo "Frontend public URL is not responding correctly after retries"
+        kubectl get pods -n $NAMESPACE
+        kubectl get svc -n $NAMESPACE
+        kubectl get ingress -n $NAMESPACE
+        exit 1
+      fi
+
+      echo "Frontend smoke test passed"
+
+      echo "========================================"
+      echo "Frontend deployment completed successfully"
+      echo "========================================"
