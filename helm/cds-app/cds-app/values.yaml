@@ -1,0 +1,83 @@
+namespace: cds-pfe
+
+backend:
+  name: backend
+  deploymentName: backend-deployment
+  serviceName: backend-service
+  replicas: 1
+  image:
+    repository: 074e602972fd46029dab25309335a35d.azurecr.io/backend-app
+    tag: "2186-f41b800"
+    pullPolicy: IfNotPresent
+  containerPort: 5000
+  servicePort: 5000
+  secretName: backend-secret-kv
+  secretProviderClass: azure-kv-cds-pfe
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+frontend:
+  name: frontend
+  deploymentName: frontend-deployment
+  serviceName: frontend-service
+  replicas: 1
+  image:
+    repository: 074e602972fd46029dab25309335a35d.azurecr.io/frontend-app
+    tag: "2203-4533d09"
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  servicePort: 80
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "300m"
+      memory: "256Mi"
+
+ingress:
+  enabled: true
+  host: homecds.cipa-web.com
+  tlsSecret: homecds-tls
+  ingressClassName: nginx
+
+hpa:
+  backend:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    cpuUtilization: 70
+
+security:
+  backend:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+
+  frontend:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 101
+      runAsGroup: 101
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL    

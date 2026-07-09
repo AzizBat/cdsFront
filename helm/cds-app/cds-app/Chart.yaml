@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cds-app
+description: Helm chart for CDS full-stack application on AKS
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
