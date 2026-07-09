@@ -28,9 +28,9 @@ frontend:
   replicas: 1
   image:
     repository: 074e602972fd46029dab25309335a35d.azurecr.io/frontend-app
-    tag: "2185-6c65847"
+    tag: "2196-2724152"
     pullPolicy: IfNotPresent
-  containerPort: 80
+  containerPort: 8080
   servicePort: 80
   resources:
     requests:
@@ -52,3 +52,30 @@ hpa:
     minReplicas: 1
     maxReplicas: 5
     cpuUtilization: 70
+
+security:
+  backend:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+
+  frontend:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 101
+      runAsGroup: 101
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL    

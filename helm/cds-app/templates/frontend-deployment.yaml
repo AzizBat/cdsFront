@@ -15,11 +15,15 @@ spec:
       labels:
         app: {{ .Values.frontend.name }}
     spec:
+      securityContext:
+{{ toYaml .Values.security.frontend.podSecurityContext | indent 8 }}
       containers:
         - name: {{ .Values.frontend.name }}
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           ports:
             - containerPort: {{ .Values.frontend.containerPort }}
+          securityContext:
+{{ toYaml .Values.security.frontend.containerSecurityContext | indent 12 }}
           resources:
             requests:
               cpu: {{ .Values.frontend.resources.requests.cpu | quote }}

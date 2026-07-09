@@ -14,12 +14,14 @@ COPY . .
 RUN npm run build --prod
 
 # =========================
-# NGINX STAGE
+# NGINX STAGE - NON ROOT
 # =========================
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:stable-alpine
 
 COPY --from=build /app/dist/FrontTest /usr/share/nginx/html
 
-EXPOSE 80
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
