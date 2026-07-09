@@ -15,9 +15,20 @@ variables:
   DEPLOYMENT_NAME: 'frontend-deployment'
   CONTAINER_NAME: 'frontend'
 
+  HELM_RELEASE: 'cds-app'
+  HELM_CHART_PATH: 'helm/cds-app'
+
+  TRIVY_IMAGE: 'aquasec/trivy:latest'
+  SECURITY_REPORTS_DIR: 'security-reports'
+
 steps:
+- task: HelmInstaller@1
+  displayName: 'Install Helm'
+  inputs:
+    helmVersionToInstall: '3.15.4'
+
 - task: AzureCLI@2
-  displayName: 'Build, push and deploy frontend to AKS'
+  displayName: 'Frontend DevSecOps build push and deploy with Helm'
   inputs:
     azureSubscription: 'azure-aks'
     scriptType: 'bash'
@@ -26,19 +37,29 @@ steps:
       set -e
 
       echo "========================================"
-      echo "Frontend CI/CD Pipeline"
+      echo "Frontend CI CD Pipeline with DevSecOps and Helm"
       echo "========================================"
+
+      mkdir -p $SECURITY_REPORTS_DIR
+      mkdir -p .trivy-cache
 
       SHORT_SHA=$(echo "$(Build.SourceVersion)" | cut -c1-7)
       TAG="$(Build.BuildId)-$SHORT_SHA"
       IMAGE="$ACR_LOGIN_SERVER/$IMAGE_NAME:$TAG"
 
-      echo "Build ID: $(Build.BuildId)"
-      echo "Source branch: $(Build.SourceBranch)"
-      echo "Source version: $(Build.SourceVersion)"
-      echo "Short SHA: $SHORT_SHA"
-      echo "Image tag: $TAG"
-      echo "Image: $IMAGE"
+      echo "Build ID = $(Build.BuildId)"
+      echo "Source branch = $(Build.SourceBranch)"
+      echo "Source version = $(Build.SourceVersion)"
+      echo "Short SHA = $SHORT_SHA"
+      echo "Image tag = $TAG"
+      echo "Image = $IMAGE"
+
+      echo "========================================"
+      echo "0. Tool versions"
+      echo "========================================"
+      helm version
+      docker --version
+      az version
 
       echo "========================================"
       echo "1. Azure account"
@@ -49,101 +70,215 @@ steps:
       echo "2. Check project files"
       echo "========================================"
       ls -la
+
+      echo "Verify required files"
       test -f Dockerfile
       test -f package.json
       test -f angular.json
+      test -d $HELM_CHART_PATH
+      test -f $HELM_CHART_PATH/Chart.yaml
+      test -f $HELM_CHART_PATH/values.yaml
 
       echo "========================================"
-      echo "3. Login to Azure Container Registry"
+      echo "3. DevSecOps scan repository with Trivy FS"
+      echo "========================================"
+
+      echo "Repository scan focuses on Dockerfile, Helm chart and pipeline files"
+      echo "Dependency vulnerabilities are checked later at Docker image level"
+
+      mkdir -p devsecops-scan-scope
+      cp Dockerfile devsecops-scan-scope/
+      cp azure-pipelines.yml devsecops-scan-scope/
+      cp -r $HELM_CHART_PATH devsecops-scan-scope/helm-chart
+
+      docker run --rm \
+        -v "$PWD:/project" \
+        -v "$PWD/.trivy-cache:/root/.cache/" \
+        $TRIVY_IMAGE fs \
+        --scanners secret,misconfig \
+        --severity HIGH,CRITICAL \
+        --format table \
+        --no-progress \
+        --offline-scan \
+        --exit-code 0 \
+        /project/devsecops-scan-scope || true
+
+      docker run --rm \
+        -v "$PWD:/project" \
+        -v "$PWD/.trivy-cache:/root/.cache/" \
+        $TRIVY_IMAGE fs \
+        --scanners secret,misconfig \
+        --severity HIGH,CRITICAL \
+        --format json \
+        --output /project/$SECURITY_REPORTS_DIR/trivy-fs-frontend-report.json \
+        --no-progress \
+        --offline-scan \
+        --exit-code 0 \
+        /project/devsecops-scan-scope || true
+
+      if [ ! -f "$SECURITY_REPORTS_DIR/trivy-fs-frontend-report.json" ]; then
+        echo "{}" > $SECURITY_REPORTS_DIR/trivy-fs-frontend-report.json
+      fi
+
+      echo "========================================"
+      echo "4. Login to Azure Container Registry"
       echo "========================================"
       az acr login --name $ACR_NAME
 
       echo "========================================"
-      echo "4. Docker build"
+      echo "5. Docker build"
       echo "========================================"
       docker build -t $IMAGE .
 
       echo "========================================"
-      echo "5. Docker push to ACR"
+      echo "6. DevSecOps scan Docker image with Trivy"
+      echo "========================================"
+
+      docker run --rm \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v "$PWD/.trivy-cache:/root/.cache/" \
+        $TRIVY_IMAGE image \
+        --severity HIGH,CRITICAL \
+        --ignore-unfixed \
+        --format table \
+        --no-progress \
+        --exit-code 0 \
+        $IMAGE
+
+      docker run --rm \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v "$PWD:/project" \
+        -v "$PWD/.trivyvar/run/docker.sock:/var/run/docker.sock \
+        -v "$PWD/.trivy-cache:/root/.cache/" \
+        $TRIVY_IMAGE image \
+        --severity HIGH,CRITICAL \
+        --ignore-unfixed \
+        --format table \
+        --no-progress \
+        --exit-code 0 \
+        $IMAGE
+
+      docker run --rm \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v "$PWD:/project" \
+        -v "$PWD/.trivy-cache:/root/.cache/" \
+        $TRIVY_IMAGE image \
+        --severity HIGH,CRITICAL \
+        --ignore-unfixed \
+        --format json \
+        --output /project/$SECURITY_REPORTS_DIR/trivy-image-frontend-report.json \
+        --no-progress \
+        --exit-code 0 \
+        $IMAGE
+
+      echo "========================================"
+      echo "7. Docker push to ACR"
       echo "========================================"
       docker push $IMAGE
 
       echo "========================================"
-      echo "6. Verify image tags in ACR"
+      echo "8. Verify image tags in ACR"
       echo "========================================"
-      az acr repository show-tags \
-        --name $ACR_NAME \
-        --repository $IMAGE_NAME \
-        -o table
+      az acr repository show-tags --name $ACR_NAME --repository $IMAGE_NAME -o table
 
       echo "========================================"
-      echo "7. Get AKS credentials"
+      echo "9. Get AKS credentials"
       echo "========================================"
-      az aks get-credentials \
-        --resource-group $AKS_RG \
-        --name $AKS_NAME \
-        --overwrite-existing
+      az aks get-credentials --resource-group $AKS_RG --name $AKS_NAME --overwrite-existing
 
       echo "========================================"
-      echo "8. Current frontend image before deployment"
+      echo "10. Current frontend image before Helm deployment"
       echo "========================================"
-      kubectl get deployment $DEPLOYMENT_NAME \
-        -n $NAMESPACE \
-        -o jsonpath="{.spec.template.spec.containers[0].image}"
+      kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath="{.spec.template.spec.containers[0].image}"
       echo ""
 
       echo "========================================"
-      echo "9. Deploy new frontend image to AKS"
+      echo "11. Get current backend image tag"
       echo "========================================"
-      kubectl set image deployment/$DEPLOYMENT_NAME \
-        $CONTAINER_NAME=$IMAGE \
-        -n $NAMESPACE
+      CURRENT_BACKEND_IMAGE=$(kubectl get deployment backend-deployment -n $NAMESPACE -o jsonpath="{.spec.template.spec.containers[0].image}")
+      CURRENT_BACKEND_TAG="${CURRENT_BACKEND_IMAGE##*:}"
+
+      echo "Current backend image = $CURRENT_BACKEND_IMAGE"
+      echo "Current backend tag = $CURRENT_BACKEND_TAG"
 
       echo "========================================"
-      echo "10. Rollout status"
+      echo "12. Helm lint"
       echo "========================================"
-      kubectl rollout status deployment/$DEPLOYMENT_NAME \
-        -n $NAMESPACE \
-        --timeout=180s
+      helm lint $HELM_CHART_PATH
 
       echo "========================================"
-      echo "11. Pods after deployment"
+      echo "13. Helm template and Kubernetes dry-run"
+      echo "========================================"
+
+      helm template $HELM_RELEASE $HELM_CHART_PATH \
+        --namespace $NAMESPACE \
+        --set-string backend.image.tag=$CURRENT_BACKEND_TAG \
+        --set-string frontend.image.tag=$TAG \
+        > $SECURITY_REPORTS_DIR/frontend-rendered-manifests.yaml
+
+      kubectl apply --dry-run=client -f $SECURITY_REPORTS_DIR/frontend-rendered-manifests.yaml
+
+      echo "========================================"
+      echo "14. Deploy frontend with Helm"
+      echo "========================================"
+      helm upgrade --install $HELM_RELEASE $HELM_CHART_PATH \
+        --namespace $NAMESPACE \
+        --set-string backend.image.tag=$CURRENT_BACKEND_TAG \
+        --set-string frontend.image.tag=$TAG \
+        --wait \
+        --timeout 5m \
+        --history-max 10 \
+        --force
+
+      echo "========================================"
+      echo "15. Helm status"
+      echo "========================================"
+      helm status $HELM_RELEASE -n $NAMESPACE
+
+      echo "========================================"
+      echo "16. Rollout status frontend"
+      echo "========================================"
+      kubectl rollout status deployment/$DEPLOYMENT_NAME -n $NAMESPACE --timeout=180s
+
+      echo "========================================"
+      echo "17. Pods after Helm deployment"
       echo "========================================"
       kubectl get pods -n $NAMESPACE
 
       echo "========================================"
-      echo "12. Frontend image after deployment"
+      echo "18. Frontend image after Helm deployment"
       echo "========================================"
-      kubectl get deployment $DEPLOYMENT_NAME \
-        -n $NAMESPACE \
-        -o jsonpath="{.spec.template.spec.containers[0].image}"
+      kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath="{.spec.template.spec.containers[0].image}"
       echo ""
 
       echo "========================================"
-      echo "13. Smoke test public HTTPS frontend with retries"
+      echo "19. Helm history"
+      echo "========================================"
+      helm history $HELM_RELEASE -n $NAMESPACE
+
+      echo "========================================"
+      echo "20. Smoke test public HTTPS frontend with retries"
       echo "========================================"
 
-      echo "Waiting a few seconds for Ingress endpoints propagation..."
+      echo "Waiting a few seconds for Ingress endpoints propagation"
       sleep 20
 
       SUCCESS=false
 
-      for i in $(seq 1 12); do
-        echo "Smoke test attempt $i/12"
+      for i in 1 2 3 4 5 6 7 8 9 10 11 12
+      do
+        echo "Frontend smoke test attempt $i/12"
 
-        HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" \
-          --connect-timeout 10 \
-          --max-time 20 \
-          https://homecds.cipa-web.com/ || echo "000")
+        HTTP_CODE=$(curl -s -L -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 20 https://homecds.cipa-web.com/ || echo "000")
 
-        echo "Frontend HTTP code: $HTTP_CODE"
+        echo "Frontend HTTP code = $HTTP_CODE"
 
         if [ "$HTTP_CODE" = "200" ]; then
           SUCCESS=true
           break
         fi
 
-        echo "Frontend not ready yet, waiting 10 seconds..."
+        echo "Frontend not ready yet waiting 10 seconds"
         sleep 10
       done
 
@@ -152,11 +287,25 @@ steps:
         kubectl get pods -n $NAMESPACE
         kubectl get svc -n $NAMESPACE
         kubectl get ingress -n $NAMESPACE
+        helm status $HELM_RELEASE -n $NAMESPACE
         exit 1
       fi
 
       echo "Frontend smoke test passed"
 
       echo "========================================"
-      echo "Frontend deployment completed successfully"
+      echo "21. List generated security reports"
       echo "========================================"
+      ls -lh $SECURITY_REPORTS_DIR
+
+      echo "========================================"
+      echo "Frontend DevSecOps deployment with Helm completed successfully"
+      echo "========================================"
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish frontend security reports'
+  condition: always()
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/security-reports'
+    artifact: 'frontend-security-reports'
+    publishLocation: 'pipeline'
